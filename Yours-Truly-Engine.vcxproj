@@ -91,9 +91,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\t-jofis\Documents\GitHub\Yours-Truly-Engine\Dependencies\glbinding;C:\Users\t-jofis\Documents\GitHub\Yours-Truly-Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;GLBINDING_STATIC_DEFINE;SYSTEM_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -527,6 +530,8 @@
     <ClInclude Include="Dependencies\glbinding\glbinding\gl45\gl.h" />
     <ClInclude Include="Dependencies\glbinding\glbinding\gl45\types.h" />
     <ClInclude Include="Dependencies\glbinding\glbinding\gl45\values.h" />
+    <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_api.h" />
+    <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_features.h" />
     <ClInclude Include="Dependencies\glbinding\include\AbstractFunction.h" />
     <ClInclude Include="Dependencies\glbinding\include\AbstractValue.h" />
     <ClInclude Include="Dependencies\glbinding\include\Binding.h" />

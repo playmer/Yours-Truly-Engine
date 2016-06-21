@@ -1506,5 +1506,11 @@
     <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\values.h">
       <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_api.h">
+      <Filter>Dependencies\glbinding\glbinding</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_features.h">
+      <Filter>Dependencies\glbinding\glbinding</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
