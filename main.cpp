@@ -25,11 +25,34 @@ int main(int aArgumentNumber, char **Arguments)
   glbinding::Binding::initialize(); 
   gl::glViewport(0, 0, engine.mWindow.mWidth, engine.mWindow.mHeight);
 
+  float red = 0.0f, green = 0.0f, blue = 0.0f;
+
+  bool decending = false;
+
   while (engine.mShouldUpdate)
   {
     engine.Update(0.016f);
 
-    gl::glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    if (decending)
+    {
+      red -= 0.001f;
+      green -= 0.001f;
+      blue -= 0.001f;
+    }
+    else
+    {
+      red += 0.001f;
+      green += 0.001f;
+      blue += 0.001f;
+    }
+
+    if (red >= 1.0f || red <= 0.0f)
+    {
+      decending = !decending;
+    }
+
+
+    gl::glClearColor(red, green, blue, 1.0f);
     gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
     engine.mWindow.SwapBuffers();
