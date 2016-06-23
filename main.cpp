@@ -29,6 +29,13 @@ template <typename HandleType, typename DestructionFunction = void(*)(HandleType
 class unique_handle
 {
   public:
+
+  unique_handle()
+    : mHandle(HandleType()), mDestructor(nullptr)
+  {
+
+  }
+
   unique_handle(HandleType &aHandle, DestructionFunction aDestructor)
     : mHandle(aHandle), mDestructor(aDestructor)
   {
@@ -40,9 +47,6 @@ class unique_handle
 
   unique_handle(unique_handle &&rhs)
   {
-    // Release whatever we're holding.
-    release();
-
     mDestructor = rhs.mDestructor;
     mDestructor = rhs.mDestructor;
 
@@ -67,7 +71,7 @@ class unique_handle
 
   ~unique_handle()
   {
-    mDestructor(mHandle);
+    release();
   }
 
   private:
