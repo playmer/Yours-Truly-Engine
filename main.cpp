@@ -253,23 +253,6 @@ OpenGLHandle GraphicsInitialize()
   gl::glVertexAttribPointer(0, 3, gl::GL_FLOAT, gl::GL_FALSE, 3 * sizeof(gl::GLfloat), (gl::GLvoid*)0);
   gl::glEnableVertexAttribArray(0);
 
-  const gl::GLfloat vertices[] =
-  {
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f,  0.5f, 0.0f
-  };
-
-  // 0. Copy our vertices array in a buffer for OpenGL to use
-  gl::glBindBuffer(gl::GL_ARRAY_BUFFER, VBO);
-  gl::glBufferData(gl::GL_ARRAY_BUFFER, sizeof(vertices), vertices, gl::GL_STATIC_DRAW);
-  // 1. Then set the vertex attributes pointers                     gl::
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-  glEnableVertexAttribArray(0);
-  // 2. Use our shader program when we want to render an object
-  glUseProgram(shaderProgram);
-  // 3. Now draw the object 
-  someOpenGLFunctionThatDrawsOurTriangle();
 
   return shaderProgram;
 }
@@ -294,13 +277,6 @@ void RenderGraphics(Color &aColor, bool aDescending)
 
   gl::glClearColor(aColor.mRed, aColor.mGreen, aColor.mBlue, 1.0f);
   gl::glClear(gl::GL_COLOR_BUFFER_BIT);
-
-  const gl::GLfloat vertices[] =
-  {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-  };
 }
 
 int main(int aArgumentNumber, char **Arguments)
