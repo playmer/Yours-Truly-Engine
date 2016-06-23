@@ -25,8 +25,67 @@ struct Color
   float mAlpha;
 };
 
-using ShaderPtr = std::unique_ptr<gl::GLuint, void(*)(gl::GLuint*)>;
+template <typename HandleType, typename DestructionFunction = void(*)(HandleType)>
+class unique_handle
+{
+  public:
+  unique_handle(HandleType &aHandle, DestructionFunction aDestructor)
+    : mHandle(aHandle), mDestructor(aDestructor)
+  {
 
+  }
+
+  unique_handle& operator=(const unique_handle &) = delete;
+  unique_handle(const unique_handle &) = delete;
+
+  unique_handle(unique_handle &&rhs)
+  {
+    // Release whatever we're holding.
+    release();
+
+    mDestructor = rhs.mDestructor;
+    mDestructor = rhs.mDestructor;
+
+    rhs.mDestructor = nullptr;
+    rhs.mHandle = HandleType();
+  }
+
+  HandleType get()
+  {
+    return mHandle;
+  }
+
+  void release()
+  {
+    if (nullptr != mDestructor)
+    {
+      mDestructor(mHandle);
+      mDestructor = nullptr;
+      mHandle = HandleType();
+    }
+  }
+
+  ~unique_handle()
+  {
+    mDestructor(mHandle);
+  }
+
+  private:
+  HandleType mHandle;
+  DestructionFunction mDestructor;
+};
+
+void DeleteShader(gl::GLuint aShader)
+{
+  if (aShader != 0)
+  {
+    std::cout << "Deleting shader: " << aShader << std::endl;
+    gl::glDeleteShader(aShader);
+  }
+};
+
+
+using OpenGLHandle = unique_handle<gl::GLuint>;
 
 bool PrintShaderError(gl::GLuint aShader, gl::GLenum aType)
 {
@@ -79,19 +138,7 @@ bool PrintShaderError(gl::GLuint aShader, gl::GLenum aType)
   return success == 0;
 }
 
-
-void DeleteShader(gl::GLuint *aShader)
-{
-  auto shader = (gl::GLuint)aShader;
-
-  if (shader != 0)
-  {
-    std::cout << "Deleting shader: " << shader << std::endl;
-    gl::glDeleteShader(shader);
-  }
-};
-
-ShaderPtr CreateShader(const char *aSource, gl::GLenum aType)
+OpenGLHandle CreateShader(const char *aSource, gl::GLenum aType)
 {
   gl::GLuint shader;
   shader = gl::glCreateShader(aType);
@@ -102,28 +149,46 @@ ShaderPtr CreateShader(const char *aSource, gl::GLenum aType)
 
   if (!PrintShaderError(shader, aType))
   {
-    ShaderPtr shaderPtr((gl::GLuint*)shader, DeleteShader);
+    OpenGLHandle shaderPtr(shader, DeleteShader);
 
     return std::move(shaderPtr);
   }
   else
   {
-    ShaderPtr shaderPtr((gl::GLuint*)0, DeleteShader);
+    gl::GLuint nullShader;
+    OpenGLHandle shaderPtr(nullShader, DeleteShader);
     return std::move(shaderPtr);
   }
 }
 
-ShaderPtr CreateShaderProgram(std::vector<ShaderPtr> &aShaders)
+
+
+void DeleteShaderProgram(gl::GLuint aShaderProgram)
+{
+  if (aShaderProgram != 0)
+  {
+    std::cout << "Deleting shader: " << aShaderProgram << std::endl;
+    gl::glDeleteProgram(aShaderProgram);
+  }
+};
+
+
+OpenGLHandle CreateShaderProgram(std::vector<OpenGLHandle> &aShaders)
 {
   gl::GLuint shaderProgram;
   shaderProgram = gl::glCreateProgram();
 
   for (auto &shader : aShaders)
   {
-    gl::glAttachShader(shaderProgram, (gl::GLuint)shader.get());
+    gl::glAttachShader(shaderProgram, shader.get());
   }
 
   gl::glLinkProgram(shaderProgram);
+
+  for (auto &shader : aShaders)
+  {
+    gl::glDetachShader(shaderProgram, shader.get());
+  }
 
   gl::GLint success;
   gl::glGetProgramiv(shaderProgram, gl::GL_LINK_STATUS, &success);
@@ -138,19 +203,20 @@ ShaderPtr CreateShaderProgram(std::vector<ShaderPtr> &aShaders)
 
   if (success)
   {
-    ShaderPtr shaderPtr((gl::GLuint*)shaderProgram, DeleteShader);
+    OpenGLHandle shaderPtr(shaderProgram, DeleteShaderProgram);
 
     return std::move(shaderPtr);
   }
   else
   {
-    ShaderPtr shaderPtr((gl::GLuint*)0, DeleteShader);
+    gl::GLuint nullShader;
+    OpenGLHandle shaderPtr(nullShader, DeleteShaderProgram);
     return std::move(shaderPtr);
   }
 }
 
 
-ShaderPtr GraphicsInitialize()
+OpenGLHandle GraphicsInitialize()
 {
   auto vertexShaderSource = R"(
       #version 330 core
@@ -176,13 +242,34 @@ ShaderPtr GraphicsInitialize()
 
   auto fragmentShader = CreateShader(fragmentShaderSource, gl::GL_FRAGMENT_SHADER);
 
-  std::vector<ShaderPtr> shaders;
+  std::vector<OpenGLHandle> shaders;
   shaders.emplace_back(std::move(vertexShader));
   shaders.emplace_back(std::move(fragmentShader));
 
   auto shaderProgram = CreateShaderProgram(shaders);
   
   gl::glUseProgram((gl::GLuint)shaderProgram.get());
+
+  gl::glVertexAttribPointer(0, 3, gl::GL_FLOAT, gl::GL_FALSE, 3 * sizeof(gl::GLfloat), (gl::GLvoid*)0);
+  gl::glEnableVertexAttribArray(0);
+
+  const gl::GLfloat vertices[] =
+  {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f,  0.5f, 0.0f
+  };
+
+  // 0. Copy our vertices array in a buffer for OpenGL to use
+  gl::glBindBuffer(gl::GL_ARRAY_BUFFER, VBO);
+  gl::glBufferData(gl::GL_ARRAY_BUFFER, sizeof(vertices), vertices, gl::GL_STATIC_DRAW);
+  // 1. Then set the vertex attributes pointers                     gl::
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+  glEnableVertexAttribArray(0);
+  // 2. Use our shader program when we want to render an object
+  glUseProgram(shaderProgram);
+  // 3. Now draw the object 
+  someOpenGLFunctionThatDrawsOurTriangle();
 
   return shaderProgram;
 }
@@ -208,7 +295,7 @@ void RenderGraphics(Color &aColor, bool aDescending)
   gl::glClearColor(aColor.mRed, aColor.mGreen, aColor.mBlue, 1.0f);
   gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
-  gl::GLfloat vertices[] = 
+  const gl::GLfloat vertices[] =
   {
     -0.5f, -0.5f, 0.0f,
      0.5f, -0.5f, 0.0f,
