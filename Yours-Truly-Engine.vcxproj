@@ -215,9 +215,11 @@
     <ClCompile Include="Dependencies\glbinding\source\Version.cpp" />
     <ClCompile Include="Dependencies\glbinding\source\Version_ValidVersions.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Window.cpp" />
     <ClCompile Include="YTE\Core\Engine.cpp" />
+    <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp" />
+    <ClCompile Include="YTE\Graphics\Shader.cpp" />
     <ClCompile Include="YTE\Platform\Keyboard.cpp" />
+    <ClCompile Include="YTE\Platform\Window.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Keyboard_Windows.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Window_Windows.cpp" />
   </ItemGroup>
@@ -573,6 +575,10 @@
     <ClInclude Include="YTE\Core\PrivateImplementation.hpp" />
     <ClInclude Include="YTE\Core\TargetDefinitions.hpp" />
     <ClInclude Include="YTE\Core\Types.hpp" />
+    <ClInclude Include="YTE\DataStructures\UniqueHandle.hpp" />
+    <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp" />
+    <ClInclude Include="YTE\Graphics\Shader.hpp" />
+    <ClInclude Include="YTE\Platform\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Platform\Gamepad.hpp" />
     <ClInclude Include="YTE\Platform\GamepadSystem.hpp" />
     <ClInclude Include="YTE\Platform\Keyboard.hpp" />

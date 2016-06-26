@@ -7,9 +7,16 @@
 
 namespace YTE
 {
-  Engine::Engine() : mWindow(this, "Window", nullptr, nullptr, 1280, 720, nullptr)
+  Engine::Engine() : mGraphicsSystem(this)
   {
     mShouldUpdate = true;
+
+    auto window = std::make_unique<Window>(this, "Window", nullptr, nullptr, 1280, 720, nullptr);
+    mPrimaryWindow = window.get();
+    mWindows.emplace_back(std::move(window));
+
+    mGraphicsSystem.SetUpWindow(mPrimaryWindow);
+    mGraphicsSystem.Initialize();
   }
 
   Engine::~Engine()
@@ -18,6 +25,11 @@ namespace YTE
 
   void Engine::Update(float aDt)
   {
-    mWindow.Update();
+    mGraphicsSystem.Update(aDt);
+
+    for (auto &window : mWindows)
+    {
+      window->Update();
+    }
   }
 }
