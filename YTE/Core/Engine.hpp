@@ -10,6 +10,8 @@
 #include <memory>
 #include <vector>
 
+#include "YTE/Graphics/GraphicsSystem.hpp"
+
 #include "YTE/Platform/Window.hpp"
 
 namespace YTE
@@ -21,7 +23,10 @@ namespace YTE
     ~Engine();
     void Update(float aDt);
 
+    GraphicsSystem mGraphicsSystem;
+
     std::vector<std::unique_ptr<Window>> mWindows;
+    Window *mPrimaryWindow;
 
     bool mShouldUpdate;
   };

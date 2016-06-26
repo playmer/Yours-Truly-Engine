@@ -21,7 +21,6 @@ struct Color
   float mAlpha;
 };
 
-
 int main(int aArgumentNumber, char **Arguments)
 {
   YTE::Engine engine;
@@ -34,7 +33,7 @@ int main(int aArgumentNumber, char **Arguments)
   {
     engine.Update(0.016f);
 
-    if (engine.mWindow.mKeyboard.IsKeyPressed(YTE::KeyCode::Escape))
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Escape))
     { 
       engine.mShouldUpdate = false;
     }

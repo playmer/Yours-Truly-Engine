@@ -163,6 +163,12 @@
     <Filter Include="Dependencies\glbinding\glbinding\gl45">
       <UniqueIdentifier>{f33d4f49-080a-44b8-bf62-83af13ad6146}</UniqueIdentifier>
     </Filter>
+    <Filter Include="YTE\DataStructures">
+      <UniqueIdentifier>{853b4ebc-28d3-4e3c-95c5-44e20c16a92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="YTE\Graphics">
+      <UniqueIdentifier>{c2944e9d-d8a7-4417-9230-6ceff878107a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -177,9 +183,6 @@
     </ClCompile>
     <ClCompile Include="YTE\Platform\Windows\Window_Windows.cpp">
       <Filter>YTE\Platform\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>YTE\Platform</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\glbinding\source\AbstractFunction.cpp">
       <Filter>Dependencies\glbinding\source</Filter>
@@ -432,6 +435,15 @@
     </ClCompile>
     <ClCompile Include="Dependencies\glbinding\source\gl\types.cpp">
       <Filter>Dependencies\glbinding\source\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\Shader.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Platform\Window.cpp">
+      <Filter>YTE\Platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1511,6 +1523,18 @@
     </ClInclude>
     <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_features.h">
       <Filter>Dependencies\glbinding\glbinding</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\DataStructures\UniqueHandle.hpp">
+      <Filter>YTE\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Shader.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Platform\ForwardDeclarations.hpp">
+      <Filter>YTE\Platform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

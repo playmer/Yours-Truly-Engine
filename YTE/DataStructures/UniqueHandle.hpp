@@ -10,10 +10,18 @@
 
 namespace YTE
 {
+
   template <typename HandleType, typename DestructionFunction = void(*)(HandleType)>
   class UniqueHandle
   {
     public:
+
+    UniqueHandle()
+      : mHandle(HandleType()), mDestructor(nullptr)
+    {
+
+    }
+
     UniqueHandle(HandleType &aHandle, DestructionFunction aDestructor)
       : mHandle(aHandle), mDestructor(aDestructor)
     {
@@ -25,9 +33,6 @@ namespace YTE
 
     UniqueHandle(UniqueHandle &&rhs)
     {
-      // Release whatever we're holding.
-      release();
-
       mDestructor = rhs.mDestructor;
       mDestructor = rhs.mDestructor;
 
@@ -52,13 +57,12 @@ namespace YTE
 
     ~UniqueHandle()
     {
-      mDestructor(mHandle);
+      release();
     }
 
     private:
     HandleType mHandle;
     DestructionFunction mDestructor;
   };
-
 }
 #endif

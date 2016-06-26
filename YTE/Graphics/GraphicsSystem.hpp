@@ -13,6 +13,8 @@
 
 #include "YTE/Core/ForwardDeclarations.hpp"
 
+#include "YTE/Platform/ForwardDeclarations.hpp"
+
 
 namespace YTE
 {

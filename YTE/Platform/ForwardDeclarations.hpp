@@ -3,11 +3,13 @@
 //////////////////////////////////////////////
 #pragma once
 
-#ifndef YTE_Core_ForwardDeclarations_hpp
-#define YTE_Core_ForwardDeclarations_hpp
+#ifndef YTE_Platform_ForwardDeclarations_hpp
+#define YTE_Platform_ForwardDeclarations_hpp
 
 namespace YTE
 {
-  class Engine;
+  class Window;
+  class Keyboard;
+  class Mouse;
 }
 #endif

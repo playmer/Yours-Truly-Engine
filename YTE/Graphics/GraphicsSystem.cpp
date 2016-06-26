@@ -29,7 +29,7 @@ namespace YTE
     {
       gl::glViewport(0, 0, window->mWidth, window->mHeight);
 
-      gl::glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+      gl::glClearColor(0.5f, 1.0f, 0.5f, 1.0f);
       gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
       window->SwapBuffers();
