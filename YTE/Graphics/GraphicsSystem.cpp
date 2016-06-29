@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Windows.h"
 
 #include "YTE/Core/Engine.hpp"
@@ -20,7 +22,7 @@ namespace YTE
   };
 
 
-  void vulkan_assert(bool flag, char *msg = "")
+  void vulkan_assert(u64 flag, char *msg = "")
   {
     if (!flag)
     {
@@ -56,6 +58,14 @@ namespace YTE
 
     auto result = vk::createInstance(&instanceInfo, NULL, &self->mInstance);
     checkVulkanResult(result, "Failed to create vulkan instance.");
+
+    auto layers = vk::enumerateInstanceLayerProperties();
+    vulkan_assert(layers.size(), "Failed to find layers.");
+
+    for (auto &layer : layers)
+    {
+      std::cout << "Name: " << layer.layerName << "\n  Description: " << layer.description << "\n";
+    }
   }
 
   GraphicsSystem::~GraphicsSystem()
