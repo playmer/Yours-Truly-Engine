@@ -91,7 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\Dependencies\glbinding;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependencies\vulkan;.\Dependencies\glbinding;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;GLBINDING_STATIC_DEFINE;SYSTEM_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -122,6 +122,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\Dependencies\vulkan;.\Dependencies\glbinding;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -214,6 +215,7 @@
     <ClCompile Include="Dependencies\glbinding\source\Value.cpp" />
     <ClCompile Include="Dependencies\glbinding\source\Version.cpp" />
     <ClCompile Include="Dependencies\glbinding\source\Version_ValidVersions.cpp" />
+    <ClCompile Include="Dependencies\vulkan\vulkan\vkel.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="YTE\Core\Engine.cpp" />
     <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp" />
@@ -570,6 +572,12 @@
     <ClInclude Include="Dependencies\glbinding\source\Meta_Maps.h" />
     <ClInclude Include="Dependencies\glbinding\source\RingBuffer.h" />
     <ClInclude Include="Dependencies\glbinding\source\RingBuffer.hpp" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vkel.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vk_cpp.hpp" />
+    <ClInclude Include="Dependencies\vulkan\vk_platform.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h" />
     <ClInclude Include="YTE\Core\Engine.hpp" />
     <ClInclude Include="YTE\Core\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Core\PrivateImplementation.hpp" />
@@ -587,6 +595,9 @@
     <ClInclude Include="YTE\Platform\Window.hpp" />
     <ClInclude Include="YTE\Platform\Windows\KeyCodes_Windows.hpp" />
     <ClInclude Include="YTE\Platform\Windows\WindowData_Windows.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dependencies\vulkan\vulkan\vkel_gen.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

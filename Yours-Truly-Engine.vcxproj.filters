@@ -445,6 +445,7 @@
     <ClCompile Include="YTE\Platform\Window.cpp">
       <Filter>YTE\Platform</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\vulkan\vulkan\vkel.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -1536,5 +1537,14 @@
     <ClInclude Include="YTE\Platform\ForwardDeclarations.hpp">
       <Filter>YTE\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\vulkan\vk_platform.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vk_cpp.hpp" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vkel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dependencies\vulkan\vulkan\vkel_gen.py" />
   </ItemGroup>
 </Project>

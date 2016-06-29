@@ -32,7 +32,7 @@ namespace YTE
     void SwapBuffers();
 
     Keyboard mKeyboard;
-    PrivateImplementation<16> mPlatformSpecificData;
+    PrivateImplementation<64> mPlatformSpecificData;
     Engine *mEngine;
     Window *mParentWindow;
     u16 mHeight;

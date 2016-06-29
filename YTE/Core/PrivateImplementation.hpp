@@ -8,27 +8,52 @@
 
 namespace YTE
 {
+  // Helper to capture the destructor of a type.
+  template <typename T>
+  void GenericDestruct(void *aMemory)
+  {
+    (reinterpret_cast<T*>(aMemory))->~T();
+  }
+
+  // Helper to call the constructor of a type.
+  template <typename T>
+  void GenericDefaultConstruct(void *aMemory)
+  {
+    new (aMemory) T();
+  }
+
   template <int SizeInBytes>
   class PrivateImplementation
   {
   public:
-    using Destructor = void(*)();
+    using Destructor = void(*)(void*);
 
     PrivateImplementation() : mDestructor(nullptr) {}
 
-    template <typename T>
-    T* ConstructAndGet()
+    ~PrivateImplementation()
     {
       // Destruct our data if it's already been constructed.
       if (mDestructor != nullptr)
       {
-        mDestructor();
+        mDestructor(mMemory);
+      }
+    }
+
+    template <typename T>
+    T* ConstructAndGet()
+    {
+      static_assert(sizeof(T) < SizeInBytes, "Constructed Type must be smaller than our size.");
+
+      // Destruct our data if it's already been constructed.
+      if (mDestructor != nullptr)
+      {
+        mDestructor(mMemory);
       }
 
       // Capture the destructor of the new type.
       mDestructor = GenericDestruct<T>;
 
-      GenericDefaultConstruct();
+      GenericDefaultConstruct<T>(mMemory);
 
       return reinterpret_cast<T*>(mMemory);
     }
@@ -40,20 +65,6 @@ namespace YTE
     }
 
   private:
-    // Helper to capture the destructor of a type.
-    template <typename T>
-    void GenericDestruct()
-    {
-      (reinterpret_cast<T*>(mMemory))->~T();
-    }
-
-    // Helper to call the constructor of a type.
-    template <typename T>
-    void GenericDefaultConstruct()
-    {
-      static_assert(sizeof(T) < SizeInBytes, "Constructed Type must be smaller than our size.");
-      new (mMemory) T();
-    }
 
     char mMemory[SizeInBytes];
     Destructor mDestructor;

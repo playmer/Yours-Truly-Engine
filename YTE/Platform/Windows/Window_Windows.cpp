@@ -71,7 +71,7 @@ namespace YTE
                  int aHeight, Window *aParentWindow)
     : mEngine(aEngine), mParentWindow(aParentWindow), mHeight(aHeight), mWidth(aWidth)
   {
-    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+    WindowData *windowData = mPlatformSpecificData.ConstructAndGet<WindowData>();
 
     WNDCLASS windowsData;
 
@@ -220,6 +220,8 @@ namespace YTE
 
   void Window::Update()
   {
+    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+
     MSG message;
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
     {
@@ -227,6 +229,8 @@ namespace YTE
       TranslateMessage(&message);
       DispatchMessage(&message);
     }
+
+    RedrawWindow(windowData->mWindowHandle, NULL, NULL, RDW_INTERNALPAINT);
 
     mKeyboard.Update();
   }

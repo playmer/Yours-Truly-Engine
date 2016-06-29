@@ -15,6 +15,8 @@
 
 #include "YTE/Platform/ForwardDeclarations.hpp"
 
+#include "YTE/Core/PrivateImplementation.hpp"
+
 
 namespace YTE
 {
@@ -32,6 +34,8 @@ namespace YTE
 
     private:
     Engine *mEngine;
+
+    PrivateImplementation<1024> mPlatformSpecificData;
   };
 
 }
