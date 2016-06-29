@@ -19,6 +19,7 @@ namespace YTE
     u32 mHeight;
 
     vk::Instance mInstance;
+    vk::DebugReportCallbackEXT mCallback;
   };
 
 
@@ -35,9 +36,25 @@ namespace YTE
     }
   }
 
-  void checkVulkanResult(vk::Result &result, char *msg) 
+  void checkVulkanResult(vk::Result &aResult, char *aMessage) 
   {
-    vulkan_assert(result == vk::Result::eSuccess, msg);
+    vulkan_assert(aResult == vk::Result::eSuccess, aMessage);
+  }
+
+  VKAPI_ATTR VkBool32 VKAPI_CALL DebugReportCallback(VkDebugReportFlagsEXT aFlags,
+                                                     VkDebugReportObjectTypeEXT aObjectType, 
+                                                     uint64_t aObject, 
+                                                     size_t aLocation,
+                                                     int32_t aMessageCode, 
+                                                     const char *aLayerPrefix, 
+                                                     const char *aMessage, 
+                                                     void *aUserData) 
+  {
+    printf("%s", aLayerPrefix);
+    printf(" ");
+    printf("%s", aMessage);
+    printf("\n");
+    return VK_FALSE;
   }
 
   GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine)
@@ -62,10 +79,64 @@ namespace YTE
     auto layers = vk::enumerateInstanceLayerProperties();
     vulkan_assert(layers.size(), "Failed to find layers.");
 
+    bool foundValidator = false;
+
     for (auto &layer : layers)
     {
       std::cout << "Name: " << layer.layerName << "\n  Description: " << layer.description << "\n";
+
+      if (std::strcmp(layer.layerName, "VK_LAYER_LUNARG_standard_validation") == 0)
+      {
+        foundValidator = true;
+      }
     }
+
+    if (foundValidator)
+    {
+      std::cout << "Found the Standard Validator. \n";
+    }
+
+    vulkan_assert(foundValidator, "Could not find validation layer.");
+    const char *enabledLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
+    
+    instanceInfo.setEnabledLayerCount(1);
+    instanceInfo.setPpEnabledLayerNames(enabledLayers);
+
+    auto extensions = vk::enumerateInstanceExtensionProperties();
+    
+    std::array<const char *, 3> requiredExtensions = { 
+      "VK_KHR_surface",
+      "VK_KHR_win32_surface",
+      "VK_EXT_debug_report"
+    };
+
+    decltype(requiredExtensions)::size_type foundExtensions = 0;
+
+    for (auto &extension : extensions)
+    {
+      for (auto &requiredExtension : requiredExtensions)
+      {
+        if (std::strcmp(extension.extensionName, requiredExtension) == 0)
+        {
+          ++foundExtensions;
+          requiredExtension = "";
+          break;
+        }
+      }
+    }
+
+    vulkan_assert(requiredExtensions.size() == foundExtensions, "Could not find debug extension");
+
+    auto  callbackCreateInfo = vk::DebugReportCallbackCreateInfoEXT()
+                                   .setFlags(vk::DebugReportFlagBitsEXT::eError | 
+                                             vk::DebugReportFlagBitsEXT::eWarning | 
+                                             vk::DebugReportFlagBitsEXT::ePerformanceWarning)
+                                   .setPfnCallback(&DebugReportCallback);
+
+    vkelInstanceInit(self->mInstance);
+
+    auto debugReport = self->mInstance.createDebugReportCallbackEXT(callbackCreateInfo);
+    vulkan_assert(static_cast<bool>(debugReport), "Failed to create degub report callback.");
   }
 
   GraphicsSystem::~GraphicsSystem()
@@ -75,24 +146,16 @@ namespace YTE
 
   void GraphicsSystem::SetUpWindow(Window *aWindow)
   {
-    aWindow->CreateOpenGLContext();
-    aWindow->MakeOpenGLContextCurrent();
   }
 
   void GraphicsSystem::Initialize()
   {
-    glbinding::Binding::initialize();
   }
 
   void GraphicsSystem::Update(float aDt)
   {
     for (auto &window : mEngine->mWindows)
     {
-      gl::glViewport(0, 0, window->mWidth, window->mHeight);
-
-      gl::glClearColor(0.5f, 1.0f, 0.5f, 1.0f);
-      gl::glClear(gl::GL_COLOR_BUFFER_BIT);
-
       window->SwapBuffers();
     }
   }
