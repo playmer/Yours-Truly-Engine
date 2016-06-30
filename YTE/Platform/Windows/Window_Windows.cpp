@@ -134,7 +134,7 @@ namespace YTE
 
     windowsData.hCursor = LoadCursorA(nullptr, aCursorIcon);
 
-    windowsData.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    windowsData.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
     windowsData.lpszMenuName = aWindowName;
     windowsData.lpszClassName = "Yours-Truly-Engine_Game";
 

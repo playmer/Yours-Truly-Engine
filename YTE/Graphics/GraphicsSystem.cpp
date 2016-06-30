@@ -28,6 +28,7 @@ namespace YTE
     vk::PhysicalDeviceProperties mPhysicalDeviceProperties;
     i32 mPresentQueueIdx;
     vk::Device mLogicalDevice;
+    vk::SwapchainKHR mSwapChain;
   };
 
 
@@ -221,10 +222,15 @@ namespace YTE
       auto debugReport = self->mInstance.createDebugReportCallbackEXT(callbackCreateInfo);
       vulkan_assert(static_cast<bool>(debugReport), "Failed to create degub report callback.");
 
-      auto windowData = mEngine->mPrimaryWindow->mPlatformSpecificData.Get<WindowData>();
+      // TODO: Abstract this for multiple windows.
+      auto window = mEngine->mPrimaryWindow;
+      auto windowData = window->mPlatformSpecificData.Get<WindowData>();
       auto surfaceCreateInfo = vk::Win32SurfaceCreateInfoKHR()
                                     .setHinstance(windowData->mInstance)
                                     .setHwnd(windowData->mWindowHandle);
+
+      self->mHeight = window->mHeight;
+      self->mWidth = window->mWidth;
 
       self->mSurface = self->mInstance.createWin32SurfaceKHR(surfaceCreateInfo);
 
@@ -289,6 +295,93 @@ namespace YTE
       self->mLogicalDevice = self->mPhysicalDevice.createDevice(deviceInfo);
 
       vulkan_assert((bool)self->mLogicalDevice, "Failed to create logical device!");
+
+      auto formats = self->mPhysicalDevice.getSurfaceFormatsKHR(self->mSurface);
+
+      // If the format list includes just one entry of VK_FORMAT_UNDEFINED, the surface has
+      // no preferred format. Otherwise, at least one supported format will be returned.
+      vk::Format colorFormat;
+
+      if (formats.size() == 1 && formats[0].format == vk::Format::eUndefined)
+      {
+        colorFormat = vk::Format::eB8G8R8Unorm;
+      }
+      else 
+      {
+        colorFormat = formats[0].format;
+      }
+
+      vk::ColorSpaceKHR colorSpace;
+      colorSpace = formats[0].colorSpace;
+
+      vk::SurfaceCapabilitiesKHR surfaceCapabilities = self->mPhysicalDevice.getSurfaceCapabilitiesKHR(self->mSurface);
+
+      // We are effectively looking for double-buffering:
+      // if surfaceCapabilities.maxImageCount == 0 there is actually no limit on the number of images! 
+      //
+      // TODO: Make the amount of buffering configurable.
+      u32 desiredImageCount = 2;
+
+      if (desiredImageCount < surfaceCapabilities.minImageCount) 
+      {
+        desiredImageCount = surfaceCapabilities.minImageCount;
+      }
+      else if ((surfaceCapabilities.maxImageCount != 0) && (desiredImageCount > surfaceCapabilities.maxImageCount)) 
+      {
+        desiredImageCount = surfaceCapabilities.maxImageCount;
+      }
+
+      vk::Extent2D surfaceResolution = surfaceCapabilities.currentExtent;
+
+      if (surfaceResolution.width == -1) 
+      {
+        surfaceResolution.width = self->mWidth;
+        surfaceResolution.height = self->mHeight;
+      }
+      else 
+      {
+        self->mWidth = surfaceResolution.width;
+        self->mHeight = surfaceResolution.height;
+      }
+
+      vk::SurfaceTransformFlagBitsKHR preTransform = surfaceCapabilities.currentTransform;
+
+      if (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity)
+      {
+        preTransform = vk::SurfaceTransformFlagBitsKHR::eIdentity;
+      }
+
+      auto presentModes = self->mPhysicalDevice.getSurfacePresentModesKHR(self->mSurface);
+
+      // Always supported.
+      vk::PresentModeKHR presentationMode = vk::PresentModeKHR::eFifo;   
+
+      // TODO: Look into the rest of the vk::PresentModeKHR options.
+      for (auto &presentMode : presentModes) 
+      {
+        if (presentMode == vk::PresentModeKHR::eMailbox)
+        {
+          presentationMode = vk::PresentModeKHR::eMailbox;
+          break;
+        }
+      }
+      auto swapChainCreateInfo = vk::SwapchainCreateInfoKHR()
+                                      .setSurface(self->mSurface)
+                                      .setMinImageCount(desiredImageCount)
+                                      .setImageFormat(colorFormat)
+                                      .setImageColorSpace(colorSpace)
+                                      .setImageExtent(surfaceResolution)
+                                      .setImageArrayLayers(1)
+                                      .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment)
+                                      .setImageSharingMode(vk::SharingMode::eExclusive)   // TODO: Learn how to share queues.
+                                      .setPreTransform(preTransform)
+                                      .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque) //TODO: Pretty sure we want to do pre-multiplied.
+                                      .setPresentMode(presentationMode)
+                                      .setClipped(true); // If we want clipping outside the extents
+                                                         // (remember our device features?)
+
+      self->mSwapChain = self->mLogicalDevice.createSwapchainKHR(swapChainCreateInfo);
+      vulkan_assert((bool)self->mSwapChain, "Failed to create swapchain.");
     }
   }
 
