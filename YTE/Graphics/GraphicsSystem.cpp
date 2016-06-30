@@ -172,14 +172,21 @@ namespace YTE
 
       if (foundValidator)
       {
-        std::cout << "Found the Standard Validator. \n";
       }
 
-      vulkan_assert(foundValidator, "Could not find validation layer.");
       const char *enabledLayers[] = { validationLayer };
 
-      instanceInfo.setEnabledLayerCount(1);
-      instanceInfo.setPpEnabledLayerNames(enabledLayers);
+      if (foundValidator)
+      {
+        printf("Found the Standard Validator. \n");
+
+        instanceInfo.setEnabledLayerCount(1);
+        instanceInfo.setPpEnabledLayerNames(enabledLayers);
+      }
+      else
+      {
+          printf("Could not find validation layer.");
+      }
 
       auto extensions = vk::enumerateInstanceExtensionProperties();
 
@@ -204,31 +211,39 @@ namespace YTE
         }
       }
 
-      vulkan_assert(requiredExtensions.size() == foundExtensions, "Could not find debug extension");
-
-      std::array<const char *, 3> requiredExtensions2 = {
-        "VK_KHR_surface",
-        "VK_KHR_win32_surface",
-        "VK_EXT_debug_report"
+      requiredExtensions = {
+          "VK_KHR_surface",
+          "VK_KHR_win32_surface",
+          "VK_EXT_debug_report"
       };
 
-      instanceInfo.setEnabledExtensionCount((u32)requiredExtensions2.size());
-      instanceInfo.setPpEnabledExtensionNames(requiredExtensions2.data());
 
-      auto result = vk::createInstance(&instanceInfo, NULL, &self->mInstance);
-      checkVulkanResult(result, "Failed to create vulkan instance.");
+      if (requiredExtensions.size() == foundExtensions)
+      {
+        instanceInfo.setEnabledExtensionCount((u32)requiredExtensions.size());
+        instanceInfo.setPpEnabledExtensionNames(requiredExtensions.data());
+
+        auto result = vk::createInstance(&instanceInfo, NULL, &self->mInstance);
+        checkVulkanResult(result, "Failed to create vulkan instance.");
+      }
+      else
+      {
+        printf("Could not find debug extension");
+      }
 
       vkelInstanceInit(self->mInstance);
 
-
-      auto  callbackCreateInfo = vk::DebugReportCallbackCreateInfoEXT()
-                                      .setFlags(vk::DebugReportFlagBitsEXT::eError |
-                                                vk::DebugReportFlagBitsEXT::eWarning |
-                                                vk::DebugReportFlagBitsEXT::ePerformanceWarning)
-                                      .setPfnCallback(&DebugReportCallback);
-
-      auto debugReport = self->mInstance.createDebugReportCallbackEXT(callbackCreateInfo);
-      vulkan_assert(static_cast<bool>(debugReport), "Failed to create degub report callback.");
+      if (requiredExtensions.size() == foundExtensions)
+      {
+        auto  callbackCreateInfo = vk::DebugReportCallbackCreateInfoEXT()
+                                        .setFlags(vk::DebugReportFlagBitsEXT::eError |
+                                                  vk::DebugReportFlagBitsEXT::eWarning |
+                                                  vk::DebugReportFlagBitsEXT::ePerformanceWarning)
+                                        .setPfnCallback(&DebugReportCallback);
+        
+        auto debugReport = self->mInstance.createDebugReportCallbackEXT(callbackCreateInfo);
+        vulkan_assert(static_cast<bool>(debugReport), "Failed to create degub report callback.");
+      }
 
       // TODO: Abstract this for multiple windows.
       auto window = mEngine->mPrimaryWindow;
@@ -442,7 +457,7 @@ namespace YTE
         vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
 
         u32 nextImageIdx;
-        result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
+        auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
         checkVulkanResult(result, "Could not acquireNextImageKHR.");
 
         if (!transitioned.at(nextImageIdx))
