@@ -63,6 +63,11 @@ namespace YTE
       //  break;
       //}
 
+      case WM_PAINT:
+      {
+        window->mEngine->mGraphicsSystem.Update(0.016f);
+        break;
+      }
 
       // Should probably make sure DefWindowProc doesn't get called here. Return?
       case WM_CLOSE:

@@ -29,6 +29,12 @@ namespace YTE
     i32 mPresentQueueIdx;
     vk::Device mLogicalDevice;
     vk::SwapchainKHR mSwapChain;
+
+    vk::Queue mQueue;
+    vk::CommandBuffer mSetupCommandBuffer;
+    vk::CommandBuffer mDrawCommandBuffer;
+
+    std::vector<vk::Image> mPresentImages;
   };
 
 
@@ -111,9 +117,9 @@ namespace YTE
     return VK_FALSE;
   }
 
-  GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine)
+  GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine), mVulkanSuccess(0)
   {
-    mVulkanSuccess = vkelInit();
+    auto self = mPlatformSpecificData.ConstructAndGet<vulkan_context>();
   }
 
   GraphicsSystem::~GraphicsSystem()
@@ -133,9 +139,11 @@ namespace YTE
 
   void GraphicsSystem::Initialize()
   {
+    mVulkanSuccess = vkelInit();
+
     if (mVulkanSuccess)
     {
-      auto self = mPlatformSpecificData.ConstructAndGet<vulkan_context>();
+      auto self = mPlatformSpecificData.Get<vulkan_context>();
 
       auto appInfo = vk::ApplicationInfo()
         .setPApplicationName("First Test")
@@ -365,6 +373,7 @@ namespace YTE
           break;
         }
       }
+
       auto swapChainCreateInfo = vk::SwapchainCreateInfoKHR()
                                       .setSurface(self->mSurface)
                                       .setMinImageCount(desiredImageCount)
@@ -382,13 +391,137 @@ namespace YTE
 
       self->mSwapChain = self->mLogicalDevice.createSwapchainKHR(swapChainCreateInfo);
       vulkan_assert((bool)self->mSwapChain, "Failed to create swapchain.");
+
+      self->mQueue = self->mLogicalDevice.getQueue(self->mPresentQueueIdx, 0);
+
+      auto commandPoolCreateInfo = vk::CommandPoolCreateInfo()
+                                        .setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer)
+                                        .setQueueFamilyIndex(self->mPresentQueueIdx);
+
+      auto commandPool = self->mLogicalDevice.createCommandPool(commandPoolCreateInfo);
+      vulkan_assert((bool)commandPool, "Failed to create command pool.");
+
+      auto commandBufferAllocationInfo = vk::CommandBufferAllocateInfo()
+                                              .setCommandPool(commandPool)
+                                              .setLevel(vk::CommandBufferLevel::ePrimary)
+                                              .setCommandBufferCount(1);
+
+      self->mSetupCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
+      vulkan_assert((bool)self->mSetupCommandBuffer, "Failed to allocate setup command buffer.");
+
+      self->mDrawCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
+      vulkan_assert((bool)self->mDrawCommandBuffer, "Failed to allocate draw command buffer.");
+
+      self->mPresentImages = self->mLogicalDevice.getSwapchainImagesKHR(self->mSwapChain);
+
+      auto presentImagesViewCreateInfo = vk::ImageViewCreateInfo()
+                                              .setViewType(vk::ImageViewType::e2D)
+                                              .setFormat(colorFormat)
+                                              .setComponents({ vk::ComponentSwizzle::eR,
+                                                               vk::ComponentSwizzle::eG,
+                                                               vk::ComponentSwizzle::eB,
+                                                               vk::ComponentSwizzle::eA });
+
+      presentImagesViewCreateInfo.subresourceRange.setAspectMask(vk::ImageAspectFlagBits::eColor);
+      presentImagesViewCreateInfo.subresourceRange.setLevelCount(1);
+      presentImagesViewCreateInfo.subresourceRange.setLayerCount(1);
+
+      auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
+      auto fenceCreateInfo = vk::FenceCreateInfo();
+
+      auto submitFence = self->mLogicalDevice.createFence(fenceCreateInfo);
+
+      std::vector<bool> transitioned;
+      transitioned.resize(self->mPresentImages.size(), false);
+
+      u32 doneCount = 0;
+      while (doneCount != self->mPresentImages.size())
+      {
+        vk::SemaphoreCreateInfo semaphoreCreateInfo;
+        vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
+
+        u32 nextImageIdx;
+        result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
+        checkVulkanResult(result, "Could not acquireNextImageKHR.");
+
+        if (!transitioned.at(nextImageIdx))
+        {
+          // start recording out image layout change barrier on our setup command buffer:
+          self->mSetupCommandBuffer.begin(&beginInfo);
+
+          auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
+                                              .setDstAccessMask(vk::AccessFlagBits::eMemoryRead)
+                                              .setOldLayout(vk::ImageLayout::eUndefined)
+                                              .setNewLayout(vk::ImageLayout::ePresentSrcKHR)
+                                              .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+                                              .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+                                              .setImage(self->mPresentImages[nextImageIdx]);
+
+          VkImageSubresourceRange resourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+          layoutTransitionBarrier.subresourceRange = resourceRange;
+
+          self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
+                                                    vk::PipelineStageFlagBits::eTopOfPipe, 
+                                                    vk::DependencyFlags(), 
+                                                    nullptr, 
+                                                    nullptr,
+                                                    layoutTransitionBarrier);
+
+          self->mSetupCommandBuffer.end();
+
+          vk::PipelineStageFlags waitStageMash[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+          auto submitInfo = vk::SubmitInfo()
+                                 .setWaitSemaphoreCount(1)
+                                 .setPWaitSemaphores(&presentCompleteSemaphore)
+                                 .setPWaitDstStageMask(waitStageMash)
+                                 .setCommandBufferCount(1)
+                                 .setPCommandBuffers(&self->mSetupCommandBuffer);
+
+          self->mQueue.submit(submitInfo, submitFence);
+          
+          self->mLogicalDevice.waitForFences(submitFence, true, UINT64_MAX);
+          self->mLogicalDevice.resetFences(submitFence);
+
+          self->mLogicalDevice.destroySemaphore(presentCompleteSemaphore);
+
+          // NOTE: Instead of eReleaseResources should it be 0?
+          self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
+
+          transitioned[nextImageIdx] = true;
+          ++doneCount;
+        }
+
+        auto presentInfo = vk::PresentInfoKHR()
+                                .setSwapchainCount(1)
+                                .setPSwapchains(&self->mSwapChain)
+                                .setPImageIndices(&nextImageIdx);
+
+        self->mQueue.presentKHR(presentInfo);
+      }
     }
+  }
+
+  void GraphicsSystem::Render()
+  {
+    auto self = mPlatformSpecificData.Get<vulkan_context>();
+
+    u32 nextImageIdx;
+    auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, VK_NULL_HANDLE, VK_NULL_HANDLE, &nextImageIdx);
+    
+    auto presentInfo = vk::PresentInfoKHR()
+                            .setSwapchainCount(1)
+                            .setPSwapchains(&self->mSwapChain)
+                            .setPImageIndices(&nextImageIdx);
+
+    self->mQueue.presentKHR(presentInfo);
   }
 
   void GraphicsSystem::Update(float aDt)
   {
     if (mVulkanSuccess)
     {
+      Render();
     }
 
     for (auto &window : mEngine->mWindows)

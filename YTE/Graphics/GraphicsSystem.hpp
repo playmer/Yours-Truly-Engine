@@ -32,6 +32,7 @@ namespace YTE
     void Initialize();
 
     void Update(float aDt);
+    void Render();
 
     private:
     Engine *mEngine;
