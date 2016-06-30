@@ -24,6 +24,10 @@ namespace YTE
     vk::Instance mInstance;
     vk::SurfaceKHR mSurface;
     vk::DebugReportCallbackEXT mCallback;
+    vk::PhysicalDevice mPhysicalDevice;
+    vk::PhysicalDeviceProperties mPhysicalDeviceProperties;
+    i32 mPresentQueueIdx;
+    vk::Device mLogicalDevice;
   };
 
 
@@ -223,6 +227,68 @@ namespace YTE
                                     .setHwnd(windowData->mWindowHandle);
 
       self->mSurface = self->mInstance.createWin32SurfaceKHR(surfaceCreateInfo);
+
+      auto physicalDevices = self->mInstance.enumeratePhysicalDevices();
+
+      for (auto &physicalDevice : physicalDevices) 
+      {
+        auto properties = physicalDevice.getProperties();
+
+        auto queueProperties = physicalDevice.getQueueFamilyProperties();
+
+        u32 queueCount = 0;
+        for (auto &queueProperty : queueProperties)
+        {
+          i32 supportsPresent = physicalDevice.getSurfaceSupportKHR(queueCount, self->mSurface);
+
+          if (supportsPresent && (queueProperty.queueFlags & vk::QueueFlagBits::eGraphics))
+          {
+            self->mPhysicalDevice = physicalDevice;
+            self->mPhysicalDeviceProperties = properties;
+            self->mPresentQueueIdx = queueCount;
+
+            ++queueCount;
+            break;
+          }
+
+          ++queueCount;
+        }
+
+
+        // TODO: Maybe grab more than just one physical device?
+        if (self->mPhysicalDevice) 
+        {
+          break;
+        }
+      }
+
+      vulkan_assert((bool)self->mPhysicalDevice, "No physical device detected that can render and present!");
+
+      // info for accessing one of the devices rendering queues:
+      auto queueCreateInfo = vk::DeviceQueueCreateInfo()
+                                  .setQueueFamilyIndex(self->mPresentQueueIdx)
+                                  .setQueueCount(1);
+
+      float queuePriorities[] = { 1.0f };   // ask for highest priority for our queue. (range [0,1])
+      queueCreateInfo.pQueuePriorities = queuePriorities;
+
+      const char *deviceExtensions[] = { "VK_KHR_swapchain" };
+
+      auto deviceInfo = vk::DeviceCreateInfo()
+                             .setQueueCreateInfoCount(1)
+                             .setPQueueCreateInfos(&queueCreateInfo)
+                             .setEnabledLayerCount(1)
+                             .setPpEnabledLayerNames(enabledLayers)
+                             .setEnabledExtensionCount(1)
+                             .setPpEnabledExtensionNames(deviceExtensions);
+
+      auto features = vk::PhysicalDeviceFeatures().setShaderClipDistance(true);
+      
+      deviceInfo.setPEnabledFeatures(&features);
+
+      self->mLogicalDevice = self->mPhysicalDevice.createDevice(deviceInfo);
+
+      vulkan_assert((bool)self->mLogicalDevice, "Failed to create logical device!");
     }
   }
 
