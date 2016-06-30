@@ -6,6 +6,8 @@
 #include <Windows.h>
 #include <Winuser.h>
 
+
+
 #include "YTE/Core/Engine.hpp"
 
 #include "YTE/Platform/Windows/WindowData_Windows.hpp"
@@ -43,6 +45,24 @@ namespace YTE
         windowToSetData->mWindowHandle = aWindowHandle;
         break;
       }
+
+
+      // A key has been pressed.
+      //case WM_KEYDOWN:
+      //case WM_SYSKEYDOWN: 
+      //{
+      //  window->mKeyboard.UpdateKey(aWParam, true);
+      //  break;
+      //}
+      //
+      //  // A key has been released.
+      //case WM_KEYUP:
+      //case WM_SYSKEYUP:
+      //{
+      //  window->mKeyboard.UpdateKey(aWParam, false);
+      //  break;
+      //}
+
 
       // Should probably make sure DefWindowProc doesn't get called here. Return?
       case WM_CLOSE:
@@ -107,7 +127,8 @@ namespace YTE
     windowsData.cbWndExtra = 0;
 
     // This needs to be changed for multiple windows to work, I think.
-    windowsData.hInstance = GetModuleHandleA(nullptr);
+    windowData->mInstance = GetModuleHandleA(nullptr);
+    windowsData.hInstance = windowData->mInstance;
 
     windowsData.hIcon = LoadIconA(nullptr, aWindowIcon);
 
