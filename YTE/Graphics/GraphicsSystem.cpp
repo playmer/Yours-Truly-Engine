@@ -59,11 +59,14 @@ namespace YTE
 
   GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine)
   {
-    vkelInit();
+    mVulkanSuccess = vkelInit();
+
+	if (false == mVulkanSuccess)
+	{
+		return;
+	}
 
     auto self = mPlatformSpecificData.ConstructAndGet<vulkan_context>();
-
-    
 
     auto appInfo = vk::ApplicationInfo()
                      .setPApplicationName("First Test")
@@ -141,19 +144,32 @@ namespace YTE
 
   GraphicsSystem::~GraphicsSystem()
   {
-    vkelUninit();
+    if (mVulkanSuccess)
+    {
+      vkelUninit();
+    }
   }
 
   void GraphicsSystem::SetUpWindow(Window *aWindow)
   {
+    if (mVulkanSuccess)
+    {
+    }
   }
 
   void GraphicsSystem::Initialize()
   {
+    if (mVulkanSuccess)
+    {
+    }
   }
 
   void GraphicsSystem::Update(float aDt)
   {
+    if (mVulkanSuccess)
+    {
+    }
+
     for (auto &window : mEngine->mWindows)
     {
       window->SwapBuffers();

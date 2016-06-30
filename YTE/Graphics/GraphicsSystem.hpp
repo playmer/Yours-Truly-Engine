@@ -36,6 +36,8 @@ namespace YTE
     Engine *mEngine;
 
     PrivateImplementation<1024> mPlatformSpecificData;
+
+	bool mVulkanSuccess;
   };
 
 }
