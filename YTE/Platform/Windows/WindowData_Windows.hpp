@@ -25,6 +25,7 @@ namespace YTE
     HWND mWindowHandle;
     HDC mDeviceContext;
     HGLRC mOpenGLContext;
+    HINSTANCE mInstance;
     bool mCreatedContext;
   };
 }

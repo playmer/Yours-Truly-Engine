@@ -596,9 +596,6 @@
     <ClInclude Include="YTE\Platform\Windows\KeyCodes_Windows.hpp" />
     <ClInclude Include="YTE\Platform\Windows\WindowData_Windows.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Dependencies\vulkan\vulkan\vkel_gen.py" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

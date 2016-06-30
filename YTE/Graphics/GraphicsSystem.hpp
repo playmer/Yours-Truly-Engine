@@ -12,6 +12,7 @@
 #include <glbinding/Binding.h>
 
 #include "YTE/Core/ForwardDeclarations.hpp"
+#include "YTE/Core/Types.hpp"
 
 #include "YTE/Platform/ForwardDeclarations.hpp"
 
@@ -37,7 +38,7 @@ namespace YTE
 
     PrivateImplementation<1024> mPlatformSpecificData;
 
-	bool mVulkanSuccess;
+	  i32 mVulkanSuccess;
   };
 
 }

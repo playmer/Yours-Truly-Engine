@@ -1544,7 +1544,4 @@
     <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vkel.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Dependencies\vulkan\vulkan\vkel_gen.py" />
-  </ItemGroup>
 </Project>
