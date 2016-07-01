@@ -63,7 +63,7 @@
 # include <vector>
 #endif /*VKCPP_DISABLE_ENHANCED_MODE*/
 
-static_assert( VK_HEADER_VERSION ==  13 , "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION ==  18 , "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VK_CPP_TYPESAFE_CONVERSION

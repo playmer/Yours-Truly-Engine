@@ -33,6 +33,7 @@ namespace YTE
     vk::Queue mQueue;
     vk::CommandBuffer mSetupCommandBuffer;
     vk::CommandBuffer mDrawCommandBuffer;
+    std::vector<vk::ImageView> mPresentImageViews;
 
     std::vector<vk::Image> mPresentImages;
   };
@@ -473,12 +474,12 @@ namespace YTE
                                               .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
                                               .setImage(self->mPresentImages[nextImageIdx]);
 
-          VkImageSubresourceRange resourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-          layoutTransitionBarrier.subresourceRange = resourceRange;
+          vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
+          layoutTransitionBarrier.setSubresourceRange(resourceRange);
 
           self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
                                                     vk::PipelineStageFlagBits::eTopOfPipe, 
-                                                    vk::DependencyFlags(), 
+                                                    vk::DependencyFlags(),
                                                     nullptr, 
                                                     nullptr,
                                                     layoutTransitionBarrier);
@@ -514,22 +515,34 @@ namespace YTE
 
         self->mQueue.presentKHR(presentInfo);
       }
+
+
+      self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
+
+      for (uint32_t i = 0; i < self->mPresentImages.size(); ++i)
+      {
+        presentImagesViewCreateInfo.image = self->mPresentImages[i];
+
+        self->mPresentImageViews[i] = self->mLogicalDevice.createImageView(presentImagesViewCreateInfo);
+
+        vulkan_assert((bool)self->mPresentImageViews[i], "Could not create ImageView.");
+      }
     }
   }
 
   void GraphicsSystem::Render()
   {
-    auto self = mPlatformSpecificData.Get<vulkan_context>();
-
-    u32 nextImageIdx;
-    auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, VK_NULL_HANDLE, VK_NULL_HANDLE, &nextImageIdx);
-    
-    auto presentInfo = vk::PresentInfoKHR()
-                            .setSwapchainCount(1)
-                            .setPSwapchains(&self->mSwapChain)
-                            .setPImageIndices(&nextImageIdx);
-
-    self->mQueue.presentKHR(presentInfo);
+    //auto self = mPlatformSpecificData.Get<vulkan_context>();
+    //
+    //u32 nextImageIdx;
+    //auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, VK_NULL_HANDLE, VK_NULL_HANDLE, &nextImageIdx);
+    //
+    //auto presentInfo = vk::PresentInfoKHR()
+    //                        .setSwapchainCount(1)
+    //                        .setPSwapchains(&self->mSwapChain)
+    //                        .setPImageIndices(&nextImageIdx);
+    //
+    //self->mQueue.presentKHR(presentInfo);
   }
 
   void GraphicsSystem::Update(float aDt)
