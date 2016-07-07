@@ -76,6 +76,11 @@ namespace YTE
     vulkan_actual_assert(flag, msg);
   }
 
+  inline void vulkan_assert(void *flag, char *msg = "")
+  {
+      vulkan_actual_assert(reinterpret_cast<u64>(flag), msg);
+  }
+
   template<typename Type>
   inline void vulkan_assert(Type flag, char *msg = "")
   {
@@ -481,71 +486,73 @@ namespace YTE
       std::vector<bool> transitioned;
       transitioned.resize(self->mPresentImages.size(), false);
 
-      //u32 doneCount = 0;
-      //while (doneCount != self->mPresentImages.size())
-      //{
-      //  vk::SemaphoreCreateInfo semaphoreCreateInfo;
-      //  vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
-      //
-      //  u32 nextImageIdx;
-      //  auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
-      //  checkVulkanResult(result, "Could not acquireNextImageKHR.");
-      //
-      //  if (!transitioned.at(nextImageIdx))
-      //  {
-      //    // start recording out image layout change barrier on our setup command buffer:
-      //    self->mSetupCommandBuffer.begin(&beginInfo);
-      //
-      //    auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
-      //                                        .setDstAccessMask(vk::AccessFlagBits::eMemoryRead)
-      //                                        .setOldLayout(vk::ImageLayout::eUndefined)
-      //                                        .setNewLayout(vk::ImageLayout::ePresentSrcKHR)
-      //                                        .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-      //                                        .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-      //                                        .setImage(self->mPresentImages[nextImageIdx]);
-      //
-      //    vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
-      //    layoutTransitionBarrier.setSubresourceRange(resourceRange);
-      //
-      //    self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
-      //                                              vk::PipelineStageFlagBits::eTopOfPipe, 
-      //                                              vk::DependencyFlags(),
-      //                                              nullptr, 
-      //                                              nullptr,
-      //                                              layoutTransitionBarrier);
-      //
-      //    self->mSetupCommandBuffer.end();
-      //
-      //    vk::PipelineStageFlags waitStageMash[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-      //    auto submitInfo = vk::SubmitInfo()
-      //                           .setWaitSemaphoreCount(1)
-      //                           .setPWaitSemaphores(&presentCompleteSemaphore)
-      //                           .setPWaitDstStageMask(waitStageMash)
-      //                           .setCommandBufferCount(1)
-      //                           .setPCommandBuffers(&self->mSetupCommandBuffer);
-      //
-      //    self->mQueue.submit(submitInfo, submitFence);
-      //    
-      //    self->mLogicalDevice.waitForFences(submitFence, true, UINT64_MAX);
-      //    self->mLogicalDevice.resetFences(submitFence);
-      //
-      //    self->mLogicalDevice.destroySemaphore(presentCompleteSemaphore);
-      //
-      //    // NOTE: Instead of eReleaseResources should it be 0?
-      //    self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
-      //
-      //    transitioned[nextImageIdx] = true;
-      //    ++doneCount;
-      //  }
-      //
-      //  auto presentInfo = vk::PresentInfoKHR()
-      //                          .setSwapchainCount(1)
-      //                          .setPSwapchains(&self->mSwapChain)
-      //                          .setPImageIndices(&nextImageIdx);
-      //  
-      //  self->mQueue.presentKHR(presentInfo);
-      //}
 
+      // This sets the image layout on the images.
+      u32 doneCount = 0;
+      while (doneCount != self->mPresentImages.size())
+      {
+        vk::SemaphoreCreateInfo semaphoreCreateInfo;
+        vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
+      
+        u32 nextImageIdx;
+        auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
+        checkVulkanResult(result, "Could not acquireNextImageKHR.");
+      
+        if (!transitioned.at(nextImageIdx))
+        {
+          // start recording out image layout change barrier on our setup command buffer:
+          self->mSetupCommandBuffer.begin(&beginInfo);
+      
+          auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
+                                              .setDstAccessMask(vk::AccessFlagBits::eMemoryRead)
+                                              .setOldLayout(vk::ImageLayout::eUndefined)
+                                              .setNewLayout(vk::ImageLayout::ePresentSrcKHR)
+                                              .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+                                              .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+                                              .setImage(self->mPresentImages[nextImageIdx]);
+      
+          vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
+          layoutTransitionBarrier.setSubresourceRange(resourceRange);
+      
+          self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
+                                                    vk::PipelineStageFlagBits::eTopOfPipe, 
+                                                    vk::DependencyFlags(),
+                                                    nullptr, 
+                                                    nullptr,
+                                                    layoutTransitionBarrier);
+      
+          self->mSetupCommandBuffer.end();
+      
+          vk::PipelineStageFlags waitStageMash[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+          auto submitInfo = vk::SubmitInfo()
+                                 .setWaitSemaphoreCount(1)
+                                 .setPWaitSemaphores(&presentCompleteSemaphore)
+                                 .setPWaitDstStageMask(waitStageMash)
+                                 .setCommandBufferCount(1)
+                                 .setPCommandBuffers(&self->mSetupCommandBuffer);
+      
+          self->mQueue.submit(submitInfo, submitFence);
+          
+          self->mLogicalDevice.waitForFences(submitFence, true, UINT64_MAX);
+          self->mLogicalDevice.resetFences(submitFence);
+      
+          self->mLogicalDevice.destroySemaphore(presentCompleteSemaphore);
+      
+          // NOTE: Instead of eReleaseResources should it be 0?
+          self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
+      
+          transitioned[nextImageIdx] = true;
+          ++doneCount;
+        }
+
+        // TODO: Fix the issue where we present without writing to the images.
+        auto presentInfo = vk::PresentInfoKHR()
+                                .setSwapchainCount(1)
+                                .setPSwapchains(&self->mSwapChain)
+                                .setPImageIndices(&nextImageIdx);
+        
+        self->mQueue.presentKHR(presentInfo);
+      }
 
       self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
 
@@ -581,7 +588,7 @@ namespace YTE
       // memoryTypeBits is a bitfield where if bit i is set, it means that 
       // the VkMemoryType i of the VkPhysicalDeviceMemoryProperties structure 
       // satisfies the memory requirements:
-      u32 memoryTypeBits = memoryRequirements.size;
+      u32 memoryTypeBits = (u32)memoryRequirements.size;
       vk::MemoryPropertyFlags desiredMemoryFlags = vk::MemoryPropertyFlagBits::eDeviceLocal;
       u64 i = 0;
 
