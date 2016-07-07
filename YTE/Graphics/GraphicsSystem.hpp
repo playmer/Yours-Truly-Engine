@@ -32,12 +32,12 @@ namespace YTE
     void Initialize();
 
     void Update(float aDt);
-    void Render();
+    void VulkanRender();
 
     private:
     Engine *mEngine;
 
-    PrivateImplementation<1024> mPlatformSpecificData;
+    PrivateImplementation<2048> mPlatformSpecificData;
 
 	  i32 mVulkanSuccess;
   };
