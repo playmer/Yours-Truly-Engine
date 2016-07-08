@@ -701,31 +701,27 @@ namespace YTE
 
       self->mRenderPass = self->mLogicalDevice.createRenderPass(renderPassCreateInfo);
       vulkan_assert(self->mRenderPass, "Failed to create renderpass");
-
+      
+      // create our frame buffers:
       vk::ImageView frameBufferAttachments[2];
       frameBufferAttachments[1] = self->mDepthImageView;
 
-      auto frameBufferCreateInfo = vk::FramebufferCreateInfo()
-                                        .setRenderPass(self->mRenderPass)
-                                        .setAttachmentCount(2)  // must be equal to the attachment count on render pass
-                                        .setPAttachments(frameBufferAttachments)
-                                        .setWidth(self->mWidth)
-                                        .setHeight(self->mHeight)
-                                        .setLayers(1);
+      vk::FramebufferCreateInfo frameBufferCreateInfo = {};
+      frameBufferCreateInfo.renderPass = self->mRenderPass;
+      frameBufferCreateInfo.attachmentCount = 2;  // must be equal to the attachment count on render pass
+      frameBufferCreateInfo.pAttachments = frameBufferAttachments;
+      frameBufferCreateInfo.width = self->mWidth;
+      frameBufferCreateInfo.height = self->mHeight;
+      frameBufferCreateInfo.layers = 1;
 
       // create a framebuffer per swap chain imageView:
       auto imageCount = self->mPresentImages.size();
       self->mFrameBuffers = std::vector<vk::Framebuffer>(imageCount, vk::Framebuffer());
-
-      u32 i = 0;
-      for (auto &frameBuffer : self->mFrameBuffers)
+      for (u32 i = 0; i < imageCount; ++i) 
       {
         frameBufferAttachments[0] = self->mPresentImageViews[i];
-        frameBuffer = self->mLogicalDevice.createFramebuffer(frameBufferCreateInfo);
-
-        vulkan_assert(frameBuffer, "Failed to create framebuffer.");
-
-        ++i;
+        auto result = self->mLogicalDevice.createFramebuffer(&frameBufferCreateInfo, NULL, &self->mFrameBuffers[i]);
+        checkVulkanResult(result, "Failed to create framebuffer.");
       }
 
       // Create our vertex buffer:
@@ -746,7 +742,7 @@ namespace YTE
       u32 vertexMemoryTypeBits = vertexBufferMemoryRequirements.memoryTypeBits;
       vk::MemoryPropertyFlags vertexDesiredMemoryFlags = vk::MemoryPropertyFlagBits::eHostVisible;
 
-      i = 0;
+      u32 i = 0;
       for (auto &memoryType : self->mPhysicalMemoryProperties.memoryTypes)
       {
         if (vertexMemoryTypeBits & 1) 
@@ -1001,7 +997,7 @@ namespace YTE
 
     self->mDrawCommandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
-    // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affeted by this pipeline!
+    // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
     self->mDrawCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, self->mPipeline);
 
     // take care of dynamic state:
