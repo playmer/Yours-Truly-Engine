@@ -466,6 +466,7 @@ namespace YTE
       auto presentImagesViewCreateInfo = vk::ImageViewCreateInfo()
                                               .setViewType(vk::ImageViewType::e2D)
                                               .setFormat(colorFormat)
+                                              .setFlags((vk::ImageViewCreateFlagBits)0)
                                               .setComponents({ vk::ComponentSwizzle::eR,
                                                                vk::ComponentSwizzle::eG,
                                                                vk::ComponentSwizzle::eB,
@@ -475,19 +476,6 @@ namespace YTE
       presentImagesViewCreateInfo.subresourceRange.setLevelCount(1);
       presentImagesViewCreateInfo.subresourceRange.setLayerCount(1);
 
-
-
-
-      self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
-
-      for (uint32_t i = 0; i < self->mPresentImages.size(); ++i)
-      {
-        presentImagesViewCreateInfo.image = self->mPresentImages[i];
-
-        self->mPresentImageViews[i] = self->mLogicalDevice.createImageView(presentImagesViewCreateInfo);
-
-        vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
-      }
 
 
       auto imageCreateInfo = vk::ImageCreateInfo()
@@ -610,6 +598,19 @@ namespace YTE
         self->mQueue.presentKHR(presentInfo);
       }
 
+
+      self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
+
+      for (uint32_t i = 0; i < self->mPresentImages.size(); ++i)
+      {
+        presentImagesViewCreateInfo.image = self->mPresentImages[i];
+
+        self->mPresentImageViews[i] = self->mLogicalDevice.createImageView(presentImagesViewCreateInfo);
+
+        vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
+      }
+
+
       self->mSetupCommandBuffer.begin(beginInfo);
       auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
                                           .setDstAccessMask(vk::AccessFlagBits::eDepthStencilAttachmentRead |
@@ -687,17 +688,25 @@ namespace YTE
       auto depthAttachmentReference = vk::AttachmentReference()
                                            .setLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
-      auto subpass = vk::SubpassDescription()
-                          .setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
-                          .setColorAttachmentCount(1)
-                          .setPColorAttachments(&colorAttachmentReference)
-                          .setPDepthStencilAttachment(&depthAttachmentReference);
+      vk::SubpassDescription subpasses[2];
+      subpasses[0].setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
+      subpasses[0].setColorAttachmentCount(1);
+      subpasses[0].setPColorAttachments(&colorAttachmentReference);
+
+      subpasses[1].setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
+      subpasses[1].setPDepthStencilAttachment(&depthAttachmentReference);
+
+      vk::SubpassDependency subpassDependencies[1];
+      subpassDependencies[0].setSrcSubpass(0);
+      subpassDependencies[0].setDstSubpass(1);
 
       auto renderPassCreateInfo = vk::RenderPassCreateInfo()
                                        .setAttachmentCount(2)
                                        .setPAttachments(passAttachments)
-                                       .setSubpassCount(1)
-                                       .setPSubpasses(&subpass);
+                                       .setSubpassCount(2)
+                                       .setDependencyCount(1)
+                                       .setPDependencies(subpassDependencies)
+                                       .setPSubpasses(subpasses);
 
       self->mRenderPass = self->mLogicalDevice.createRenderPass(renderPassCreateInfo);
       vulkan_assert(self->mRenderPass, "Failed to create renderpass");
