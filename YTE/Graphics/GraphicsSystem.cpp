@@ -552,10 +552,11 @@ namespace YTE
       
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
-
+          vk::ClearColorValue clear;
+          clear.setFloat32( { 1.0f, 1.0f, 1.0f, 1.0f });
           self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
                                                     vk::ImageLayout::eTransferDstOptimal,
-                                                    vk::ClearColorValue(),
+                                                    clear,
                                                     resourceRange);
       
           self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 

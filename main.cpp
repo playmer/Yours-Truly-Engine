@@ -10,16 +10,9 @@
 #include <memory>
 
 #include "YTE/DataStructures/UniqueHandle.hpp"
+#include "glm.hpp"
+#include <gtc/matrix_transform.hpp>
 
-struct Color
-{
-  Color() : mRed(0.0f), mGreen(0.0f), mBlue(0.0f), mAlpha(1.0f) {};
-
-  float mRed;
-  float mGreen;
-  float mBlue;
-  float mAlpha;
-};
 
 int main(int aArgumentNumber, char **Arguments)
 {
