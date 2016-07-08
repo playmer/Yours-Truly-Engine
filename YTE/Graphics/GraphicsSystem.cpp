@@ -697,6 +697,8 @@ namespace YTE
       subpasses[1].setPDepthStencilAttachment(&depthAttachmentReference);
 
       vk::SubpassDependency subpassDependencies[1];
+      subpassDependencies[0].setSrcStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
+      subpassDependencies[0].setDstStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
       subpassDependencies[0].setSrcSubpass(0);
       subpassDependencies[0].setDstSubpass(1);
 
@@ -775,9 +777,9 @@ namespace YTE
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
       vertex *triangle = (vertex *)mapped;
-      vertex v1 = { -1.0f, -1.0f, 0, 1.0f };
-      vertex v2 = { 1.0f, -1.0f, 0, 1.0f };
-      vertex v3 = { 0.0f,  1.0f, 0, 1.0f };
+      vertex v1 = { 1.0f, 1.0f, 0, 1.0f };
+      vertex v2 = { -1.0f, 1.0f, 0, 1.0f };
+      vertex v3 = { 0.0f,  -1.0f, 0, 1.0f };
       triangle[0] = v1;
       triangle[1] = v2;
       triangle[2] = v3;
