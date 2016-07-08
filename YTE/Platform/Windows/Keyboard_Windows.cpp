@@ -31,8 +31,6 @@ namespace YTE
       else if (key->mPreviousState == KeyState::Pressed && down)
       {
         key->mCurrentState = KeyState::Down;
-
-        printf("KeyDown: %d\n", i);
       }
       else if ((key->mPreviousState == KeyState::Pressed || key->mPreviousState == KeyState::Down)
         && !down)

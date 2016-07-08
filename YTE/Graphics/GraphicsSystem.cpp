@@ -12,15 +12,11 @@
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
 
+#include "glm.hpp"
+
 
 namespace YTE
 {
-  struct vertex 
-  {
-    float x, y, z, w;
-  };
-
-
   class vulkan_context
   {
     public:
@@ -738,7 +734,7 @@ namespace YTE
 
       // Create our vertex buffer:
       auto vertexInputBufferInfo = vk::BufferCreateInfo()
-                                        .setSize(sizeof(vertex) * 3) // Size in bytes.
+                                        .setSize(sizeof(glm::vec4) * 3) // Size in bytes.
                                         .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
                                         .setSharingMode(vk::SharingMode::eExclusive); // TODO: Change to not exclusive.
 
@@ -777,10 +773,10 @@ namespace YTE
       void *mapped = self->mLogicalDevice.mapMemory(vertexBufferMemory, 0, VK_WHOLE_SIZE);
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
-      vertex *triangle = (vertex *)mapped;
-      triangle[0] = { 1.0f, 1.0f, 0, 1.0f };
-      triangle[1] = { 0.0f,  -1.0f, 0, 1.0f };
-      triangle[2] = { -1.0f, 1.0f, 0, 1.0f };
+      mTriangle = (glm::vec4 *)mapped;
+      mTriangle[0] = { 1.0f, 1.0f, 0, 1.0f };
+      mTriangle[1] = { 0.0f,  -1.0f, 0, 1.0f };
+      mTriangle[2] = { -1.0f, 1.0f, 0, 1.0f };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
@@ -845,7 +841,7 @@ namespace YTE
       shaderStageCreateInfo[1].pSpecializationInfo = NULL;
 
       vk::VertexInputBindingDescription vertexBindingDescription;
-      vertexBindingDescription.stride = sizeof(vertex);
+      vertexBindingDescription.stride = sizeof(glm::vec4);
       vertexBindingDescription.inputRate = vk::VertexInputRate::eVertex;
 
       vk::VertexInputAttributeDescription vertexAttributeDescritpion;

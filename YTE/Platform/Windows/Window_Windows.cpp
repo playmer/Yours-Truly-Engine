@@ -258,6 +258,6 @@ namespace YTE
 
     RedrawWindow(windowData->mWindowHandle, NULL, NULL, RDW_INTERNALPAINT);
 
-    //mKeyboard.Update();
+    mKeyboard.Update();
   }
 }

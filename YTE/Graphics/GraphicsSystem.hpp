@@ -18,6 +18,7 @@
 
 #include "YTE/Core/PrivateImplementation.hpp"
 
+#include "glm.hpp"
 
 namespace YTE
 {
@@ -33,6 +34,10 @@ namespace YTE
 
     void Update(float aDt);
     void VulkanRender();
+
+
+
+    glm::vec4 *mTriangle;
 
     private:
     Engine *mEngine;
