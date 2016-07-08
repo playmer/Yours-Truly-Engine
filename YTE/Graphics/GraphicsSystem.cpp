@@ -198,8 +198,6 @@ namespace YTE
 
       for (auto &layer : layers)
       {
-        std::cout << "Name: " << layer.layerName << "\n  Description: " << layer.description << "\n";
-
         if (StringCompare(layer.layerName, validationLayer) == StringComparison::Equal)
         {
           foundValidator = true;
@@ -584,26 +582,24 @@ namespace YTE
 
       auto memoryRequirements = self->mLogicalDevice.getImageMemoryRequirements(self->mDepthImage);
       auto imageAllocationInfo = vk::MemoryAllocateInfo().setAllocationSize(memoryRequirements.size);
-
+      
       // memoryTypeBits is a bitfield where if bit i is set, it means that 
       // the VkMemoryType i of the VkPhysicalDeviceMemoryProperties structure 
       // satisfies the memory requirements:
-      u32 memoryTypeBits = (u32)memoryRequirements.size;
+      u32 memoryTypeBits = memoryRequirements.memoryTypeBits;
       vk::MemoryPropertyFlags desiredMemoryFlags = vk::MemoryPropertyFlagBits::eDeviceLocal;
-      u64 i = 0;
-
-      for (auto memoryType : self->mPhysicalMemoryProperties.memoryTypes)
+      for (u32 i = 0; i < 32; ++i) 
       {
-        if (memoryTypeBits & 1)
+        vk::MemoryType memoryType = self->mPhysicalMemoryProperties.memoryTypes[i];
+        if (memoryTypeBits & 1) 
         {
-          if ((memoryType.propertyFlags & desiredMemoryFlags) == desiredMemoryFlags)
+          if ((memoryType.propertyFlags & desiredMemoryFlags) == desiredMemoryFlags) 
           {
-            imageAllocationInfo.memoryTypeIndex = (u32)i;
+            imageAllocationInfo.memoryTypeIndex = i;
             break;
           }
         }
         memoryTypeBits = memoryTypeBits >> 1;
-        ++i;
       }
 
       auto imageMemory = self->mLogicalDevice.allocateMemory(imageAllocationInfo);
@@ -716,7 +712,7 @@ namespace YTE
       auto imageCount = self->mPresentImages.size();
       self->mFrameBuffers = std::vector<vk::Framebuffer>(imageCount, vk::Framebuffer());
 
-      i = 0;
+      u32 i = 0;
       for (auto &frameBuffer : self->mFrameBuffers)
       {
         frameBufferAttachments[0] = self->mPresentImageViews[i];
