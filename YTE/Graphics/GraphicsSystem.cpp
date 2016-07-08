@@ -477,13 +477,68 @@ namespace YTE
       presentImagesViewCreateInfo.subresourceRange.setLevelCount(1);
       presentImagesViewCreateInfo.subresourceRange.setLayerCount(1);
 
+
+
+
+      self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
+
+      for (uint32_t i = 0; i < self->mPresentImages.size(); ++i)
+      {
+        presentImagesViewCreateInfo.image = self->mPresentImages[i];
+
+        self->mPresentImageViews[i] = self->mLogicalDevice.createImageView(presentImagesViewCreateInfo);
+
+        vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
+      }
+
+
+      auto imageCreateInfo = vk::ImageCreateInfo()
+        .setImageType(vk::ImageType::e2D)
+        .setFormat(vk::Format::eD16Unorm)
+        .setExtent({ self->mWidth, self->mHeight, 1 })
+        .setMipLevels(1)
+        .setArrayLayers(1)
+        .setSamples(vk::SampleCountFlagBits::e1)
+        .setTiling(vk::ImageTiling::eOptimal)
+        .setUsage(vk::ImageUsageFlagBits::eDepthStencilAttachment)
+        .setSharingMode(vk::SharingMode::eExclusive) // TODO: Change this when you learn more.
+        .setInitialLayout(vk::ImageLayout::eUndefined);
+
+      self->mDepthImage = self->mLogicalDevice.createImage(imageCreateInfo);
+
+      vulkan_assert(self->mDepthImage, "Failed to create depth image.");
+
+      auto memoryRequirements = self->mLogicalDevice.getImageMemoryRequirements(self->mDepthImage);
+      auto imageAllocationInfo = vk::MemoryAllocateInfo().setAllocationSize(memoryRequirements.size);
+
+      // memoryTypeBits is a bitfield where if bit i is set, it means that 
+      // the VkMemoryType i of the VkPhysicalDeviceMemoryProperties structure 
+      // satisfies the memory requirements:
+      u32 memoryTypeBits = memoryRequirements.memoryTypeBits;
+      vk::MemoryPropertyFlags desiredMemoryFlags = vk::MemoryPropertyFlagBits::eDeviceLocal;
+      for (u32 i = 0; i < 32; ++i)
+      {
+        vk::MemoryType memoryType = self->mPhysicalMemoryProperties.memoryTypes[i];
+        if (memoryTypeBits & 1)
+        {
+          if ((memoryType.propertyFlags & desiredMemoryFlags) == desiredMemoryFlags)
+          {
+            imageAllocationInfo.memoryTypeIndex = i;
+            break;
+          }
+        }
+        memoryTypeBits = memoryTypeBits >> 1;
+      }
+
+      auto imageMemory = self->mLogicalDevice.allocateMemory(imageAllocationInfo);
+      self->mLogicalDevice.bindImageMemory(self->mDepthImage, imageMemory, 0);
+
       auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
       auto submitFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());
 
       std::vector<bool> transitioned;
       transitioned.resize(self->mPresentImages.size(), false);
-
 
       // This sets the image layout on the images.
       u32 doneCount = 0;
@@ -511,6 +566,11 @@ namespace YTE
       
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
+
+          self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
+                                                    vk::ImageLayout::eTransferDstOptimal,
+                                                    vk::ClearColorValue(),
+                                                    resourceRange);
       
           self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
                                                     vk::PipelineStageFlagBits::eTopOfPipe, 
@@ -551,59 +611,6 @@ namespace YTE
         
         self->mQueue.presentKHR(presentInfo);
       }
-
-      self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
-
-      for (uint32_t i = 0; i < self->mPresentImages.size(); ++i)
-      {
-        presentImagesViewCreateInfo.image = self->mPresentImages[i];
-
-        self->mPresentImageViews[i] = self->mLogicalDevice.createImageView(presentImagesViewCreateInfo);
-
-        vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
-      }
-
-
-      auto imageCreateInfo = vk::ImageCreateInfo()
-                                  .setImageType(vk::ImageType::e2D)
-                                  .setFormat(vk::Format::eD16Unorm)
-                                  .setExtent({ self->mWidth, self->mHeight, 1 })
-                                  .setMipLevels(1)
-                                  .setArrayLayers(1)
-                                  .setSamples(vk::SampleCountFlagBits::e1)
-                                  .setTiling(vk::ImageTiling::eOptimal)
-                                  .setUsage(vk::ImageUsageFlagBits::eDepthStencilAttachment)
-                                  .setSharingMode(vk::SharingMode::eExclusive) // TODO: Change this when you learn more.
-                                  .setInitialLayout(vk::ImageLayout::eUndefined);
-
-      self->mDepthImage = self->mLogicalDevice.createImage(imageCreateInfo);
-
-      vulkan_assert(self->mDepthImage, "Failed to create depth image.");
-
-      auto memoryRequirements = self->mLogicalDevice.getImageMemoryRequirements(self->mDepthImage);
-      auto imageAllocationInfo = vk::MemoryAllocateInfo().setAllocationSize(memoryRequirements.size);
-      
-      // memoryTypeBits is a bitfield where if bit i is set, it means that 
-      // the VkMemoryType i of the VkPhysicalDeviceMemoryProperties structure 
-      // satisfies the memory requirements:
-      u32 memoryTypeBits = memoryRequirements.memoryTypeBits;
-      vk::MemoryPropertyFlags desiredMemoryFlags = vk::MemoryPropertyFlagBits::eDeviceLocal;
-      for (u32 i = 0; i < 32; ++i) 
-      {
-        vk::MemoryType memoryType = self->mPhysicalMemoryProperties.memoryTypes[i];
-        if (memoryTypeBits & 1) 
-        {
-          if ((memoryType.propertyFlags & desiredMemoryFlags) == desiredMemoryFlags) 
-          {
-            imageAllocationInfo.memoryTypeIndex = i;
-            break;
-          }
-        }
-        memoryTypeBits = memoryTypeBits >> 1;
-      }
-
-      auto imageMemory = self->mLogicalDevice.allocateMemory(imageAllocationInfo);
-      self->mLogicalDevice.bindImageMemory(self->mDepthImage, imageMemory, 0);
 
       self->mSetupCommandBuffer.begin(beginInfo);
       auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
