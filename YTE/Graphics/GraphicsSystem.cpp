@@ -778,8 +778,8 @@ namespace YTE
 
       vertex *triangle = (vertex *)mapped;
       triangle[0] = { 1.0f, 1.0f, 0, 1.0f };
-      triangle[1] = { -1.0f, 1.0f, 0, 1.0f };
-      triangle[2] = { 0.0f,  -1.0f, 0, 1.0f };
+      triangle[1] = { 0.0f,  -1.0f, 0, 1.0f };
+      triangle[2] = { -1.0f, 1.0f, 0, 1.0f };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
