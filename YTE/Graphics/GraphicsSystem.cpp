@@ -777,12 +777,9 @@ namespace YTE
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
       vertex *triangle = (vertex *)mapped;
-      vertex v1 = { 1.0f, 1.0f, 0, 1.0f };
-      vertex v2 = { -1.0f, 1.0f, 0, 1.0f };
-      vertex v3 = { 0.0f,  -1.0f, 0, 1.0f };
-      triangle[0] = v1;
-      triangle[1] = v2;
-      triangle[2] = v3;
+      triangle[0] = { 1.0f, 1.0f, 0, 1.0f };
+      triangle[1] = { -1.0f, 1.0f, 0, 1.0f };
+      triangle[2] = { 0.0f,  -1.0f, 0, 1.0f };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
