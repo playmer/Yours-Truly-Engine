@@ -212,8 +212,6 @@ namespace YTE
 
       if (foundValidator)
       {
-        printf("Found the Standard Validator. \n");
-
         instanceInfo.setEnabledLayerCount(1);
         instanceInfo.setPpEnabledLayerNames(enabledLayers);
       }
