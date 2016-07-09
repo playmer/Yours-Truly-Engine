@@ -734,7 +734,7 @@ namespace YTE
 
       // Create our vertex buffer:
       auto vertexInputBufferInfo = vk::BufferCreateInfo()
-                                        .setSize(sizeof(glm::vec4) * 3) // Size in bytes.
+                                        .setSize(sizeof(glm::vec4) * 6) // Size in bytes.
                                         .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
                                         .setSharingMode(vk::SharingMode::eExclusive); // TODO: Change to not exclusive.
 
@@ -775,8 +775,12 @@ namespace YTE
 
       mTriangle = (glm::vec4 *)mapped;
       mTriangle[0] = { 1.0f, 1.0f, 0, 1.0f };
-      mTriangle[1] = { 0.0f,  -1.0f, 0, 1.0f };
-      mTriangle[2] = { -1.0f, 1.0f, 0, 1.0f };
+      mTriangle[1] = { 1.0f,  -1.0f, 0, 1.0f };
+      mTriangle[2] = { -1.0f, -1.0f, 0, 1.0f };
+
+      mTriangle[3] = { -1.0f, -1.0f, 0, 1.0f };
+      mTriangle[4] = { -1.0f,  1.0f, 0, 1.0f };
+      mTriangle[5] = { 1.0f, 1.0f, 0, 1.0f };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
@@ -1015,7 +1019,7 @@ namespace YTE
     // render the triangle:
     vk::DeviceSize offsets = {};
     self->mDrawCommandBuffer.bindVertexBuffers(0, self->mVertexInputBuffer, offsets);
-    self->mDrawCommandBuffer.draw(3, 1, 0, 0);
+    self->mDrawCommandBuffer.draw(6, 1, 0, 0);
     self->mDrawCommandBuffer.endRenderPass();
 
     // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR

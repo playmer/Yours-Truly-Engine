@@ -9,6 +9,8 @@
 
 #include <memory>
 
+#include <chrono>
+
 #include "YTE/DataStructures/UniqueHandle.hpp"
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
@@ -21,6 +23,8 @@ int main(int aArgumentNumber, char **Arguments)
   // This is how to create SubWindows
   //YTE::Window subWindow1( &engine, "subWindow1", nullptr, nullptr, 246, 360, &engine.mWindow );
 
+  //std::chrono::high_resolution_clock clock;
+  //auto start = clock.now();
 
   while (engine.mShouldUpdate)
   {
@@ -55,7 +59,7 @@ int main(int aArgumentNumber, char **Arguments)
       transform.y += 0.5f * dt;
     }
 
-    for (YTE::u8 i = 0; i < 3; ++i)
+    for (YTE::u8 i = 0; i < 6; ++i)
     {
       engine.mGraphicsSystem.mTriangle[i] += transform;
     }
