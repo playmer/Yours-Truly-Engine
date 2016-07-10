@@ -59,10 +59,13 @@ int main(int aArgumentNumber, char **Arguments)
       transform.y += 0.5f * dt;
     }
 
-    for (YTE::u8 i = 0; i < 6; ++i)
-    {
-      engine.mGraphicsSystem.mTriangle[i] += transform;
-    }
+    engine.mGraphicsSystem.mQuad->m1.m1.mPosition += transform;
+    engine.mGraphicsSystem.mQuad->m1.m2.mPosition += transform;
+    engine.mGraphicsSystem.mQuad->m1.m3.mPosition += transform;
+
+    engine.mGraphicsSystem.mQuad->m2.m1.mPosition += transform;
+    engine.mGraphicsSystem.mQuad->m2.m2.mPosition += transform;
+    engine.mGraphicsSystem.mQuad->m2.m3.mPosition += transform;
   }
 
   return 0;

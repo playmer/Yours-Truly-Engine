@@ -22,6 +22,25 @@
 
 namespace YTE
 {
+  struct Vertex
+  {
+    glm::vec4 mPosition;
+    glm::vec4 mColor;
+  };
+
+  struct Triangle
+  {
+    Vertex m1;
+    Vertex m2;
+    Vertex m3;
+  };
+
+  struct Quad
+  {
+    Triangle m1;
+    Triangle m2;
+  };
+
   class GraphicsSystem
   {
     public:
@@ -35,9 +54,7 @@ namespace YTE
     void Update(float aDt);
     void VulkanRender();
 
-
-
-    glm::vec4 *mTriangle;
+    Quad *mQuad;
 
     private:
     Engine *mEngine;

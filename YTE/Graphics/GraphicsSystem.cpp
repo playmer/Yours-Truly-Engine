@@ -48,11 +48,31 @@ namespace YTE
     std::vector<vk::Framebuffer> mFrameBuffers;
 
     vk::Buffer mVertexInputBuffer;
+    vk::Buffer mIndexInputBuffer;
 
     vk::Pipeline mPipeline;
     vk::PipelineLayout mPipelineLayout;
   };
 
+
+  template<typename FlagType>
+  u32 GetMemoryType(u32 aTypeBits, vk::PhysicalDeviceMemoryProperties aDeviceProperties, FlagType aProperties)
+  {
+    for (uint32_t i = 0; i < 32; i++)
+    {
+      if ((aTypeBits & 1) == 1)
+      {
+        if ((aDeviceProperties.memoryTypes[i].propertyFlags & aProperties) == aProperties)
+        {
+          return i;
+        }
+      }
+      aTypeBits >>= 1;
+    }
+
+    // todo : throw error
+    return 0;
+  }
 
   inline void vulkan_actual_assert(u64 flag, char *msg = "")
   {
@@ -97,7 +117,7 @@ namespace YTE
   enum class StringComparison
   {
     String1Null,     // (We check this first)
-    LesserInString1,  // The first character that does not match has a lower value in ptr1 than in ptr2
+    LesserInString1, // The first character that does not match has a lower value in ptr1 than in ptr2
     Equal,
     GreaterInString1,// The first character that does not match has a greater value in ptr1 than in ptr2
     String2Null,     // (We check this Second)
@@ -142,10 +162,7 @@ namespace YTE
                                                      const char *aMessage, 
                                                      void *aUserData) 
   {
-    printf("%s", aLayerPrefix);
-    printf(" ");
-    printf("%s", aMessage);
-    printf("\n");
+    printf("%s: %s\n", aLayerPrefix, aMessage);
     return VK_FALSE;
   }
 
@@ -549,7 +566,7 @@ namespace YTE
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
           vk::ClearColorValue clear;
-          clear.setFloat32( { 1.0f, 1.0f, 1.0f, 1.0f });
+          clear.setFloat32( { 0.0f, 0.0f, 0.0f, 0.0f });
           self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
                                                     vk::ImageLayout::eTransferDstOptimal,
                                                     clear,
@@ -732,9 +749,41 @@ namespace YTE
         checkVulkanResult(result, "Failed to create framebuffer.");
       }
 
+
+      // Create our Index buffer
+      std::vector<u32> indexBuffer = { 0, 1, 2, 3, 4, 5 };
+      vk::MemoryAllocateInfo memAlloc;
+
+      // Index buffer
+      vk::BufferCreateInfo indexbufferInfo = {};
+      indexbufferInfo.size = 6 * sizeof(u32);
+      indexbufferInfo.usage = vk::BufferUsageFlagBits::eIndexBuffer;
+
+      self->mLogicalDevice.createBuffer(&indexbufferInfo, nullptr, &self->mIndexInputBuffer);
+      auto requirements = self->mLogicalDevice.getBufferMemoryRequirements(self->mIndexInputBuffer);
+
+      memAlloc.allocationSize = requirements.size;
+
+
+      memAlloc.memoryTypeIndex = GetMemoryType(requirements.memoryTypeBits, self->mPhysicalMemoryProperties,vk::MemoryPropertyFlagBits::eHostVisible);
+      auto indexMemory = self->mLogicalDevice.allocateMemory(memAlloc);
+
+      void *indexPtr = self->mLogicalDevice.mapMemory(indexMemory, 0, indexbufferInfo.size);
+      auto indices = (u32*)indexPtr;
+      indices[0] = 0;
+      indices[1] = 1;
+      indices[2] = 2;
+      indices[3] = 3;
+      indices[4] = 4;
+      indices[5] = 5;
+
+      self->mLogicalDevice.unmapMemory(indexMemory);
+
+      self->mLogicalDevice.bindBufferMemory(self->mIndexInputBuffer, indexMemory, 0);
+
       // Create our vertex buffer:
       auto vertexInputBufferInfo = vk::BufferCreateInfo()
-                                        .setSize(sizeof(glm::vec4) * 6) // Size in bytes.
+                                        .setSize(sizeof(Quad)) // Size in bytes.
                                         .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
                                         .setSharingMode(vk::SharingMode::eExclusive); // TODO: Change to not exclusive.
 
@@ -773,14 +822,20 @@ namespace YTE
       void *mapped = self->mLogicalDevice.mapMemory(vertexBufferMemory, 0, VK_WHOLE_SIZE);
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
-      mTriangle = (glm::vec4 *)mapped;
-      mTriangle[0] = { 1.0f, 1.0f, 0, 1.0f };
-      mTriangle[1] = { 1.0f,  -1.0f, 0, 1.0f };
-      mTriangle[2] = { -1.0f, -1.0f, 0, 1.0f };
+      mQuad = (Quad *)mapped;
+      mQuad->m1.m1.mPosition = { 1.0f, 1.0f, 0, 1.0f };
+      mQuad->m1.m1.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
+      mQuad->m1.m2.mPosition = { 1.0f,  -1.0f, 0, 1.0f };
+      mQuad->m1.m2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
+      mQuad->m1.m3.mPosition = { -1.0f, -1.0f, 0, 1.0f };
+      mQuad->m1.m3.mColor = { 1.0f, 0.0f, 1.0, 1.0f };
 
-      mTriangle[3] = { -1.0f, -1.0f, 0, 1.0f };
-      mTriangle[4] = { -1.0f,  1.0f, 0, 1.0f };
-      mTriangle[5] = { 1.0f, 1.0f, 0, 1.0f };
+      mQuad->m2.m1.mPosition = { -1.0f, -1.0f, 0, 1.0f };
+      mQuad->m2.m1.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
+      mQuad->m2.m2.mPosition = { -1.0f,  1.0f, 0, 1.0f };
+      mQuad->m2.m2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
+      mQuad->m2.m3.mPosition = { 1.0f, 1.0f, 0, 1.0f };
+      mQuad->m2.m3.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
@@ -845,20 +900,25 @@ namespace YTE
       shaderStageCreateInfo[1].pSpecializationInfo = NULL;
 
       vk::VertexInputBindingDescription vertexBindingDescription;
-      vertexBindingDescription.stride = sizeof(glm::vec4);
+      vertexBindingDescription.stride = sizeof(Vertex);
       vertexBindingDescription.inputRate = vk::VertexInputRate::eVertex;
+      
+      vk::VertexInputAttributeDescription vertexAttributeDescritpion[2];
+      vertexAttributeDescritpion[0].binding = 0;
+      vertexAttributeDescritpion[0].location = 0;
+      vertexAttributeDescritpion[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescritpion[0].offset = 0;
 
-      vk::VertexInputAttributeDescription vertexAttributeDescritpion;
-      vertexAttributeDescritpion.location = 0;
-      vertexAttributeDescritpion.binding = 0;
-      vertexAttributeDescritpion.format = vk::Format::eR32G32B32A32Sfloat;
-      vertexAttributeDescritpion.offset = 0;
+      vertexAttributeDescritpion[1].binding = 0;
+      vertexAttributeDescritpion[1].location = 1;
+      vertexAttributeDescritpion[1].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescritpion[1].offset = sizeof(float) * 4;
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
       vertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexBindingDescription;
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 1;
-      vertexInputStateCreateInfo.pVertexAttributeDescriptions = &vertexAttributeDescritpion;
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 2;
+      vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescritpion;
 
       // vertex topology config:
       vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
@@ -1019,7 +1079,9 @@ namespace YTE
     // render the triangle:
     vk::DeviceSize offsets = {};
     self->mDrawCommandBuffer.bindVertexBuffers(0, self->mVertexInputBuffer, offsets);
-    self->mDrawCommandBuffer.draw(6, 1, 0, 0);
+    self->mDrawCommandBuffer.bindIndexBuffer(self->mIndexInputBuffer, 0, vk::IndexType::eUint32);
+
+    self->mDrawCommandBuffer.drawIndexed(6, 1, 0, 0, 1);
     self->mDrawCommandBuffer.endRenderPass();
 
     // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
