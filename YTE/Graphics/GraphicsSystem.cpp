@@ -828,7 +828,7 @@ namespace YTE
       mQuad->m1.m2.mPosition = { 1.0f,  -1.0f, 0, 1.0f };
       mQuad->m1.m2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
       mQuad->m1.m3.mPosition = { -1.0f, -1.0f, 0, 1.0f };
-      mQuad->m1.m3.mColor = { 1.0f, 0.0f, 1.0, 1.0f };
+      mQuad->m1.m3.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
 
       mQuad->m2.m1.mPosition = { -1.0f, -1.0f, 0, 1.0f };
       mQuad->m2.m1.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
