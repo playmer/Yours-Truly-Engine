@@ -489,8 +489,6 @@ namespace YTE
       presentImagesViewCreateInfo.subresourceRange.setLevelCount(1);
       presentImagesViewCreateInfo.subresourceRange.setLayerCount(1);
 
-
-
       auto imageCreateInfo = vk::ImageCreateInfo()
         .setImageType(vk::ImageType::e2D)
         .setFormat(vk::Format::eD16Unorm)
@@ -697,9 +695,11 @@ namespace YTE
       passAttachments[1].finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 
       auto colorAttachmentReference = vk::AttachmentReference()
+                                           .setAttachment(0) // First attachment is the color attachment.
                                            .setLayout(vk::ImageLayout::eColorAttachmentOptimal);
 
       auto depthAttachmentReference = vk::AttachmentReference()
+                                           .setAttachment(1) // Second attachment is the depth attachment.
                                            .setLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
       vk::SubpassDescription subpasses[2];
