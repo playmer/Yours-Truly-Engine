@@ -564,7 +564,7 @@ namespace YTE
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
           vk::ClearColorValue clear;
-          clear.setFloat32( { 0.0f, 0.0f, 0.0f, 0.0f });
+          clear.setFloat32( { 0.0f, 0.0f, 0.0f, 1.0f });
           self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
                                                     vk::ImageLayout::eTransferDstOptimal,
                                                     clear,
@@ -1049,9 +1049,9 @@ namespace YTE
 
     // activate render pass:
     vk::ClearValue clearValue[2];
-    clearValue[0].color.float32[0] = 1.0f;
-    clearValue[0].color.float32[1] = 1.0f;
-    clearValue[0].color.float32[2] = 1.0f;
+    clearValue[0].color.float32[0] = 0.0f;
+    clearValue[0].color.float32[1] = 0.0f;
+    clearValue[0].color.float32[2] = 0.0f;
     clearValue[0].color.float32[3] = 1.0f;
 
     clearValue[1].color.float32[0] = 1.0f;
