@@ -31,6 +31,9 @@ namespace YTE
     void DestroyOpenGLContext();
     void SwapBuffers();
 
+    void SetFrameRate(float aDt);
+    void SetWindowTitle(const std::string &aWindowText);
+
     Keyboard mKeyboard;
     PrivateImplementation<64> mPlatformSpecificData;
     Engine *mEngine;

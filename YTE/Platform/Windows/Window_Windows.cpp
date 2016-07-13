@@ -98,6 +98,13 @@ namespace YTE
     return DefWindowProc(aWindowHandle, aMessage, aWParam, aLParam);
   }
 
+
+  void Window::SetWindowTitle(const std::string &aWindowText)
+  {
+    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+    SetWindowText(windowData->mWindowHandle, aWindowText.c_str());
+  }
+
   Window::Window(Engine *aEngine, const char *aWindowName,
                  const char *aWindowIcon, const char *aCursorIcon, int aWidth,
                  int aHeight, Window *aParentWindow)

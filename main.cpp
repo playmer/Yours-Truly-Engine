@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "YTE/Core/Engine.hpp"
-#include "YTE/Platform/Windows/WindowData_Windows.hpp"
+//#include "YTE/Platform/Windows/WindowData_Windows.hpp"
 
 #include <memory>
 
@@ -23,12 +23,16 @@ int main(int aArgumentNumber, char **Arguments)
   // This is how to create SubWindows
   //YTE::Window subWindow1( &engine, "subWindow1", nullptr, nullptr, 246, 360, &engine.mWindow );
 
-  //std::chrono::high_resolution_clock clock;
-  //auto start = clock.now();
+
+  std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
+  std::chrono::time_point<std::chrono::high_resolution_clock> lastFrame = begin;
 
   while (engine.mShouldUpdate)
   {
-    float dt = 0.016f;
+    std::chrono::duration<float> timeSpan = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::high_resolution_clock::now() - lastFrame);
+    lastFrame = std::chrono::high_resolution_clock::now();
+    auto dt = timeSpan.count();;
+
     engine.Update(dt);
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Escape))

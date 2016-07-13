@@ -29,6 +29,7 @@ namespace YTE
 
     for (auto &window : mWindows)
     {
+      window->SetFrameRate(aDt);
       window->Update();
     }
   }
