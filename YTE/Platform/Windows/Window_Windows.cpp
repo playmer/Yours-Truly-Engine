@@ -47,6 +47,13 @@ namespace YTE
       }
 
 
+      // TODO: Add WM_TOUCH 
+
+      // TODO: Add these:
+      //       WM_LBUTTONDBLCLK
+      //       WM_RBUTTONDBLCLK
+      //       WM_MBUTTONDBLCLK
+
       // A key has been pressed.
       //case WM_KEYDOWN:
       //case WM_SYSKEYDOWN: 
