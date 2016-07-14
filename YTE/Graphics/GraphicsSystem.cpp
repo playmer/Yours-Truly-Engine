@@ -13,15 +13,30 @@
 #include "vulkan/vk_cpp.hpp"
 
 #include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 
 namespace YTE
 {
+  struct UniformBufferObject
+  {
+    glm::mat4 mProjectionMatrix;
+    glm::mat4 mModelMatrix;
+    glm::mat4 mViewMatrix;
+  };
+
+
   class vulkan_context
   {
     public:
-    u32 mWidth;
-    u32 mHeight;
+    u32 mWidth = 0;
+    u32 mHeight = 0;
+    float mZoom = -2.5f;
+
+    UniformBufferObject mUniformBufferData;
+
+    glm::vec3 mRotation = glm::vec3();
+    glm::vec3 mCameraPosition = glm::vec3();
 
     vk::Instance mInstance;
     vk::SurfaceKHR mSurface;
@@ -50,8 +65,16 @@ namespace YTE
     vk::Buffer mVertexInputBuffer;
     vk::Buffer mIndexInputBuffer;
 
+    vk::Buffer mUniformBuffer;
+    vk::DeviceMemory mUniformBufferMemory;
+    vk::DescriptorBufferInfo mUniformBufferInfo;
+
     vk::Pipeline mPipeline;
     vk::PipelineLayout mPipelineLayout;
+
+    std::vector<vk::DescriptorSet> mDescriptorSets;
+    vk::DescriptorSetLayout mDescriptorSetLayout;
+    vk::DescriptorPool mDescriptorPool;
   };
 
 
@@ -177,6 +200,141 @@ namespace YTE
     {
       vkelUninit();
     }
+  }
+
+
+  void GraphicsSystem::UpdateUniformBuffers()
+  {
+    if (false == mVulkanSuccess)
+    {
+      return;
+    }
+
+    auto self = mPlatformSpecificData.Get<vulkan_context>();
+
+    // Update matrices
+    self->mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)self->mWidth / (float)self->mHeight, 0.1f, 256.0f);
+
+    self->mUniformBufferData.mViewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, self->mZoom));
+
+    self->mUniformBufferData.mModelMatrix = glm::mat4();
+    self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    // Map uniform buffer and update it
+      
+    u8 *data = (u8*)self->mLogicalDevice.mapMemory(self->mUniformBufferMemory, 0, sizeof(UniformBufferObject));
+    memcpy(data, &self->mUniformBufferData, sizeof(UniformBufferObject));
+    self->mLogicalDevice.unmapMemory(self->mUniformBufferMemory);
+  }
+
+
+  void GraphicsSystem::SetupDescriptorSetLayout()
+  {
+    if (false == mVulkanSuccess)
+    {
+      return;
+    }
+
+    auto self = mPlatformSpecificData.Get<vulkan_context>();
+
+    // Setup layout of descriptors used in this example
+    // Basically connects the different shader stages to descriptors
+    // for binding uniform buffers, image samplers, etc.
+    // So every shader binding should map to one descriptor set layout
+    // binding
+
+    // Binding 0 : Uniform buffer (Vertex shader)
+    vk::DescriptorSetLayoutBinding layoutBinding = {};
+    layoutBinding.descriptorCount = 1;
+    layoutBinding.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    layoutBinding.descriptorType = vk::DescriptorType::eUniformBuffer;
+
+    vk::DescriptorSetLayoutCreateInfo descriptorLayout = {};
+    descriptorLayout.pNext = nullptr;
+    descriptorLayout.bindingCount = 1;
+    descriptorLayout.pBindings = &layoutBinding;
+
+    self->mDescriptorSetLayout = self->mLogicalDevice.createDescriptorSetLayout(descriptorLayout);
+
+    // Create the pipeline layout that is used to generate the rendering pipelines that
+    // are based on this descriptor set layout
+    // In a more complex scenario you would have different pipeline layouts for different
+    // descriptor set layouts that could be reused
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
+    pipelineLayoutCreateInfo.setLayoutCount = 1;
+    pipelineLayoutCreateInfo.pSetLayouts = &self->mDescriptorSetLayout;
+
+    self->mPipelineLayout = self->mLogicalDevice.createPipelineLayout(pipelineLayoutCreateInfo);
+  }
+
+  void GraphicsSystem::SetupDescriptorPool()
+  {
+    if (false == mVulkanSuccess)
+    {
+      return;
+    }
+
+    auto self = mPlatformSpecificData.Get<vulkan_context>();
+
+    // We need to tell the API the number of max. requested descriptors per type
+    static vk::DescriptorPoolSize typeCounts[1];
+    // This example only uses one descriptor type (uniform buffer) and only
+    // requests one descriptor of this type
+    typeCounts[0].type = vk::DescriptorType::eUniformBuffer;
+    typeCounts[0].descriptorCount = 1;
+
+    // For additional types you need to add new entries in the type count list
+    // E.g. for two combined image samplers :
+    // typeCounts[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    // typeCounts[1].descriptorCount = 2;
+
+    // Create the global descriptor pool
+    // All descriptors used in this example are allocated from this pool
+    vk::DescriptorPoolCreateInfo descriptorPoolInfo = {};
+    descriptorPoolInfo.poolSizeCount = 1;
+    descriptorPoolInfo.pPoolSizes = typeCounts;
+    // Set the max. number of sets that can be requested
+    // Requesting descriptors beyond maxSets will result in an error
+    descriptorPoolInfo.maxSets = 1;
+
+    self->mDescriptorPool = self->mLogicalDevice.createDescriptorPool(descriptorPoolInfo);
+  }
+
+  void GraphicsSystem::SetupDescriptorSet()
+  {
+    if (false == mVulkanSuccess)
+    {
+      return;
+    }
+    
+    auto self = mPlatformSpecificData.Get<vulkan_context>();
+
+    // Allocate a new descriptor set from the global descriptor pool
+    vk::DescriptorSetAllocateInfo allocInfo = {};
+    allocInfo.descriptorPool = self->mDescriptorPool;
+    allocInfo.descriptorSetCount = 1;
+    allocInfo.pSetLayouts = &self->mDescriptorSetLayout;
+
+    self->mDescriptorSets = self->mLogicalDevice.allocateDescriptorSets(allocInfo);
+
+    // Update the descriptor set determining the shader binding points
+    // For every binding point used in a shader there needs to be one
+    // descriptor set matching that binding point
+
+    vk::WriteDescriptorSet writeDescriptorSet = {};
+
+    // Binding 0 : Uniform buffer
+    writeDescriptorSet.dstSet = self->mDescriptorSets[0];
+    writeDescriptorSet.descriptorCount = 1;
+    writeDescriptorSet.descriptorType = vk::DescriptorType::eUniformBuffer;
+    writeDescriptorSet.pBufferInfo = &self->mUniformBufferInfo;
+
+    // Binds this uniform buffer to binding point 0
+    writeDescriptorSet.dstBinding = 0;
+
+    self->mLogicalDevice.updateDescriptorSets(writeDescriptorSet, nullptr);
   }
 
   void GraphicsSystem::SetUpWindow(Window *aWindow)
@@ -424,15 +582,21 @@ namespace YTE
       auto presentModes = self->mPhysicalDevice.getSurfacePresentModesKHR(self->mSurface);
 
       // Always supported.
-      vk::PresentModeKHR presentationMode = vk::PresentModeKHR::eFifo;   
+      vk::PresentModeKHR presentationMode = vk::PresentModeKHR::eFifo;
 
       // TODO: Look into the rest of the vk::PresentModeKHR options.
       for (auto &presentMode : presentModes) 
       {
+          // This is what we'd prefer.
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
           presentationMode = vk::PresentModeKHR::eMailbox;
           break;
+        }
+          // We'll take this if Mailbox isn't available.
+        else if (presentMode == vk::PresentModeKHR::eFifoRelaxed)
+        {
+          presentationMode = vk::PresentModeKHR::eFifoRelaxed;
         }
       }
 
@@ -841,6 +1005,49 @@ namespace YTE
 
       self->mLogicalDevice.bindBufferMemory(self->mVertexInputBuffer, vertexBufferMemory, 0);
 
+      // Prepare and initialize a uniform buffer block containing shader uniforms
+      // In Vulkan there are no more single uniforms like in GL
+      // All shader uniforms are passed as uniform buffer blocks 
+
+      // Vertex shader uniform buffer block
+      vk::BufferCreateInfo bufferInfo = {};
+      bufferInfo.size = sizeof(self->mUniformBufferData);
+      bufferInfo.usage = vk::BufferUsageFlagBits::eUniformBuffer;
+
+      vk::MemoryAllocateInfo allocInfo = {};
+
+      // Create a new buffer
+      self->mUniformBuffer = self->mLogicalDevice.createBuffer(bufferInfo);
+
+      // Get memory requirements including size, alignment and memory type 
+      auto memReqs = self->mLogicalDevice.getBufferMemoryRequirements(self->mUniformBuffer);
+
+      allocInfo.allocationSize = memReqs.size;
+
+      // Get the memory type index that supports host visibile memory access
+      // Most implementations offer multiple memory tpyes and selecting the 
+      // correct one to allocate memory from is important
+      // We also want the buffer to be host coherent so we don't have to flush 
+      // after every update. 
+      // Note that this may affect performance so you might not want to do this 
+      // in a real world application that updates buffers on a regular base
+      allocInfo.memoryTypeIndex = GetMemoryType(memReqs.memoryTypeBits, self->mPhysicalMemoryProperties, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+      // Allocate memory for the uniform buffer
+      self->mUniformBufferMemory = self->mLogicalDevice.allocateMemory(allocInfo);
+
+      // Bind memory to buffer
+      self->mLogicalDevice.bindBufferMemory(self->mUniformBuffer, self->mUniformBufferMemory, 0);
+
+      // Store information in the uniform's descriptor
+      self->mUniformBufferInfo.buffer = self->mUniformBuffer;
+      self->mUniformBufferInfo.offset = 0;
+      self->mUniformBufferInfo.range = sizeof(UniformBufferObject);
+
+      UpdateUniformBuffers();
+
+      SetupDescriptorSetLayout();
+
+      // Loading up Shaders.
       uint32_t codeSize;
       char *code = new char[10000];
       HANDLE fileHandle = 0;
@@ -881,12 +1088,6 @@ namespace YTE
       
       auto fragmentShaderModule = self->mLogicalDevice.createShaderModule(fragmentShaderCreationInfo);
       vulkan_assert(fragmentShaderModule, "Failed to create fragment shader module.");
-
-      vk::PipelineLayoutCreateInfo layoutCreateInfo = {};
-      layoutCreateInfo.setSetLayoutCount(0);
-
-      self->mPipelineLayout = self->mLogicalDevice.createPipelineLayout(layoutCreateInfo);
-      vulkan_assert(self->mPipelineLayout, "Failed to create pipeline layout.");
 
       vk::PipelineShaderStageCreateInfo shaderStageCreateInfo[2];
       shaderStageCreateInfo[0].stage = vk::ShaderStageFlagBits::eVertex;
@@ -1004,12 +1205,38 @@ namespace YTE
       self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
 
       vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
-    }
+
+      SetupDescriptorPool();
+      SetupDescriptorSet();
+    } 
   }
 
   void GraphicsSystem::VulkanRender()
   {
     auto self = mPlatformSpecificData.Get<vulkan_context>();
+
+    const float zoomSpeed = 0.15f;
+    const float rotationSpeed = 1.25f;
+
+    // Update rotation
+    auto &mouse = mEngine->mPrimaryWindow->mMouse;
+    if (true == mouse.mLeftMouseDown)
+    {
+      self->mRotation.x += (mMousePosition.y - (float)mouse.mY) * rotationSpeed;
+      self->mRotation.y -= (mMousePosition.x - (float)mouse.mX) * rotationSpeed;
+
+      mMousePosition.x = mouse.mX;
+      mMousePosition.y = mouse.mY;
+    }
+
+    // Update zoom
+    auto zoom = self->mZoom;
+    self->mZoom += mEngine->mPrimaryWindow->mMouse.mWheelDelta * zoomSpeed;
+
+    if (zoom != self->mZoom || true == mouse.mLeftMouseDown)
+    {
+      UpdateUniformBuffers();
+    }
 
     vk::SemaphoreCreateInfo semaphoreCreateInfo = vk::SemaphoreCreateInfo();
 
@@ -1065,6 +1292,9 @@ namespace YTE
     renderPassBeginInfo.pClearValues = clearValue;
 
     self->mDrawCommandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
+
+    // Bind descriptor sets describing shader binding points
+    self->mDrawCommandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, self->mPipelineLayout, 0, self->mDescriptorSets, nullptr);
 
     // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
     self->mDrawCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, self->mPipeline);

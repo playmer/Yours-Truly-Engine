@@ -46,6 +46,39 @@ namespace YTE
         break;
       }
 
+      case WM_MOUSEWHEEL:
+      {
+        window->mMouse.mWheelDelta = GET_WHEEL_DELTA_WPARAM(aWParam) / (float)WHEEL_DELTA;
+        break;
+      }
+
+      case WM_LBUTTONUP:
+      {
+        // TODO: Change when we have events. Try to figure out how this should actually work.
+        window->mEngine->mGraphicsSystem.mMousePosition.x = LOWORD(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.y = HIWORD(aLParam);
+
+        window->mMouse.mLeftMouseDown = false;
+        break;
+      }
+
+      case WM_LBUTTONDOWN:
+      {
+        // TODO: Change when we have events. Try to figure out how this should actually work.
+        window->mEngine->mGraphicsSystem.mMousePosition.x = LOWORD(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.y = HIWORD(aLParam);
+
+        window->mMouse.mLeftMouseDown = true;
+        break;
+      }
+
+      case WM_MOUSEMOVE:
+      {
+        window->mMouse.mX = LOWORD(aLParam);
+        window->mMouse.mY = HIWORD(aLParam);
+        break;
+      }
+
 
       // TODO: Add WM_TOUCH 
 
@@ -261,6 +294,8 @@ namespace YTE
   void Window::Update()
   {
     WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+
+    mMouse.mWheelDelta = 0.0f;
 
     MSG message;
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))

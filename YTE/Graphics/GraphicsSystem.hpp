@@ -53,8 +53,13 @@ namespace YTE
 
     void Update(float aDt);
     void VulkanRender();
+    void UpdateUniformBuffers();
+    void SetupDescriptorSetLayout();
+    void SetupDescriptorSet();
+    void SetupDescriptorPool();
 
     Quad *mQuad;
+    glm::i16vec2 mMousePosition = { 0,0 };
 
     private:
     Engine *mEngine;

@@ -12,6 +12,7 @@
 #include "YTE/Core/PrivateImplementation.hpp"
 
 #include "YTE/Platform/Keyboard.hpp"
+#include "YTE/Platform/Mouse.hpp"
 
 namespace YTE
 {
@@ -35,6 +36,7 @@ namespace YTE
     void SetWindowTitle(const std::string &aWindowText);
 
     Keyboard mKeyboard;
+    Mouse mMouse;
     PrivateImplementation<64> mPlatformSpecificData;
     Engine *mEngine;
     Window *mParentWindow;
