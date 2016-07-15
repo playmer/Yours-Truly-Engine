@@ -1113,7 +1113,7 @@ namespace YTE
       vertexAttributeDescritpion[1].binding = 0;
       vertexAttributeDescritpion[1].location = 1;
       vertexAttributeDescritpion[1].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[1].offset = sizeof(float) * 4;
+      vertexAttributeDescritpion[1].offset = sizeof(glm::vec4);
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
