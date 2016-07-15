@@ -42,7 +42,7 @@ int main(int aArgumentNumber, char **Arguments)
 
     glm::vec3 transform = glm::vec3();
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
-    float rotate = 0.0f;
+    glm::vec3 rotate = glm::vec3();
 
     // Translation
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Right) ||
@@ -91,13 +91,34 @@ int main(int aArgumentNumber, char **Arguments)
     engine.mGraphicsSystem.mQuad->Scale(scale);
 
     // Rotation
+    //About X Axis
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N0))
     {
-      rotate += glm::pi<float>()/2 * dt;
+      rotate.x += glm::pi<float>()/2 * dt;
     }
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N9))
     {
-      rotate -= glm::pi<float>()/2 * dt;
+      rotate.x -= glm::pi<float>()/2 * dt;
+    }
+
+    //About Y Axis
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N8))
+    {
+      rotate.y += glm::pi<float>() / 2 * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N7))
+    {
+      rotate.y -= glm::pi<float>() / 2 * dt;
+    }
+
+    //About Z Axis
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N6))
+    {
+      rotate.z += glm::pi<float>() / 2 * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N5))
+    {
+      rotate.z -= glm::pi<float>() / 2 * dt;
     }
 
     engine.mGraphicsSystem.mQuad->Rotate(rotate);

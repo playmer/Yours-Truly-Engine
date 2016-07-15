@@ -38,12 +38,12 @@ namespace YTE
 
       mPosition = scale *mPosition;
     }
-    void Rotate(float aRadians)
+    void Rotate(const glm::vec3 &aRotation)
     {
       auto rotation = glm::mat4();
-      rotation = glm::rotate(rotation, aRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-      rotation = glm::rotate(rotation, aRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-      rotation = glm::rotate(rotation, aRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+      rotation = glm::rotate(rotation, aRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+      rotation = glm::rotate(rotation, aRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+      rotation = glm::rotate(rotation, aRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
       mPosition = rotation * mPosition;
     }
@@ -67,11 +67,11 @@ namespace YTE
       mVertex2.Scale(aScale);
       mVertex3.Scale(aScale);
     }
-    void Rotate(float aRadians)
+    void Rotate(const glm::vec3 &aRotation)
     {
-      mVertex1.Rotate(aRadians);
-      mVertex2.Rotate(aRadians);
-      mVertex3.Rotate(aRadians);
+      mVertex1.Rotate(aRotation);
+      mVertex2.Rotate(aRotation);
+      mVertex3.Rotate(aRotation);
     }
 
     Vertex mVertex1;
@@ -92,10 +92,10 @@ namespace YTE
       mTriangle1.Scale(aScale);
       mTriangle2.Scale(aScale);
     }
-    void Rotate(float aRadians)
+    void Rotate(const glm::vec3 &aRotation)
     {
-      mTriangle1.Rotate(aRadians);
-      mTriangle2.Rotate(aRadians);
+      mTriangle1.Rotate(aRotation);
+      mTriangle2.Rotate(aRotation);
     }
 
     Triangle mTriangle1;
