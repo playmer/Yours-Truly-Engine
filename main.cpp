@@ -40,8 +40,11 @@ int main(int aArgumentNumber, char **Arguments)
       engine.mShouldUpdate = false;
     }
 
-    glm::vec4 transform;
+    glm::vec3 transform = glm::vec3();
+    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    float rotate = 0.0f;
 
+    // Translation
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Right) ||
         engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::D))
     {
@@ -63,13 +66,41 @@ int main(int aArgumentNumber, char **Arguments)
       transform.y += 0.5f * dt;
     }
 
-    engine.mGraphicsSystem.mQuad->m1.m1.mPosition += transform;
-    engine.mGraphicsSystem.mQuad->m1.m2.mPosition += transform;
-    engine.mGraphicsSystem.mQuad->m1.m3.mPosition += transform;
+    engine.mGraphicsSystem.mQuad->Translate(transform);
 
-    engine.mGraphicsSystem.mQuad->m2.m1.mPosition += transform;
-    engine.mGraphicsSystem.mQuad->m2.m2.mPosition += transform;
-    engine.mGraphicsSystem.mQuad->m2.m3.mPosition += transform;
+
+
+    // Scaling
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N1))
+    {
+      scale.x += 0.5f * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N2))
+    {
+      scale.x += -0.5f * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N3))
+    {
+      scale.y += -0.5f * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N4))
+    {
+      scale.y += 0.5f * dt;
+    }
+
+    engine.mGraphicsSystem.mQuad->Scale(scale);
+
+    // Rotation
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N0))
+    {
+      rotate += glm::pi<float>()/2 * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N9))
+    {
+      rotate -= glm::pi<float>()/2 * dt;
+    }
+
+    engine.mGraphicsSystem.mQuad->Rotate(rotate);
   }
 
   return 0;

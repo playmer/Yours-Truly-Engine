@@ -19,26 +19,87 @@
 #include "YTE/Core/PrivateImplementation.hpp"
 
 #include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 namespace YTE
 {
   struct Vertex
   {
+    void Translate(const glm::vec3 &aTranslation)
+    {
+      auto translate = glm::translate(glm::mat4(), aTranslation);
+
+      mPosition = translate * mPosition;
+    }
+
+    void Scale(const glm::vec3 &aScale)
+    {
+      auto scale = glm::scale(glm::mat4(), aScale);
+
+      mPosition = scale *mPosition;
+    }
+    void Rotate(float aRadians)
+    {
+      auto rotation = glm::mat4();
+      rotation = glm::rotate(rotation, aRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+      rotation = glm::rotate(rotation, aRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+      rotation = glm::rotate(rotation, aRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+
+      mPosition = rotation * mPosition;
+    }
+
     glm::vec4 mPosition;
     glm::vec4 mColor;
   };
 
   struct Triangle
   {
-    Vertex m1;
-    Vertex m2;
-    Vertex m3;
+    void Translate(const glm::vec3 &aTranslation)
+    {
+      mVertex1.Translate(aTranslation);
+      mVertex2.Translate(aTranslation);
+      mVertex3.Translate(aTranslation);
+    }
+
+    void Scale(const glm::vec3 &aScale)
+    {
+      mVertex1.Scale(aScale);
+      mVertex2.Scale(aScale);
+      mVertex3.Scale(aScale);
+    }
+    void Rotate(float aRadians)
+    {
+      mVertex1.Rotate(aRadians);
+      mVertex2.Rotate(aRadians);
+      mVertex3.Rotate(aRadians);
+    }
+
+    Vertex mVertex1;
+    Vertex mVertex2;
+    Vertex mVertex3;
   };
 
   struct Quad
   {
-    Triangle m1;
-    Triangle m2;
+    void Translate(const glm::vec3 &aTranslation)
+    {
+      mTriangle1.Translate(aTranslation);
+      mTriangle2.Translate(aTranslation);
+    }
+
+    void Scale(const glm::vec3 &aScale)
+    {
+      mTriangle1.Scale(aScale);
+      mTriangle2.Scale(aScale);
+    }
+    void Rotate(float aRadians)
+    {
+      mTriangle1.Rotate(aRadians);
+      mTriangle2.Rotate(aRadians);
+    }
+
+    Triangle mTriangle1;
+    Triangle mTriangle2;
   };
 
   class GraphicsSystem

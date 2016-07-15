@@ -987,19 +987,19 @@ namespace YTE
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
       mQuad = (Quad *)mapped;
-      mQuad->m1.m1.mPosition = { 1.0f, 1.0f, 0, 1.0f };
-      mQuad->m1.m1.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
-      mQuad->m1.m2.mPosition = { 1.0f,  -1.0f, 0, 1.0f };
-      mQuad->m1.m2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
-      mQuad->m1.m3.mPosition = { -1.0f, -1.0f, 0, 1.0f };
-      mQuad->m1.m3.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
+      mQuad->mTriangle1.mVertex1.mPosition = { 1.0f, 1.0f, 0, 1.0f };
+      mQuad->mTriangle1.mVertex1.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
+      mQuad->mTriangle1.mVertex2.mPosition = { 1.0f,  -1.0f, 0, 1.0f };
+      mQuad->mTriangle1.mVertex2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
+      mQuad->mTriangle1.mVertex3.mPosition = { -1.0f, -1.0f, 0, 1.0f };
+      mQuad->mTriangle1.mVertex3.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
 
-      mQuad->m2.m1.mPosition = { -1.0f, -1.0f, 0, 1.0f };
-      mQuad->m2.m1.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
-      mQuad->m2.m2.mPosition = { -1.0f,  1.0f, 0, 1.0f };
-      mQuad->m2.m2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
-      mQuad->m2.m3.mPosition = { 1.0f, 1.0f, 0, 1.0f };
-      mQuad->m2.m3.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
+      mQuad->mTriangle2.mVertex1.mPosition = { -1.0f, -1.0f, 0, 1.0f };
+      mQuad->mTriangle2.mVertex1.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
+      mQuad->mTriangle2.mVertex2.mPosition = { -1.0f,  1.0f, 0, 1.0f };
+      mQuad->mTriangle2.mVertex2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
+      mQuad->mTriangle2.mVertex3.mPosition = { 1.0f, 1.0f, 0, 1.0f };
+      mQuad->mTriangle2.mVertex3.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
