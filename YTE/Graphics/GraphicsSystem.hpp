@@ -21,6 +21,9 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
+#include "vulkan/vkel.h"
+#include "vulkan/vk_cpp.hpp"
+
 namespace YTE
 {
   struct Vertex
@@ -28,15 +31,15 @@ namespace YTE
     void Translate(const glm::vec3 &aTranslation)
     {
       auto translate = glm::translate(glm::mat4(), aTranslation);
-
+  
       mPosition = translate * mPosition;
     }
-
+  
     void Scale(const glm::vec3 &aScale)
     {
       auto scale = glm::scale(glm::mat4(), aScale);
-
-      mPosition = scale *mPosition;
+  
+      mPosition = scale * mPosition;
     }
     void Rotate(const glm::vec3 &aRotation)
     {
@@ -44,14 +47,15 @@ namespace YTE
       rotation = glm::rotate(rotation, aRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
       rotation = glm::rotate(rotation, aRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
       rotation = glm::rotate(rotation, aRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
+  
       mPosition = rotation * mPosition;
     }
-
+  
     glm::vec4 mPosition;
-    glm::vec4 mColor;
+    glm::vec2 mUVCoordinates;
+    glm::vec3 mNormal;
   };
-
+  
   struct Triangle
   {
     void Translate(const glm::vec3 &aTranslation)
@@ -60,7 +64,7 @@ namespace YTE
       mVertex2.Translate(aTranslation);
       mVertex3.Translate(aTranslation);
     }
-
+  
     void Scale(const glm::vec3 &aScale)
     {
       mVertex1.Scale(aScale);
@@ -73,33 +77,42 @@ namespace YTE
       mVertex2.Rotate(aRotation);
       mVertex3.Rotate(aRotation);
     }
-
+  
     Vertex mVertex1;
     Vertex mVertex2;
     Vertex mVertex3;
   };
-
+  
   struct Quad
   {
     void Translate(const glm::vec3 &aTranslation)
     {
-      mTriangle1.Translate(aTranslation);
-      mTriangle2.Translate(aTranslation);
+      mVertex1.Translate(aTranslation);
+      mVertex2.Translate(aTranslation);
+      mVertex3.Translate(aTranslation);
+      mVertex4.Translate(aTranslation);
     }
-
+  
     void Scale(const glm::vec3 &aScale)
     {
-      mTriangle1.Scale(aScale);
-      mTriangle2.Scale(aScale);
+      mVertex1.Scale(aScale);
+      mVertex2.Scale(aScale);
+      mVertex3.Scale(aScale);
+      mVertex4.Scale(aScale);
     }
     void Rotate(const glm::vec3 &aRotation)
     {
-      mTriangle1.Rotate(aRotation);
-      mTriangle2.Rotate(aRotation);
+      mVertex1.Rotate(aRotation);
+      mVertex2.Rotate(aRotation);
+      mVertex3.Rotate(aRotation);
+      mVertex4.Rotate(aRotation);
     }
+  
 
-    Triangle mTriangle1;
-    Triangle mTriangle2;
+    Vertex mVertex1;
+    Vertex mVertex2;
+    Vertex mVertex3;
+    Vertex mVertex4;
   };
 
   class GraphicsSystem
@@ -125,7 +138,7 @@ namespace YTE
     private:
     Engine *mEngine;
 
-    PrivateImplementation<2048> mPlatformSpecificData;
+    PrivateImplementation<4096> mPlatformSpecificData;
 
 	  i32 mVulkanSuccess;
   };

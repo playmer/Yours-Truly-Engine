@@ -5,6 +5,7 @@
 #include "YTE/Core/Engine.hpp"
 
 #include "YTE/Graphics/GraphicsSystem.hpp"
+#include "YTE/Graphics/TextureLoader.hpp"
 
 #include "YTE/Platform/Window.hpp"
 #include "YTE/Platform/Windows/WindowData_Windows.hpp"
@@ -22,7 +23,8 @@ namespace YTE
   {
     glm::mat4 mProjectionMatrix;
     glm::mat4 mModelMatrix;
-    glm::mat4 mViewMatrix;
+    glm::vec4 mViewPosition;
+    float mLevelOfDetailBias = 1.0f;
   };
 
 
@@ -75,27 +77,9 @@ namespace YTE
     std::vector<vk::DescriptorSet> mDescriptorSets;
     vk::DescriptorSetLayout mDescriptorSetLayout;
     vk::DescriptorPool mDescriptorPool;
+
+    Texture mTexture;
   };
-
-
-  template<typename FlagType>
-  u32 GetMemoryType(u32 aTypeBits, vk::PhysicalDeviceMemoryProperties aDeviceProperties, FlagType aProperties)
-  {
-    for (uint32_t i = 0; i < 32; i++)
-    {
-      if ((aTypeBits & 1) == 1)
-      {
-        if ((aDeviceProperties.memoryTypes[i].propertyFlags & aProperties) == aProperties)
-        {
-          return i;
-        }
-      }
-      aTypeBits >>= 1;
-    }
-
-    // todo : throw error
-    return 0;
-  }
 
   inline void vulkan_actual_assert(u64 flag, char *msg = "")
   {
@@ -215,12 +199,15 @@ namespace YTE
     // Update matrices
     self->mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)self->mWidth / (float)self->mHeight, 0.1f, 256.0f);
 
-    self->mUniformBufferData.mViewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, self->mZoom));
+    auto viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, self->mZoom));
 
-    self->mUniformBufferData.mModelMatrix = glm::mat4();
+    self->mUniformBufferData.mModelMatrix = viewMatrix * glm::translate(glm::mat4(), self->mCameraPosition);
     self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
     self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
     self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+
+    self->mUniformBufferData.mViewPosition = glm::vec4(0.0f, 0.0f, -self->mZoom, 0.0f);
 
     // Map uniform buffer and update it
       
@@ -246,15 +233,23 @@ namespace YTE
     // binding
 
     // Binding 0 : Uniform buffer (Vertex shader)
-    vk::DescriptorSetLayoutBinding layoutBinding = {};
-    layoutBinding.descriptorCount = 1;
-    layoutBinding.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    layoutBinding.descriptorType = vk::DescriptorType::eUniformBuffer;
+
+    std::array<vk::DescriptorSetLayoutBinding, 2> layoutBinding;
+
+    layoutBinding[0].descriptorCount = 1;
+    layoutBinding[0].binding = 0;
+    layoutBinding[0].stageFlags = vk::ShaderStageFlagBits::eVertex;
+    layoutBinding[0].descriptorType = vk::DescriptorType::eUniformBuffer;
+
+    layoutBinding[1].descriptorCount = 1;
+    layoutBinding[1].binding = 1;
+    layoutBinding[1].stageFlags = vk::ShaderStageFlagBits::eFragment;
+    layoutBinding[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
 
     vk::DescriptorSetLayoutCreateInfo descriptorLayout = {};
     descriptorLayout.pNext = nullptr;
-    descriptorLayout.bindingCount = 1;
-    descriptorLayout.pBindings = &layoutBinding;
+    descriptorLayout.bindingCount = (u32)layoutBinding.size();
+    descriptorLayout.pBindings = layoutBinding.data();
 
     self->mDescriptorSetLayout = self->mLogicalDevice.createDescriptorSetLayout(descriptorLayout);
 
@@ -279,25 +274,23 @@ namespace YTE
     auto self = mPlatformSpecificData.Get<vulkan_context>();
 
     // We need to tell the API the number of max. requested descriptors per type
-    static vk::DescriptorPoolSize typeCounts[1];
-    // This example only uses one descriptor type (uniform buffer) and only
-    // requests one descriptor of this type
+    static vk::DescriptorPoolSize typeCounts[2];
+
     typeCounts[0].type = vk::DescriptorType::eUniformBuffer;
     typeCounts[0].descriptorCount = 1;
 
-    // For additional types you need to add new entries in the type count list
-    // E.g. for two combined image samplers :
-    // typeCounts[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    // typeCounts[1].descriptorCount = 2;
+    typeCounts[1].type = vk::DescriptorType::eCombinedImageSampler;
+    typeCounts[1].descriptorCount = 1; // TODO: Make sure the layers don't yell.
 
     // Create the global descriptor pool
     // All descriptors used in this example are allocated from this pool
     vk::DescriptorPoolCreateInfo descriptorPoolInfo = {};
-    descriptorPoolInfo.poolSizeCount = 1;
+    descriptorPoolInfo.poolSizeCount = 2;
     descriptorPoolInfo.pPoolSizes = typeCounts;
+
     // Set the max. number of sets that can be requested
     // Requesting descriptors beyond maxSets will result in an error
-    descriptorPoolInfo.maxSets = 1;
+    descriptorPoolInfo.maxSets = 2;
 
     self->mDescriptorPool = self->mLogicalDevice.createDescriptorPool(descriptorPoolInfo);
   }
@@ -319,20 +312,30 @@ namespace YTE
 
     self->mDescriptorSets = self->mLogicalDevice.allocateDescriptorSets(allocInfo);
 
+    //ImageDescriptor for the color map texture;
+    vk::DescriptorImageInfo textureDescriptor;
+    textureDescriptor.sampler = self->mTexture.sampler;
+    textureDescriptor.imageView = self->mTexture.view;
+    textureDescriptor.imageLayout = vk::ImageLayout::eGeneral; // NOTE: Always this currently.
+
     // Update the descriptor set determining the shader binding points
     // For every binding point used in a shader there needs to be one
     // descriptor set matching that binding point
-
-    vk::WriteDescriptorSet writeDescriptorSet = {};
+    std::array<vk::WriteDescriptorSet, 2> writeDescriptorSet;
 
     // Binding 0 : Uniform buffer
-    writeDescriptorSet.dstSet = self->mDescriptorSets[0];
-    writeDescriptorSet.descriptorCount = 1;
-    writeDescriptorSet.descriptorType = vk::DescriptorType::eUniformBuffer;
-    writeDescriptorSet.pBufferInfo = &self->mUniformBufferInfo;
+    writeDescriptorSet[0].dstSet = self->mDescriptorSets[0];
+    writeDescriptorSet[0].descriptorCount = 1;
+    writeDescriptorSet[0].descriptorType = vk::DescriptorType::eUniformBuffer;
+    writeDescriptorSet[0].pBufferInfo = &self->mUniformBufferInfo;
+    writeDescriptorSet[0].dstBinding = 0;
 
-    // Binds this uniform buffer to binding point 0
-    writeDescriptorSet.dstBinding = 0;
+    writeDescriptorSet[1].dstSet = self->mDescriptorSets[0];
+    writeDescriptorSet[1].descriptorCount = 1;
+    writeDescriptorSet[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
+    writeDescriptorSet[1].pBufferInfo = &self->mUniformBufferInfo;
+    writeDescriptorSet[1].dstBinding = 1;
+    writeDescriptorSet[1].pImageInfo = &textureDescriptor;
 
     self->mLogicalDevice.updateDescriptorSets(writeDescriptorSet, nullptr);
   }
@@ -786,6 +789,9 @@ namespace YTE
         vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
       }
 
+      TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, commandPool);
+      loader.loadTexture("./Textures/Happy.png", vk::Format::eR8G8B8A8Uint, &self->mTexture); // TODO: Format is wrong.
+
 
       self->mSetupCommandBuffer.begin(beginInfo);
       auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
@@ -915,7 +921,7 @@ namespace YTE
 
 
       // Create our Index buffer
-      std::vector<u32> indexBuffer = { 0, 1, 2, 3, 4, 5 };
+      std::vector<u32> indexBuffer = { 0, 1, 2, 2, 3, 0 };
       vk::MemoryAllocateInfo memAlloc;
 
       // Index buffer
@@ -947,7 +953,7 @@ namespace YTE
 
       // Create our vertex buffer:
       auto vertexInputBufferInfo = vk::BufferCreateInfo()
-                                        .setSize(sizeof(Quad)) // Size in bytes.
+                                        .setSize(sizeof(Triangle) * 4) // Size in bytes.
                                         .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
                                         .setSharingMode(vk::SharingMode::eExclusive); // TODO: Change to not exclusive.
 
@@ -986,20 +992,22 @@ namespace YTE
       void *mapped = self->mLogicalDevice.mapMemory(vertexBufferMemory, 0, VK_WHOLE_SIZE);
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
-      mQuad = (Quad *)mapped;
-      mQuad->mTriangle1.mVertex1.mPosition = { 1.0f, 1.0f, 0, 1.0f };
-      mQuad->mTriangle1.mVertex1.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
-      mQuad->mTriangle1.mVertex2.mPosition = { 1.0f,  -1.0f, 0, 1.0f };
-      mQuad->mTriangle1.mVertex2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
-      mQuad->mTriangle1.mVertex3.mPosition = { -1.0f, -1.0f, 0, 1.0f };
-      mQuad->mTriangle1.mVertex3.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
+      mQuad = (Quad*)mapped;
+      mQuad->mVertex1.mPosition = { 1.0f, 1.0f, 0.0f, 1.0f };
+      mQuad->mVertex1.mUVCoordinates = { 1.0f, 1.0f};
+      mQuad->mVertex1.mNormal = { 0.0f, 0.0f, 1.0};
 
-      mQuad->mTriangle2.mVertex1.mPosition = { -1.0f, -1.0f, 0, 1.0f };
-      mQuad->mTriangle2.mVertex1.mColor = { 0.0f, 0.0f, 1.0, 1.0f };
-      mQuad->mTriangle2.mVertex2.mPosition = { -1.0f,  1.0f, 0, 1.0f };
-      mQuad->mTriangle2.mVertex2.mColor = { 0.0f, 1.0f, 0.0, 1.0f };
-      mQuad->mTriangle2.mVertex3.mPosition = { 1.0f, 1.0f, 0, 1.0f };
-      mQuad->mTriangle2.mVertex3.mColor = { 1.0f, 0.0f, 0.0, 1.0f };
+      mQuad->mVertex2.mPosition = { -1.0f,  1.0f, 0.0f, 1.0f };
+      mQuad->mVertex2.mUVCoordinates = { 0.0f, 1.0f };
+      mQuad->mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
+
+      mQuad->mVertex3.mPosition = { -1.0f, -1.0f, 0.0f, 1.0f };
+      mQuad->mVertex3.mUVCoordinates = { 0.0f, 0.0f };
+      mQuad->mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
+
+      mQuad->mVertex4.mPosition = { 1.0f, -1.0f, 0.0f, 1.0f };
+      mQuad->mVertex4.mUVCoordinates = { 1.0f, 0.0f };
+      mQuad->mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
@@ -1103,22 +1111,35 @@ namespace YTE
       vk::VertexInputBindingDescription vertexBindingDescription;
       vertexBindingDescription.stride = sizeof(Vertex);
       vertexBindingDescription.inputRate = vk::VertexInputRate::eVertex;
+
+      u32 vertexOffset = 0;
       
-      vk::VertexInputAttributeDescription vertexAttributeDescritpion[2];
+      vk::VertexInputAttributeDescription vertexAttributeDescritpion[3];
       vertexAttributeDescritpion[0].binding = 0;
       vertexAttributeDescritpion[0].location = 0;
       vertexAttributeDescritpion[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[0].offset = 0;
+      vertexAttributeDescritpion[0].offset = vertexOffset;
+
+      //glm::vec4 mPosition;
+      vertexOffset += sizeof(glm::vec4);
 
       vertexAttributeDescritpion[1].binding = 0;
       vertexAttributeDescritpion[1].location = 1;
-      vertexAttributeDescritpion[1].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[1].offset = sizeof(glm::vec4);
+      vertexAttributeDescritpion[1].format = vk::Format::eR32G32Sfloat;
+      vertexAttributeDescritpion[1].offset = vertexOffset;
+
+      //glm::vec2 mUVCoordinates;
+      vertexOffset += sizeof(glm::vec2);
+
+      vertexAttributeDescritpion[2].binding = 0;
+      vertexAttributeDescritpion[2].location = 1;
+      vertexAttributeDescritpion[2].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescritpion[2].offset = vertexOffset;
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
       vertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexBindingDescription;
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 2;
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 3;
       vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescritpion;
 
       // vertex topology config:
