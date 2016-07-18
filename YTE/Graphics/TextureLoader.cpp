@@ -278,11 +278,11 @@ namespace YTE
 
       device.waitForFences(copyFence, true, UINT64_MAX);
 
-      vkDestroyFence(device, copyFence, nullptr);
+      device.destroyFence(copyFence);
 
       // Clean up staging resources
-      vkFreeMemory(device, stagingMemory, nullptr);
-      vkDestroyBuffer(device, stagingBuffer, nullptr);
+      device.freeMemory(stagingMemory);
+      device.destroyBuffer(stagingBuffer);
     }
     else
     {
