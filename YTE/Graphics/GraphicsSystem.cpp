@@ -1312,6 +1312,9 @@ namespace YTE
     renderPassBeginInfo.clearValueCount = 2;
     renderPassBeginInfo.pClearValues = clearValue;
 
+    vk::Viewport viewport{ 0, 0, static_cast<float>(self->mWidth), static_cast<float>(self->mHeight), 0, 1 };
+    vk::Rect2D scissor{ { 0, 0 },{ self->mWidth, self->mHeight } };
+
     self->mDrawCommandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
     // Bind descriptor sets describing shader binding points
@@ -1321,10 +1324,7 @@ namespace YTE
     self->mDrawCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, self->mPipeline);
 
     // take care of dynamic state:
-    vk::Viewport viewport { 0, 0, static_cast<float>(self->mWidth), static_cast<float>(self->mHeight), 0, 1 };
     self->mDrawCommandBuffer.setViewport(0, viewport);
-
-    vk::Rect2D scissor{ {0, 0}, { self->mWidth, self->mHeight } };
     self->mDrawCommandBuffer.setScissor(0, scissor);
 
     // render the triangle:

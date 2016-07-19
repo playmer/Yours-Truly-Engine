@@ -104,7 +104,7 @@ namespace YTE
   {
     vk::ImageSubresourceRange subresourceRange = {};
     subresourceRange.aspectMask = aspectMask;
-    subresourceRange.baseMipLevel = 0;
+    subresourceRange.baseMipLevel = 1;
     subresourceRange.levelCount = 1;
     subresourceRange.layerCount = 1;
     setImageLayout(cmdbuffer, image, aspectMask, oldImageLayout, newImageLayout, subresourceRange);
@@ -130,7 +130,7 @@ namespace YTE
   {
     // We pass 4 into stbi_load because we always want RGBA, even if the image only has RGB.
     int width, height, components;
-    auto textureData = stbi_load(filename.c_str(), &width, &height, &components, 4);
+    auto textureData = stbi_load(filename.c_str(), &width, &height, &components, STBI_rgb_alpha);
 
     assert(textureData != nullptr);
     assert(width > 0);
@@ -140,7 +140,7 @@ namespace YTE
     aTexture->height = height;
     aTexture->mipLevels = 1; // TODO: Get MipLevels static_cast<uint32_t>(tex2D.levels());
 
-    auto textureSize = width * height * (sizeof(u8) * 4); // Last bit is RGBA
+    vk::DeviceSize textureSize = width * height * (sizeof(u8) * 4); // Last bit is RGBA
 
                                                            // Get device properites for the requested texture format
     auto formatProperties = physicalDevice.getFormatProperties(format);
@@ -224,10 +224,10 @@ namespace YTE
       imageCreateInfo.mipLevels = aTexture->mipLevels;
       imageCreateInfo.arrayLayers = 1;
       imageCreateInfo.samples = vk::SampleCountFlagBits::e1;
-      imageCreateInfo.tiling = vk::ImageTiling::eOptimal;
+      imageCreateInfo.tiling = vk::ImageTiling::eLinear;
       imageCreateInfo.usage = imageUsageFlags;
       imageCreateInfo.sharingMode = vk::SharingMode::eExclusive;
-      imageCreateInfo.initialLayout = vk::ImageLayout::eUndefined;
+      imageCreateInfo.initialLayout = vk::ImageLayout::ePreinitialized;
       imageCreateInfo.extent = { aTexture->width, aTexture->height, 1 };
       imageCreateInfo.usage = vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled;
 
@@ -241,6 +241,8 @@ namespace YTE
       aTexture->deviceMemory = device.allocateMemory(memAllocInfo);
       device.bindImageMemory(aTexture->image, aTexture->deviceMemory, 0);
 
+      auto copyCommand = createCommandBuffer(vk::CommandBufferLevel::ePrimary, true);
+
       vk::ImageSubresourceRange subresourceRange = {};
       subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
       subresourceRange.baseMipLevel = 0;
@@ -250,7 +252,7 @@ namespace YTE
       // Image barrier for optimal image (target)
       // Optimal image will be used as destination for the copy
       setImageLayout(
-        cmdBuffer,
+        copyCommand,
         aTexture->image,
         vk::ImageAspectFlagBits::eColor,
         vk::ImageLayout::eUndefined,
@@ -258,21 +260,21 @@ namespace YTE
         subresourceRange);
 
       // Copy mip levels from staging buffer
-      cmdBuffer.copyBufferToImage(stagingBuffer, aTexture->image, vk::ImageLayout::eTransferDstOptimal, bufferCopyRegion);
+      copyCommand.copyBufferToImage(stagingBuffer, aTexture->image, vk::ImageLayout::eTransferDstOptimal, bufferCopyRegion);
 
       // Change texture image layout to shader read after all mip levels have been copied
       aTexture->imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-      setImageLayout(cmdBuffer, aTexture->image, vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, aTexture->imageLayout, subresourceRange);
+      setImageLayout(copyCommand, aTexture->image, vk::ImageAspectFlagBits::eColor, vk::ImageLayout::eTransferDstOptimal, aTexture->imageLayout, subresourceRange);
 
       // Submit command buffer containing copy and image layout commands
-      cmdBuffer.end();
+      copyCommand.end();
 
       // Create a fence to make sure that the copies have finished before continuing
       auto copyFence = device.createFence(vk::FenceCreateInfo());
 
       vk::SubmitInfo submitInfo;
       submitInfo.commandBufferCount = 1;
-      submitInfo.pCommandBuffers = &cmdBuffer;
+      submitInfo.pCommandBuffers = &copyCommand;
 
       queue.submit(submitInfo, copyFence);
 
@@ -328,7 +330,8 @@ namespace YTE
       // Mip map count, array layer, etc.
       vk::ImageSubresource subRes = {};
       subRes.aspectMask = vk::ImageAspectFlagBits::eColor;
-      subRes.mipLevel = 0;
+      subRes.mipLevel = 1;
+      subRes.arrayLayer = 1;
 
       void *data;
 
@@ -350,16 +353,18 @@ namespace YTE
       aTexture->deviceMemory = mappableMemory;
       aTexture->imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 
+      auto copyCommand = createCommandBuffer(vk::CommandBufferLevel::ePrimary, true);
+
       // Setup image memory barrier
-      setImageLayout(cmdBuffer, aTexture->image, vk::ImageAspectFlagBits::eColor, vk::ImageLayout::ePreinitialized, aTexture->imageLayout);
+      setImageLayout(copyCommand, aTexture->image, vk::ImageAspectFlagBits::eColor, vk::ImageLayout::ePreinitialized, aTexture->imageLayout);
 
       // Submit command buffer containing copy and image layout commands
-      cmdBuffer.end();
+      copyCommand.end();
 
       vk::SubmitInfo submitInfo{};
       submitInfo.waitSemaphoreCount = 0;
       submitInfo.commandBufferCount = 1;
-      submitInfo.pCommandBuffers = &cmdBuffer;
+      submitInfo.pCommandBuffers = &copyCommand;
 
       queue.submit(submitInfo, nullptr);
       queue.waitIdle();

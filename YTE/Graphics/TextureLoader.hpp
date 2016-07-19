@@ -84,6 +84,26 @@ namespace YTE
     // Clean up vulkan resources used by a texture object
     void destroyTexture(Texture texture);
 
+
+    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin)
+    {
+      vk::CommandBufferAllocateInfo cmdBufAllocateInfo;
+      cmdBufAllocateInfo.commandPool = cmdPool;
+      cmdBufAllocateInfo.level = level;
+      cmdBufAllocateInfo.commandBufferCount = 1;
+
+      auto cmdBuffer = device.allocateCommandBuffers(cmdBufAllocateInfo)[0];
+
+      // If requested, also start the new command buffer
+      if (begin)
+      {
+        vk::CommandBufferBeginInfo cmdBufInfo;
+        cmdBuffer.begin(cmdBufInfo);
+      }
+
+      return cmdBuffer;
+    }
+
     //// Load a cubemap texture (single file)
     //void loadCubemap(std::string filename, vk::Format format, Texture *texture)
     //{
