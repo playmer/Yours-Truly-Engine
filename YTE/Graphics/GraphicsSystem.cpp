@@ -790,7 +790,7 @@ namespace YTE
       }
 
       TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, commandPool);
-      loader.loadTexture("./Textures/Happy.png", vk::Format::eR8G8B8A8Uint, &self->mTexture); // TODO: Format is wrong.
+      self->mTexture = loader.loadTexture("./Textures/Happy.png"); // TODO: Format is wrong.
 
 
       self->mSetupCommandBuffer.begin(beginInfo);

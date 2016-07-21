@@ -73,36 +73,20 @@ namespace YTE
     void setImageLayout(vk::CommandBuffer cmdbuffer, vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
 
     // Load a 2D texture
-    void loadTexture(std::string filename, vk::Format format, Texture *texture);
-
-    // Load a 2D texture
-    void loadTexture(std::string aFilename, vk::Format aFormat, Texture *aTexture, bool aForceLinear);
-
-    // Load a 2D texture
-    void loadTexture(std::string filename, vk::Format format, Texture *texture, bool forceLinear, vk::ImageUsageFlags imageUsageFlags);
+    Texture TextureLoader::loadTexture(const std::string &filename);
 
     // Clean up vulkan resources used by a texture object
     void destroyTexture(Texture texture);
 
+    void createImage(uint32_t aWidth, uint32_t aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
 
-    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin)
-    {
-      vk::CommandBufferAllocateInfo cmdBufAllocateInfo;
-      cmdBufAllocateInfo.commandPool = cmdPool;
-      cmdBufAllocateInfo.level = level;
-      cmdBufAllocateInfo.commandBufferCount = 1;
+    void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height);
+    vk::CommandBuffer beginSingleTimeCommands();
+    void endSingleTimeCommands(vk::CommandBuffer commandBuffer);
+    void TextureLoader::transitionImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
+    Texture TextureLoader::createTextureImage(const std::string &aTextureFile);
 
-      auto cmdBuffer = device.allocateCommandBuffers(cmdBufAllocateInfo)[0];
-
-      // If requested, also start the new command buffer
-      if (begin)
-      {
-        vk::CommandBufferBeginInfo cmdBufInfo;
-        cmdBuffer.begin(cmdBufInfo);
-      }
-
-      return cmdBuffer;
-    }
+    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin);
 
     //// Load a cubemap texture (single file)
     //void loadCubemap(std::string filename, vk::Format format, Texture *texture)
