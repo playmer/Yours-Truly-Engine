@@ -78,6 +78,10 @@ namespace YTE
     // Clean up vulkan resources used by a texture object
     void destroyTexture(Texture texture);
 
+    void createImageView(vk::Image aImage, vk::Format aFormat, vk::ImageView &aImageView);
+    void createTextureImageView(Texture &aTexture);
+    void createTextureSampler(Texture &aTexture);
+
     void createImage(uint32_t aWidth, uint32_t aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
 
     void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height);

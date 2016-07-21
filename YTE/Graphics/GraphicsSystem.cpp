@@ -921,7 +921,6 @@ namespace YTE
 
 
       // Create our Index buffer
-      std::vector<u32> indexBuffer = { 0, 1, 2, 2, 3, 0 };
       vk::MemoryAllocateInfo memAlloc;
 
       // Index buffer
@@ -943,9 +942,9 @@ namespace YTE
       indices[0] = 0;
       indices[1] = 1;
       indices[2] = 2;
-      indices[3] = 3;
-      indices[4] = 4;
-      indices[5] = 5;
+      indices[3] = 2;
+      indices[4] = 3;
+      indices[5] = 0;
 
       self->mLogicalDevice.unmapMemory(indexMemory);
 

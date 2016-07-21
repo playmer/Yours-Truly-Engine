@@ -301,46 +301,65 @@ namespace YTE
     endSingleTimeCommands(commandBuffer);
   }
 
+  void TextureLoader::createImageView(vk::Image aImage, vk::Format aFormat, vk::ImageView &aImageView)
+  {
+    vk::ImageViewCreateInfo viewInfo = {};
+    viewInfo.image = aImage;
+    viewInfo.viewType = vk::ImageViewType::e2D;
+    viewInfo.format = aFormat;
+    viewInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
+
+    aImageView = device.createImageView(viewInfo);
+  }
+
+  void TextureLoader::createTextureImageView(Texture &aTexture)
+  {
+    createImageView(aTexture.image, vk::Format::eR8G8B8A8Unorm, aTexture.view);
+  }
+
+
+  // TODO: Make everything in this function configurable.
+  void TextureLoader::createTextureSampler(Texture &aTexture)
+  {
+    vk::SamplerCreateInfo samplerInfo = {};
+
+    samplerInfo.magFilter = vk::Filter::eLinear;
+    samplerInfo.minFilter = vk::Filter::eLinear;
+
+    samplerInfo.addressModeU = vk::SamplerAddressMode::eRepeat;
+    samplerInfo.addressModeV = vk::SamplerAddressMode::eRepeat;
+    samplerInfo.addressModeW = vk::SamplerAddressMode::eRepeat;
+
+    samplerInfo.anisotropyEnable = true;
+    samplerInfo.maxAnisotropy = 16;
+
+    samplerInfo.borderColor = vk::BorderColor::eIntOpaqueBlack;
+    samplerInfo.unnormalizedCoordinates = true;
+
+    samplerInfo.compareEnable = true;
+    samplerInfo.compareOp = vk::CompareOp::eAlways;
+
+    samplerInfo.mipmapMode = vk::SamplerMipmapMode::eLinear;
+    samplerInfo.mipLodBias = 0.0f;
+    samplerInfo.minLod = 0.0f;
+    samplerInfo.maxLod = 0.0f;
+
+    aTexture.sampler = device.createSampler(samplerInfo);
+  }
+
   // Load a 2D texture
 
   Texture TextureLoader::loadTexture(const std::string &filename)
   {
     auto texture = createTextureImage(filename);
 
-    // Create sampler
-    vk::SamplerCreateInfo sampler = {};
-    sampler.magFilter = vk::Filter::eLinear;
-    sampler.minFilter = vk::Filter::eLinear;
-    sampler.mipmapMode = vk::SamplerMipmapMode::eLinear;
-    sampler.addressModeU = vk::SamplerAddressMode::eRepeat;
-    sampler.addressModeV = vk::SamplerAddressMode::eRepeat;
-    sampler.addressModeW = vk::SamplerAddressMode::eRepeat;
-    sampler.mipLodBias = 0.0f;
-    sampler.compareOp = vk::CompareOp::eNever;
-    sampler.minLod = 0.0f;
-    // Max level-of-detail should match mip level count
-    sampler.maxLod = 1;
-    // Enable anisotropic filtering
-    sampler.maxAnisotropy = 8;
-    sampler.anisotropyEnable = VK_TRUE;
-    sampler.borderColor = vk::BorderColor::eFloatOpaqueWhite;
-    texture.sampler = device.createSampler(sampler);
+    createTextureSampler(texture);
 
-    // Create image view
-    // Textures are not directly accessed by the shaders and
-    // are abstracted by image views containing additional
-    // information and sub resource ranges
-    vk::ImageViewCreateInfo view = {};
-    view.viewType = vk::ImageViewType::e2D;
-    view.format = vk::Format::eR8G8B8A8Unorm;
-    view.components = { vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA };
-    view.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-
-    // Linear tiling usually won't support mip maps
-    // Only set mip map count if optimal tiling is used
-    view.subresourceRange.levelCount = 1;
-    view.image = texture.image;
-    texture.view = device.createImageView(view);
+    createTextureImageView(texture);
 
     // Fill descriptor image info that can be used for setting up descriptor sets
     texture.descriptor.imageLayout = vk::ImageLayout::eGeneral;
