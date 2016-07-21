@@ -992,20 +992,20 @@ namespace YTE
       vulkan_assert(mapped, "Failed to map buffer memory.");
 
       mQuad = (Quad*)mapped;
-      mQuad->mVertex1.mPosition = { 1.0f, 1.0f, 0.0f, 1.0f };
-      mQuad->mVertex1.mUVCoordinates = { 1.0f, 1.0f};
+      mQuad->mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
+      mQuad->mVertex1.mUVCoordinates = { 0.0f, 0.0f};
       mQuad->mVertex1.mNormal = { 0.0f, 0.0f, 1.0};
 
-      mQuad->mVertex2.mPosition = { -1.0f,  1.0f, 0.0f, 1.0f };
-      mQuad->mVertex2.mUVCoordinates = { 0.0f, 1.0f };
+      mQuad->mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
+      mQuad->mVertex2.mUVCoordinates = { 1.0f, 0.0f };
       mQuad->mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
 
-      mQuad->mVertex3.mPosition = { -1.0f, -1.0f, 0.0f, 1.0f };
-      mQuad->mVertex3.mUVCoordinates = { 0.0f, 0.0f };
+      mQuad->mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
+      mQuad->mVertex3.mUVCoordinates = { 1.0f, 1.0f };
       mQuad->mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
 
-      mQuad->mVertex4.mPosition = { 1.0f, -1.0f, 0.0f, 1.0f };
-      mQuad->mVertex4.mUVCoordinates = { 1.0f, 0.0f };
+      mQuad->mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
+      mQuad->mVertex4.mUVCoordinates = { 0.0f, 1.0f };
       mQuad->mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
 
       self->mLogicalDevice.unmapMemory(vertexBufferMemory);

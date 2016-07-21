@@ -338,7 +338,7 @@ namespace YTE
     samplerInfo.maxAnisotropy = 16;
 
     samplerInfo.borderColor = vk::BorderColor::eIntOpaqueBlack;
-    samplerInfo.unnormalizedCoordinates = true;
+    samplerInfo.unnormalizedCoordinates = false;
 
     samplerInfo.compareEnable = true;
     samplerInfo.compareOp = vk::CompareOp::eAlways;
