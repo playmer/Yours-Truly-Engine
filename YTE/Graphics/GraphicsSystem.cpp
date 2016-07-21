@@ -1131,7 +1131,7 @@ namespace YTE
       vertexOffset += sizeof(glm::vec2);
 
       vertexAttributeDescritpion[2].binding = 0;
-      vertexAttributeDescritpion[2].location = 1;
+      vertexAttributeDescritpion[2].location = 2;
       vertexAttributeDescritpion[2].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
       vertexAttributeDescritpion[2].offset = vertexOffset;
 
