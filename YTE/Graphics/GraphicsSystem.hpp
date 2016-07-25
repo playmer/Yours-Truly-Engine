@@ -12,11 +12,13 @@
 #include <glbinding/Binding.h>
 
 #include "YTE/Core/ForwardDeclarations.hpp"
+#include "YTE/Core/PrivateImplementation.hpp"
 #include "YTE/Core/Types.hpp"
 
-#include "YTE/Platform/ForwardDeclarations.hpp"
 
-#include "YTE/Core/PrivateImplementation.hpp"
+#include "YTE/Graphics/TileMap.hpp"
+
+#include "YTE/Platform/ForwardDeclarations.hpp"
 
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -26,95 +28,6 @@
 
 namespace YTE
 {
-  struct Vertex
-  {
-    void Translate(const glm::vec3 &aTranslation)
-    {
-      auto translate = glm::translate(glm::mat4(), aTranslation);
-  
-      mPosition = translate * mPosition;
-    }
-  
-    void Scale(const glm::vec3 &aScale)
-    {
-      auto scale = glm::scale(glm::mat4(), aScale);
-  
-      mPosition = scale * mPosition;
-    }
-    void Rotate(const glm::vec3 &aRotation)
-    {
-      auto rotation = glm::mat4();
-      rotation = glm::rotate(rotation, aRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-      rotation = glm::rotate(rotation, aRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-      rotation = glm::rotate(rotation, aRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-  
-      mPosition = rotation * mPosition;
-    }
-  
-    glm::vec4 mPosition;
-    glm::vec2 mUVCoordinates;
-    glm::vec3 mNormal;
-  };
-  
-  struct Triangle
-  {
-    void Translate(const glm::vec3 &aTranslation)
-    {
-      mVertex1.Translate(aTranslation);
-      mVertex2.Translate(aTranslation);
-      mVertex3.Translate(aTranslation);
-    }
-  
-    void Scale(const glm::vec3 &aScale)
-    {
-      mVertex1.Scale(aScale);
-      mVertex2.Scale(aScale);
-      mVertex3.Scale(aScale);
-    }
-    void Rotate(const glm::vec3 &aRotation)
-    {
-      mVertex1.Rotate(aRotation);
-      mVertex2.Rotate(aRotation);
-      mVertex3.Rotate(aRotation);
-    }
-  
-    Vertex mVertex1;
-    Vertex mVertex2;
-    Vertex mVertex3;
-  };
-  
-  struct Quad
-  {
-    void Translate(const glm::vec3 &aTranslation)
-    {
-      mVertex1.Translate(aTranslation);
-      mVertex2.Translate(aTranslation);
-      mVertex3.Translate(aTranslation);
-      mVertex4.Translate(aTranslation);
-    }
-  
-    void Scale(const glm::vec3 &aScale)
-    {
-      mVertex1.Scale(aScale);
-      mVertex2.Scale(aScale);
-      mVertex3.Scale(aScale);
-      mVertex4.Scale(aScale);
-    }
-    void Rotate(const glm::vec3 &aRotation)
-    {
-      mVertex1.Rotate(aRotation);
-      mVertex2.Rotate(aRotation);
-      mVertex3.Rotate(aRotation);
-      mVertex4.Rotate(aRotation);
-    }
-  
-
-    Vertex mVertex1;
-    Vertex mVertex2;
-    Vertex mVertex3;
-    Vertex mVertex4;
-  };
-
   class GraphicsSystem
   {
     public:
@@ -127,18 +40,18 @@ namespace YTE
 
     void Update(float aDt);
     void VulkanRender();
-    void UpdateUniformBuffers();
-    void SetupDescriptorSetLayout();
-    void SetupDescriptorSet();
-    void SetupDescriptorPool();
+
+    void CreateTileMap(std::vector<Tile> aMap, std::vector<std::string> aTextureFiles);
 
     Quad *mQuad;
     glm::i16vec2 mMousePosition = { 0,0 };
 
-    private:
+    //private:
     Engine *mEngine;
 
     PrivateImplementation<4096> mPlatformSpecificData;
+
+    std::vector<TileMap> mTileMaps;
 
 	  i32 mVulkanSuccess;
   };

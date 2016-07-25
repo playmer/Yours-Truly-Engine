@@ -404,6 +404,8 @@
     <ClCompile Include="YTE\Graphics\Mesh.cpp" />
     <ClCompile Include="YTE\Graphics\MeshLoader.cpp" />
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="YTE\Graphics\TileMap.cpp" />
+    <ClCompile Include="YTE\Graphics\VulkanContext.cpp" />
     <ClCompile Include="YTE\Platform\Keyboard.cpp" />
     <ClCompile Include="YTE\Platform\Window.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Keyboard_Windows.cpp" />
@@ -1177,11 +1179,14 @@
     <ClInclude Include="YTE\Core\TargetDefinitions.hpp" />
     <ClInclude Include="YTE\Core\Types.hpp" />
     <ClInclude Include="YTE\DataStructures\UniqueHandle.hpp" />
+    <ClInclude Include="YTE\Graphics\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp" />
     <ClInclude Include="YTE\Graphics\Mesh.hpp" />
     <ClInclude Include="YTE\Graphics\MeshLoader.hpp" />
     <ClInclude Include="YTE\Graphics\TextureLoader.hpp" />
+    <ClInclude Include="YTE\Graphics\TileMap.hpp" />
     <ClInclude Include="YTE\Graphics\Vertex.hpp" />
+    <ClInclude Include="YTE\Graphics\VulkanContext.hpp" />
     <ClInclude Include="YTE\Platform\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Platform\Gamepad.hpp" />
     <ClInclude Include="YTE\Platform\GamepadSystem.hpp" />
