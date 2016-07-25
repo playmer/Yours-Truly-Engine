@@ -4,24 +4,22 @@
 #include "YTE/Graphics/TileMap.hpp"
 #include "TileMap.hpp"
 
+#include "gtc/matrix_transform.hpp"
+
 namespace YTE
 {
-  TileMap::TileMap(std::vector<Tile> aMap, std::vector<std::string> aTextureFiles, VulkanContext *aContext)
+  TileMap::TileMap(std::vector<Tile> &aMap, std::vector<std::string> &aTextureFiles, VulkanContext *aContext)
     : mMap(aMap), mContext(aContext)
   {
     for (auto &tile : aMap)
     {
       assert(tile.mTile <= aTextureFiles.size() && "Malformed tile input.");
+      //tile.mPosition.y *= -1;
     }
 
     TextureLoader loader(mContext->mPhysicalDevice, mContext->mLogicalDevice, mContext->mQueue, mContext->mCommandPool);
 
-    mTextures.reserve(aTextureFiles.size());
-
-    for (auto &textureName : aTextureFiles)
-    {
-      mTextures.emplace_back(loader.loadTexture(textureName.c_str()));
-    }
+    mTexture = loader.loadTexture(aTextureFiles);
 
 
 
@@ -131,125 +129,161 @@ namespace YTE
     mContext->mLogicalDevice.unmapMemory(vertexBufferMemory);
 
     mContext->mLogicalDevice.bindBufferMemory(mVertexMemory.mBuffer, vertexBufferMemory, 0);
+
+    PrepareInstanceData();
   }
 
   TileMap::~TileMap()
   {
   }
 
-  void TileMap::Draw(u32 aImageId)
+  void TileMap::PrepareInstanceData()
   {
+    std::vector<InstanceData> instanceData;
+    instanceData.resize(mMap.size());
+    u32 i = 0;
+
+    auto modelMatrix = glm::translate(glm::mat4(), mPosition);
+
+    for (auto &tile : mMap)
+    {
+      instanceData[i].mPostion = tile.mPosition;
+      instanceData[i].mTile = tile.mTile;
+      ++i;
+    }
+
+    mInstanceBuffer.mSize = instanceData.size() * sizeof(InstanceData);
+
+    // Staging
+    // Instanced data is static, copy to device local memory 
+    // This results in better performance
+    auto stagingMemory = mContext->CreateBuffer(mInstanceBuffer.mSize,
+                                                vk::BufferUsageFlagBits::eTransferSrc,
+                                                vk::MemoryPropertyFlagBits::eHostVisible);
+
+    u8 *data = (u8*)mContext->mLogicalDevice.mapMemory(stagingMemory.mMemory, 0, mInstanceBuffer.mSize);
+    memcpy(data, instanceData.data(), mInstanceBuffer.mSize);
+    mContext->mLogicalDevice.unmapMemory(stagingMemory.mMemory);
+
+    mInstanceBuffer.mBufferMemory =  mContext->CreateBuffer(mInstanceBuffer.mSize,
+                                                            vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+                                                            vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+    // Copy to staging buffer
+    mContext->CopyBuffer(stagingMemory.mBuffer, mInstanceBuffer.mBufferMemory.mBuffer, mInstanceBuffer.mSize);
+
+    mInstanceBuffer.mDescriptor.range = mInstanceBuffer.mSize;
+    mInstanceBuffer.mDescriptor.buffer = mInstanceBuffer.mBufferMemory.mBuffer;
+    mInstanceBuffer.mDescriptor.offset = 0;
+
+    // Destroy staging resources
+    mContext->mLogicalDevice.destroyBuffer(stagingMemory.mBuffer);
+    mContext->mLogicalDevice.freeMemory(stagingMemory.mMemory);
+  }
+
+  void TileMap::Draw()
+  {
+  
+  }
+
+
+  void TileMap::SetupCommandBuffer()
+  {
+    auto &commandBuffer = mContext->mDrawCommandBuffers[mContext->mCurrentDrawBuffer];
+
     vk::CommandBufferBeginInfo beginInfo = {};
     beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
 
     vk::Viewport viewport{ 0, 0, static_cast<float>(mContext->mWidth), static_cast<float>(mContext->mHeight), 0, 1 };
     vk::Rect2D scissor{ { 0, 0 },{ mContext->mWidth, mContext->mHeight } };
 
+    std::array<vk::ClearValue, 2> clearValues;
+    //clearValues[0].color.float32[0] = 0.0f;
+    //clearValues[0].color.float32[1] = 0.0f;
+    //clearValues[0].color.float32[2] = 0.0f;
+    //clearValues[0].color.float32[3] = 0.0f;
+    //clearValues[1].color.float32[0] = 0.0f;
+    //clearValues[1].color.float32[2] = 0.0f;
 
-    vk::ClearValue clearValue[2];
-    clearValue[0].color.float32[0] = 0.0f;
-    clearValue[0].color.float32[1] = 0.7f;
-    clearValue[0].color.float32[2] = 1.0f;
-    clearValue[0].color.float32[3] = 0.0f;
-    clearValue[1].color.float32[0] = 0.0f;
-    clearValue[1].color.float32[2] = 0.0f;
+    clearValues[0].color.float32[0] = 0.0f;
+    clearValues[0].color.float32[1] = 0.7f;
+    clearValues[0].color.float32[2] = 1.0f;
+    clearValues[0].color.float32[3] = 0.0f;
+    clearValues[1].color.float32[0] = 0.0f;
+    clearValues[1].color.float32[2] = 0.0f;
 
     vk::RenderPassBeginInfo renderPassBeginInfo = {};
     renderPassBeginInfo.renderPass = mContext->mRenderPass;
-    renderPassBeginInfo.framebuffer = mContext->mFrameBuffers[aImageId];
+    renderPassBeginInfo.framebuffer = mContext->mFrameBuffers[mContext->mCurrentDrawBuffer];
     renderPassBeginInfo.renderArea = { 0, 0, mContext->mWidth, mContext->mHeight };
-    renderPassBeginInfo.clearValueCount = 2;
-    renderPassBeginInfo.pClearValues = clearValue;
+    renderPassBeginInfo.clearValueCount = static_cast<u32>(clearValues.size());
+    renderPassBeginInfo.pClearValues = clearValues.data();
 
-    //for (auto &tile : mMap)
-    for (auto tileIt = mMap.rbegin(); tileIt < mMap.rend(); ++tileIt)
-    {
-      auto &tile = *tileIt;
-      mContext->UpdateDescriptorSet(mTextures[tile.mTile]);
+    // change image layout from VK_IMAGE_LAYOUT_PRESENT_SRC_KHR to VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+    vk::ImageMemoryBarrier layoutTransitionBarrier = {};
+    layoutTransitionBarrier.srcAccessMask = vk::AccessFlagBits::eMemoryRead;
+    layoutTransitionBarrier.dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead |
+      vk::AccessFlagBits::eColorAttachmentWrite;
+    layoutTransitionBarrier.oldLayout = vk::ImageLayout::ePresentSrcKHR;
+    layoutTransitionBarrier.newLayout = vk::ImageLayout::eColorAttachmentOptimal;
+    layoutTransitionBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    layoutTransitionBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    layoutTransitionBarrier.image = mContext->mPresentImages[mContext->mCurrentDrawBuffer];
 
-      mContext->UpdateUniformBuffers(&tile);
-
-      // change image layout from VK_IMAGE_LAYOUT_PRESENT_SRC_KHR to VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-      vk::ImageMemoryBarrier layoutTransitionBarrier = {};
-      layoutTransitionBarrier.srcAccessMask = vk::AccessFlagBits::eMemoryRead;
-      layoutTransitionBarrier.dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead |
-                                              vk::AccessFlagBits::eColorAttachmentWrite;
-      layoutTransitionBarrier.oldLayout = vk::ImageLayout::ePresentSrcKHR;
-      layoutTransitionBarrier.newLayout = vk::ImageLayout::eColorAttachmentOptimal;
-      layoutTransitionBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-      layoutTransitionBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-      layoutTransitionBarrier.image = mContext->mPresentImages[aImageId];
-
-      auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
-      layoutTransitionBarrier.subresourceRange = resourceRange;
+    auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
+    layoutTransitionBarrier.subresourceRange = resourceRange;
 
 
-      auto result = mContext->mDrawCommandBuffer.begin(&beginInfo);
+    auto result = commandBuffer.begin(&beginInfo);
 
-      mContext->mDrawCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
-                                                   vk::PipelineStageFlagBits::eTopOfPipe,
-                                                   vk::DependencyFlags(),
-                                                   nullptr,
-                                                   nullptr,
-                                                   layoutTransitionBarrier);
+    commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
+                                  vk::PipelineStageFlagBits::eTopOfPipe,
+                                  vk::DependencyFlags(),
+                                  nullptr,
+                                  nullptr,
+                                  layoutTransitionBarrier);
 
-      mContext->mDrawCommandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-
-
-      // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
-      mContext->mDrawCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, mContext->mPipeline);
-
-      // Bind descriptor sets describing shader binding points
-      mContext->mDrawCommandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mContext->mPipelineLayout, 0, mContext->mDescriptorSets, nullptr);
-
-      // take care of dynamic state:
-      mContext->mDrawCommandBuffer.setViewport(0, viewport);
-      mContext->mDrawCommandBuffer.setScissor(0, scissor);
-
-      mContext->mDrawCommandBuffer.bindVertexBuffers(0, mVertexMemory.mBuffer, vk::DeviceSize());
-      mContext->mDrawCommandBuffer.bindIndexBuffer(mIndexMemory.mBuffer, 0, vk::IndexType::eUint32);
-
-      
-      
-      
-      
-      
-      mContext->mDrawCommandBuffer.drawIndexed(6, 1, 0, 0, 1);
-
-      mContext->mDrawCommandBuffer.endRenderPass();
+    commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-      vk::ImageMemoryBarrier prePresentBarrier = {};
-      prePresentBarrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
-      prePresentBarrier.dstAccessMask = vk::AccessFlagBits::eMemoryRead;
-      prePresentBarrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
-      prePresentBarrier.newLayout = vk::ImageLayout::ePresentSrcKHR;
-      prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-      prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-      prePresentBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-      prePresentBarrier.image = mContext->mPresentImages[aImageId];
+    // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
+    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, mContext->mPipeline);
 
-      mContext->mDrawCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
-                                                   vk::PipelineStageFlagBits::eBottomOfPipe,
-                                                   vk::DependencyFlags(),
-                                                   nullptr,
-                                                   nullptr,
-                                                   prePresentBarrier);
-      mContext->mDrawCommandBuffer.end();
-    }
+    // Bind descriptor sets describing shader binding points
+    commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mContext->mPipelineLayout, 0, mContext->mDescriptorSets, nullptr);
+
+    // take care of dynamic state:
+    commandBuffer.setViewport(0, viewport);
+    commandBuffer.setScissor(0, scissor);
+
+    // Binding point 0 : Mesh vertex buffer
+    commandBuffer.bindVertexBuffers(0, mVertexMemory.mBuffer, vk::DeviceSize());
+    // Binding point 1 : Instance data buffer
+    commandBuffer.bindVertexBuffers(1, mInstanceBuffer.mBufferMemory.mBuffer, vk::DeviceSize());
+    commandBuffer.bindIndexBuffer(mIndexMemory.mBuffer, 0, vk::IndexType::eUint32);
+
+    commandBuffer.drawIndexed(6, static_cast<u32>(mMap.size()), 0, 0, 1);
+
+    commandBuffer.endRenderPass();
+
+    // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+    vk::ImageMemoryBarrier prePresentBarrier = {};
+    prePresentBarrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+    prePresentBarrier.dstAccessMask = vk::AccessFlagBits::eMemoryRead;
+    prePresentBarrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
+    prePresentBarrier.newLayout = vk::ImageLayout::ePresentSrcKHR;
+    prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    prePresentBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    prePresentBarrier.image = mContext->mPresentImages[mContext->mCurrentDrawBuffer];
+
+    commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
+                                  vk::PipelineStageFlagBits::eBottomOfPipe,
+                                  vk::DependencyFlags(),
+                                  nullptr,
+                                  nullptr,
+                                  prePresentBarrier);
+    commandBuffer.end();
   }
 };
 

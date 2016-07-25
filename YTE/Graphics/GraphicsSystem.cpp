@@ -387,10 +387,11 @@ namespace YTE
       self->mSetupCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
       vulkan_assert(self->mSetupCommandBuffer, "Failed to allocate setup command buffer.");
 
-      self->mDrawCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
-      vulkan_assert(self->mDrawCommandBuffer, "Failed to allocate draw command buffer.");
-
       self->mPresentImages = self->mLogicalDevice.getSwapchainImagesKHR(self->mSwapChain);
+
+      commandBufferAllocationInfo.setCommandBufferCount(static_cast<u32>(self->mPresentImages.size()));
+      self->mDrawCommandBuffers = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo);
+      vulkan_assert(self->mDrawCommandBuffers.size() == self->mPresentImages.size(), "Failed to allocate draw command buffer.");
 
       auto presentImagesViewCreateInfo = vk::ImageViewCreateInfo()
                                               .setViewType(vk::ImageViewType::e2D)
@@ -405,17 +406,17 @@ namespace YTE
       presentImagesViewCreateInfo.subresourceRange.setLevelCount(1);
       presentImagesViewCreateInfo.subresourceRange.setLayerCount(1);
 
-      auto imageCreateInfo = vk::ImageCreateInfo()
-        .setImageType(vk::ImageType::e2D)
-        .setFormat(vk::Format::eD16Unorm)
-        .setExtent({ self->mWidth, self->mHeight, 1 })
-        .setMipLevels(1)
-        .setArrayLayers(1)
-        .setSamples(vk::SampleCountFlagBits::e1)
-        .setTiling(vk::ImageTiling::eOptimal)
-        .setUsage(vk::ImageUsageFlagBits::eDepthStencilAttachment)
-        .setSharingMode(vk::SharingMode::eExclusive) // TODO: Change this when you learn more.
-        .setInitialLayout(vk::ImageLayout::eUndefined);
+      vk::ImageCreateInfo imageCreateInfo;
+      imageCreateInfo.setImageType(vk::ImageType::e2D);
+      imageCreateInfo.setFormat(vk::Format::eD16Unorm);
+      imageCreateInfo.setExtent({ self->mWidth, self->mHeight, 1 });
+      imageCreateInfo.setMipLevels(1);
+      imageCreateInfo.setArrayLayers(1);
+      imageCreateInfo.setSamples(vk::SampleCountFlagBits::e1);
+      imageCreateInfo.setTiling(vk::ImageTiling::eOptimal);
+      imageCreateInfo.setUsage(vk::ImageUsageFlagBits::eDepthStencilAttachment);
+      imageCreateInfo.setSharingMode(vk::SharingMode::eExclusive); // TODO: Change this when you learn more.
+      imageCreateInfo.setInitialLayout(vk::ImageLayout::eUndefined);
 
       self->mDepthImage = self->mLogicalDevice.createImage(imageCreateInfo);
 
@@ -460,11 +461,10 @@ namespace YTE
         vk::SemaphoreCreateInfo semaphoreCreateInfo;
         vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
       
-        u32 nextImageIdx;
-        auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
+        auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &self->mCurrentDrawBuffer);
         checkVulkanResult(result, "Could not acquireNextImageKHR.");
       
-        if (!transitioned.at(nextImageIdx))
+        if (!transitioned.at(self->mCurrentDrawBuffer))
         {
           // start recording out image layout change barrier on our setup command buffer:
           self->mSetupCommandBuffer.begin(&beginInfo);
@@ -475,13 +475,13 @@ namespace YTE
                                               .setNewLayout(vk::ImageLayout::ePresentSrcKHR)
                                               .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
                                               .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-                                              .setImage(self->mPresentImages[nextImageIdx]);
+                                              .setImage(self->mPresentImages[self->mCurrentDrawBuffer]);
       
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
           vk::ClearColorValue clear;
           clear.setFloat32( { 0.0f, 0.5f, 1.0f, 1.0f });
-          self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
+          self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[self->mCurrentDrawBuffer],
                                                     vk::ImageLayout::eTransferDstOptimal,
                                                     clear,
                                                     resourceRange);
@@ -513,7 +513,7 @@ namespace YTE
           // NOTE: Instead of eReleaseResources should it be 0?
           self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
       
-          transitioned[nextImageIdx] = true;
+          transitioned[self->mCurrentDrawBuffer] = true;
           ++doneCount;
         }
 
@@ -521,7 +521,7 @@ namespace YTE
         auto presentInfo = vk::PresentInfoKHR()
                                 .setSwapchainCount(1)
                                 .setPSwapchains(&self->mSwapChain)
-                                .setPImageIndices(&nextImageIdx);
+                                .setPImageIndices(&self->mCurrentDrawBuffer);
         
         self->mQueue.presentKHR(presentInfo);
       }
@@ -664,99 +664,6 @@ namespace YTE
         checkVulkanResult(result, "Failed to create framebuffer.");
       }
 
-
-      //// Create our Index buffer
-      //vk::MemoryAllocateInfo memAlloc;
-
-      //// Index buffer
-      //vk::BufferCreateInfo indexbufferInfo = {};
-      //indexbufferInfo.size = 6 * sizeof(u32);
-      //indexbufferInfo.usage = vk::BufferUsageFlagBits::eIndexBuffer;
-
-      //self->mLogicalDevice.createBuffer(&indexbufferInfo, nullptr, &self->mIndexInputBuffer);
-      //auto requirements = self->mLogicalDevice.getBufferMemoryRequirements(self->mIndexInputBuffer);
-
-      //memAlloc.allocationSize = requirements.size;
-
-
-      //memAlloc.memoryTypeIndex = GetMemoryType(requirements.memoryTypeBits, self->mPhysicalMemoryProperties,vk::MemoryPropertyFlagBits::eHostVisible);
-      //auto indexMemory = self->mLogicalDevice.allocateMemory(memAlloc);
-
-      //void *indexPtr = self->mLogicalDevice.mapMemory(indexMemory, 0, indexbufferInfo.size);
-      //auto indices = (u32*)indexPtr;
-      //indices[0] = 0;
-      //indices[1] = 1;
-      //indices[2] = 2;
-      //indices[3] = 2;
-      //indices[4] = 3;
-      //indices[5] = 0;
-
-      //self->mLogicalDevice.unmapMemory(indexMemory);
-
-      //self->mLogicalDevice.bindBufferMemory(self->mIndexInputBuffer, indexMemory, 0);
-
-      //// Create our vertex buffer:
-      //auto vertexInputBufferInfo = vk::BufferCreateInfo()
-      //                                  .setSize(sizeof(Triangle) * 4) // Size in bytes.
-      //                                  .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
-      //                                  .setSharingMode(vk::SharingMode::eExclusive); // TODO: Change to not exclusive.
-
-      //self->mVertexInputBuffer = self->mLogicalDevice.createBuffer(vertexInputBufferInfo);
-
-      //vulkan_assert(self->mVertexInputBuffer, "Failed to create vertex input buffer.");
-
-      //auto vertexBufferMemoryRequirements = self->mLogicalDevice.getBufferMemoryRequirements(self->mVertexInputBuffer);
-
-      //auto bufferAllocateInfo = vk::MemoryAllocateInfo()
-      //                               .setAllocationSize(vertexBufferMemoryRequirements.size);
-
-      //u32 vertexMemoryTypeBits = vertexBufferMemoryRequirements.memoryTypeBits;
-      //vk::MemoryPropertyFlags vertexDesiredMemoryFlags = vk::MemoryPropertyFlagBits::eHostVisible;
-
-      //u32 i = 0;
-      //for (auto &memoryType : self->mPhysicalMemoryProperties.memoryTypes)
-      //{
-      //  if (vertexMemoryTypeBits & 1) 
-      //  {
-      //    if ((memoryType.propertyFlags & vertexDesiredMemoryFlags) == vertexDesiredMemoryFlags) 
-      //    {
-      //      bufferAllocateInfo.memoryTypeIndex = (u32)i;
-      //      break;
-      //    }
-      //  }
-
-      //  vertexMemoryTypeBits = vertexMemoryTypeBits >> 1;
-
-      //  ++i;
-      //}
-
-      //auto vertexBufferMemory =  self->mLogicalDevice.allocateMemory(bufferAllocateInfo);
-      //vulkan_assert(vertexBufferMemory, "Failed to allocate buffer memory.");
-
-      //void *mapped = self->mLogicalDevice.mapMemory(vertexBufferMemory, 0, VK_WHOLE_SIZE);
-      //vulkan_assert(mapped, "Failed to map buffer memory.");
-
-      //mQuad = (Quad*)mapped;
-      //mQuad->mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
-      //mQuad->mVertex1.mUVCoordinates = { 0.0f, 0.0f};
-      //mQuad->mVertex1.mNormal = { 0.0f, 0.0f, 1.0};
-
-      //mQuad->mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
-      //mQuad->mVertex2.mUVCoordinates = { 1.0f, 0.0f };
-      //mQuad->mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
-
-      //mQuad->mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
-      //mQuad->mVertex3.mUVCoordinates = { 1.0f, 1.0f };
-      //mQuad->mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
-
-      //mQuad->mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
-      //mQuad->mVertex4.mUVCoordinates = { 0.0f, 1.0f };
-      //mQuad->mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
-
-      //self->mLogicalDevice.unmapMemory(vertexBufferMemory);
-
-      //self->mLogicalDevice.bindBufferMemory(self->mVertexInputBuffer, vertexBufferMemory, 0);
-
       // Prepare and initialize a uniform buffer block containing shader uniforms
       // In Vulkan there are no more single uniforms like in GL
       // All shader uniforms are passed as uniform buffer blocks 
@@ -852,39 +759,90 @@ namespace YTE
       shaderStageCreateInfo[1].pName = "main";        // shader entry point function name
       shaderStageCreateInfo[1].pSpecializationInfo = NULL;
 
-      vk::VertexInputBindingDescription vertexBindingDescription;
-      vertexBindingDescription.stride = sizeof(Vertex);
-      vertexBindingDescription.inputRate = vk::VertexInputRate::eVertex;
+      std::array<vk::VertexInputBindingDescription, 2> vertexBindingDescription;
+      // Binding Point 0: Vertex Mesh Data
+      vertexBindingDescription[0].stride = sizeof(Vertex);
+      vertexBindingDescription[0].inputRate = vk::VertexInputRate::eVertex;
+      vertexBindingDescription[0].binding = 0;
+
+      // Binding Point 0: Instance Data
+      vertexBindingDescription[1].stride = sizeof(TileMap::InstanceData);
+      vertexBindingDescription[1].inputRate = vk::VertexInputRate::eInstance;
+      vertexBindingDescription[1].binding = 1;
 
       u32 vertexOffset = 0;
+      u32 location = 0;
       
-      vk::VertexInputAttributeDescription vertexAttributeDescritpion[3];
-      vertexAttributeDescritpion[0].binding = 0;
-      vertexAttributeDescritpion[0].location = 0;
-      vertexAttributeDescritpion[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[0].offset = vertexOffset;
+      std::array<vk::VertexInputAttributeDescription, 6> vertexAttributeDescription;
+
+      /////////////////////////////////////////
+      // Per-Vertex Input Attributes
+      /////////////////////////////////////////
+      vertexAttributeDescription[location].binding = 0;
+      vertexAttributeDescription[location].location = location;
+      vertexAttributeDescription[location].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescription[location].offset = vertexOffset;
+
+      ++location;
 
       //glm::vec4 mPosition;
       vertexOffset += sizeof(glm::vec4);
 
-      vertexAttributeDescritpion[1].binding = 0;
-      vertexAttributeDescritpion[1].location = 1;
-      vertexAttributeDescritpion[1].format = vk::Format::eR32G32Sfloat;
-      vertexAttributeDescritpion[1].offset = vertexOffset;
+      vertexAttributeDescription[location].binding = 0;
+      vertexAttributeDescription[location].location = location;
+      vertexAttributeDescription[location].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[location].offset = vertexOffset;
+
+      ++location;
+
+      //glm::vec4 mColor;
+      vertexOffset += sizeof(glm::vec3);
+
+      vertexAttributeDescription[location].binding = 0;
+      vertexAttributeDescription[location].location = location;
+      vertexAttributeDescription[location].format = vk::Format::eR32G32Sfloat;
+      vertexAttributeDescription[location].offset = vertexOffset;
+
+      ++location;
 
       //glm::vec2 mUVCoordinates;
       vertexOffset += sizeof(glm::vec2);
 
-      vertexAttributeDescritpion[2].binding = 0;
-      vertexAttributeDescritpion[2].location = 2;
-      vertexAttributeDescritpion[2].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[2].offset = vertexOffset;
+      vertexAttributeDescription[location].binding = 0;
+      vertexAttributeDescription[location].location = location;
+      vertexAttributeDescription[location].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[location].offset = vertexOffset;
+
+      /////////////////////////////////////////
+      // Instanced Input Attributes
+      /////////////////////////////////////////
+
+      ++location;
+
+      //glm::vec3 inNormal;
+      vertexOffset += 0;
+      //vertexOffset += sizeof(glm::vec3);
+
+      vertexAttributeDescription[location].binding = 1;
+      vertexAttributeDescription[location].location = location;
+      vertexAttributeDescription[location].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[location].offset = vertexOffset;
+
+      ++location;
+
+      //glm::vec2 instancePosition;
+      vertexOffset += sizeof(glm::vec2);
+
+      vertexAttributeDescription[location].binding = 1;
+      vertexAttributeDescription[location].location = location;
+      vertexAttributeDescription[location].format = vk::Format::eR32Sint;
+      vertexAttributeDescription[location].offset = vertexOffset;
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
-      vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
-      vertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexBindingDescription;
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 3;
-      vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescritpion;
+      vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
+      vertexInputStateCreateInfo.pVertexBindingDescriptions = vertexBindingDescription.data();
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(vertexAttributeDescription.size());
+      vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescription.data();
 
       // vertex topology config:
       vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
@@ -1008,123 +966,10 @@ namespace YTE
     auto presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
     auto renderingCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
 
-    u32 nextImageIdx = 0;
-
-    auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
+    auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &self->mCurrentDrawBuffer);
     checkVulkanResult(result, "Could not acquireNextImageKHR.");
 
-
-
-
-
-
-
-    vk::CommandBufferBeginInfo beginInfo = {};
-    beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
-
-    // activate render pass:
-    vk::ClearValue clearValue[2];
-    clearValue[0].color.float32[0] = 0.0f;
-    clearValue[0].color.float32[1] = 0.7f;
-    clearValue[0].color.float32[2] = 1.0f;
-    clearValue[0].color.float32[3] = 1.0f;
-
-    clearValue[1].color.float32[0] = 1.0f;
-    clearValue[1].color.float32[2] = 0.0f;
-
-    vk::RenderPassBeginInfo renderPassBeginInfo = {};
-    renderPassBeginInfo.renderPass = self->mRenderPass;
-    renderPassBeginInfo.framebuffer = self->mFrameBuffers[nextImageIdx];
-    renderPassBeginInfo.renderArea = { 0, 0, self->mWidth, self->mHeight };
-    renderPassBeginInfo.clearValueCount = 2;
-    renderPassBeginInfo.pClearValues = clearValue;
-
-
-
-    // change image layout from VK_IMAGE_LAYOUT_PRESENT_SRC_KHR to VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-    vk::ImageMemoryBarrier layoutTransitionBarrier = {};
-    layoutTransitionBarrier.srcAccessMask = vk::AccessFlagBits::eMemoryRead;
-    layoutTransitionBarrier.dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead |
-      vk::AccessFlagBits::eColorAttachmentWrite;
-    layoutTransitionBarrier.oldLayout = vk::ImageLayout::ePresentSrcKHR;
-    layoutTransitionBarrier.newLayout = vk::ImageLayout::eColorAttachmentOptimal;
-    layoutTransitionBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    layoutTransitionBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    layoutTransitionBarrier.image = self->mPresentImages[nextImageIdx];
-
-    auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
-    layoutTransitionBarrier.subresourceRange = resourceRange;
-
-
-    self->mDrawCommandBuffer.begin(beginInfo);
-
-    self->mDrawCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
-                                                 vk::PipelineStageFlagBits::eTopOfPipe,
-                                                 vk::DependencyFlags(),
-                                                 nullptr,
-                                                 nullptr,
-                                                 layoutTransitionBarrier);
-
-    self->mDrawCommandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-
-
-    vk::Viewport viewport{ 0, 0, static_cast<float>(self->mWidth), static_cast<float>(self->mHeight), 0, 1 };
-    vk::Rect2D scissor{ { 0, 0 },{ self->mWidth, self->mHeight } };
-
-    // take care of dynamic state:
-    self->mDrawCommandBuffer.setViewport(0, viewport);
-    self->mDrawCommandBuffer.setScissor(0, scissor);
-
-
-
-
-
-
-
-
-    self->mDrawCommandBuffer.endRenderPass();
-
-
-
-    // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-    vk::ImageMemoryBarrier prePresentBarrier = {};
-    prePresentBarrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
-    prePresentBarrier.dstAccessMask = vk::AccessFlagBits::eMemoryRead;
-    prePresentBarrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
-    prePresentBarrier.newLayout = vk::ImageLayout::ePresentSrcKHR;
-    prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    prePresentBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    prePresentBarrier.image = self->mPresentImages[nextImageIdx];
-
-    self->mDrawCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
-                                                 vk::PipelineStageFlagBits::eBottomOfPipe,
-                                                 vk::DependencyFlags(),
-                                                 nullptr,
-                                                 nullptr,
-                                                 prePresentBarrier);
-    self->mDrawCommandBuffer.end();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    for (auto &map : mTileMaps)
-    {
-      map.Draw(nextImageIdx);
-    }
+    BuildCommandBuffer();
 
     // present:
     vk::Fence renderFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());
@@ -1134,8 +979,8 @@ namespace YTE
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = &presentCompleteSemaphore;
     submitInfo.pWaitDstStageMask = &waitStageMash;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &self->mDrawCommandBuffer;
+    submitInfo.commandBufferCount = 0;
+    submitInfo.pCommandBuffers = &self->mDrawCommandBuffers[self->mCurrentDrawBuffer];
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &renderingCompleteSemaphore;
     
@@ -1149,7 +994,7 @@ namespace YTE
     presentInfo.pWaitSemaphores = &renderingCompleteSemaphore;
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = &self->mSwapChain;
-    presentInfo.pImageIndices = &nextImageIdx;
+    presentInfo.pImageIndices = &self->mCurrentDrawBuffer;
 
     self->mQueue.presentKHR(presentInfo);
 
@@ -1178,6 +1023,22 @@ namespace YTE
     for (auto &window : mEngine->mWindows)
     {
       window->SwapBuffers();
+    }
+  }
+
+  void GraphicsSystem::BuildCommandBuffer()
+  {
+    if (mVulkanSuccess)
+    {
+      auto self = mPlatformSpecificData.Get<VulkanContext>();
+
+      for (auto &commandBuffer : self->mDrawCommandBuffers)
+      {
+        for (auto &map : mTileMaps)
+        {
+          map.SetupCommandBuffer();
+        }
+      }
     }
   }
 }

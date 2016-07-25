@@ -110,16 +110,37 @@ namespace YTE
     setImageLayout(cmdbuffer, image, aspectMask, oldImageLayout, newImageLayout, subresourceRange);
   }
 
-  void TextureLoader::createImage(uint32_t aWidth, uint32_t aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory)
+  Texture TextureLoader::loadTexture(const std::string & aFilename)
+  {
+    auto texture = createTextureImage(aFilename);
+    return SetupTexture(texture);
+  }
+
+  Texture TextureLoader::loadTexture(std::vector<std::string>& aFilenames)
+  {
+    auto texture = createTextureImage(aFilenames);
+    return SetupTexture(texture);
+  }
+
+  void TextureLoader::createImage(u32 aWidth, 
+                                  u32 aHeight, 
+                                  u32 aImageCount, 
+                                  vk::Format aFormat, 
+                                  vk::ImageTiling aTiling, 
+                                  vk::ImageUsageFlags aUsage, 
+                                  vk::MemoryPropertyFlags properties, 
+                                  vk::Image& aImage, 
+                                  vk::DeviceMemory &aImageMemory)
   {
     //Staging Image creation
     vk::ImageCreateInfo imageStagingInfo;
     imageStagingInfo.imageType = vk::ImageType::e2D;
     imageStagingInfo.extent.depth = 1;
     imageStagingInfo.extent.width = aWidth;
+
     imageStagingInfo.extent.height = aHeight;
     imageStagingInfo.mipLevels = 1;
-    imageStagingInfo.arrayLayers = 1;
+    imageStagingInfo.arrayLayers = aImageCount;
     imageStagingInfo.format = aFormat;
     imageStagingInfo.tiling = aTiling;
 
@@ -173,43 +194,121 @@ namespace YTE
 
     device.freeCommandBuffers(cmdPool, commandBuffer);
   }
+  
+  Texture TextureLoader::createTextureImage(std::vector<std::string> &aTextureFiles)
+  {
+    Texture texture;
+
+    std::vector<STBImageHolder> rawTexture;
+    rawTexture.resize(aTextureFiles.size());
+
+    u32 i = 0;
+
+    for (auto &filename : aTextureFiles)
+    {
+      rawTexture[i].mPixels.reset(stbi_load(filename.c_str(),
+                                            &rawTexture[i].mWidth,
+                                            &rawTexture[i].mHeight,
+                                            &rawTexture[i].mChannels,
+                                            STBI_rgb_alpha));
+
+      auto size = rawTexture[0].mWidth * rawTexture[0].mHeight;
+
+      rawTexture[0].mConvertedPixels.resize(size);
+
+      for (u32 i = 0; i < size; ++i)
+      {
+        Pixel<u8> *rawPixels = (Pixel<u8> *)rawTexture[0].mPixels.get();
+        rawTexture[0].mConvertedPixels[i].mR = rawPixels[i].mR;
+        rawTexture[0].mConvertedPixels[i].mG = rawPixels[i].mG;
+        rawTexture[0].mConvertedPixels[i].mB = rawPixels[i].mB;
+        rawTexture[0].mConvertedPixels[i].mA = rawPixels[i].mA;
+      }
+
+      ++i;
+    }
+
+    return createTextureImage(rawTexture);
+  }
 
   Texture TextureLoader::createTextureImage(const std::string &aTextureFile)
   {
     Texture texture;
 
-    int texWidth, texHeight, texChannels;
+    std::vector<STBImageHolder> rawTexture;
+    rawTexture.resize(1);
 
-    stbi_uc* pixels = stbi_load(aTextureFile.c_str(), 
-                                &texWidth, 
-                                &texHeight, 
-                                &texChannels, 
-                                STBI_rgb_alpha);
-    vk::DeviceSize imageSize = texWidth * texHeight * 4;
+    rawTexture[0].mPixels.reset(stbi_load(aTextureFile.c_str(),
+                                &rawTexture[0].mWidth,
+                                &rawTexture[0].mHeight,
+                                &rawTexture[0].mChannels,
+                                STBI_rgb_alpha));
 
-    assert(pixels && "failed to load texture image!");
+    auto size = rawTexture[0].mWidth * rawTexture[0].mHeight;
+
+    rawTexture[0].mConvertedPixels.resize(size);
+
+    for (u32 i = 0; i < size; ++i)
+    {
+      Pixel<u8> *rawPixels = (Pixel<u8> *)rawTexture[0].mPixels.get();
+      rawTexture[0].mConvertedPixels[i].mR = rawPixels[i].mR;
+      rawTexture[0].mConvertedPixels[i].mG = rawPixels[i].mG;
+      rawTexture[0].mConvertedPixels[i].mB = rawPixels[i].mB;
+      rawTexture[0].mConvertedPixels[i].mA = rawPixels[i].mA;
+    }
+
+    return createTextureImage(rawTexture);
+  }
+
+
+
+
+  Texture TextureLoader::createTextureImage(std::vector<STBImageHolder> &aRawTexures)
+  {
+    assert(aRawTexures.size() > 0 && "No textures sent to be created!");
+    Texture texture;
+
+    u32 width = aRawTexures[0].mWidth;
+    u32 height = aRawTexures[0].mHeight;
+
+    //vk::DeviceSize totalImageSize = 0;
+    vk::DeviceSize singleImageSize = width * height * sizeof(Pixel<u64>);
+
+    for (auto &holder : aRawTexures)
+    {
+      //totalImageSize += holder.mWidth * holder.mHeight * 4;
+
+      assert(width == holder.mWidth &&
+             height == holder.mHeight &&
+             "Textures have mismatched width/height! Currently must be the same");
+    }
 
     vk::Image stagingImage;
     vk::DeviceMemory stagingImageMemory;
 
-    createImage(texWidth, 
-                texHeight, 
-                vk::Format::eR8G8B8A8Unorm, 
-                vk::ImageTiling::eLinear, 
-                vk::ImageUsageFlagBits::eTransferSrc, 
-                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, 
-                stagingImage, 
+    createImage(width,
+                height,
+                static_cast<u32>(aRawTexures.size()),
+                vk::Format::eBc2UnormBlock,
+                vk::ImageTiling::eLinear,
+                vk::ImageUsageFlagBits::eTransferSrc,
+                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+                stagingImage,
                 stagingImageMemory);
 
-    void* data = device.mapMemory(stagingImageMemory, 0, imageSize);
-    memcpy(data, pixels, (size_t)imageSize);
+    u8 *data = (u8*)device.mapMemory(stagingImageMemory, 0, singleImageSize);
+
+    for (auto &texture : aRawTexures)
+    {
+      memcpy(data, texture.mConvertedPixels.data(), (size_t)singleImageSize);
+    }
+
     device.unmapMemory(stagingImageMemory);
 
-    stbi_image_free(pixels);
-
-    createImage(texWidth,
-                texHeight,
-                vk::Format::eR8G8B8A8Unorm,
+    createImage(width,
+                height,
+                static_cast<u32>(aRawTexures.size()),
+                vk::Format::eBc2UnormBlock,
                 vk::ImageTiling::eOptimal,
                 vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
                 vk::MemoryPropertyFlagBits::eDeviceLocal,
@@ -219,7 +318,7 @@ namespace YTE
 
     transitionImageLayout(stagingImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal);
     transitionImageLayout(texture.image, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
-    copyImage(stagingImage, texture.image, texWidth, texHeight);
+    copyImage(stagingImage, texture.image, width, height);
     transitionImageLayout(texture.image, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
     return texture;
@@ -318,7 +417,7 @@ namespace YTE
 
   void TextureLoader::createTextureImageView(Texture &aTexture)
   {
-    createImageView(aTexture.image, vk::Format::eR8G8B8A8Unorm, aTexture.view);
+    createImageView(aTexture.image, vk::Format::eBc2UnormBlock, aTexture.view);
   }
 
 
@@ -352,21 +451,18 @@ namespace YTE
   }
 
   // Load a 2D texture
-
-  Texture TextureLoader::loadTexture(const std::string &filename)
+  Texture TextureLoader::SetupTexture(Texture &aTexture)
   {
-    auto texture = createTextureImage(filename);
+    createTextureSampler(aTexture);
 
-    createTextureSampler(texture);
-
-    createTextureImageView(texture);
+    createTextureImageView(aTexture);
 
     // Fill descriptor image info that can be used for setting up descriptor sets
-    texture.descriptor.imageLayout = vk::ImageLayout::eGeneral;
-    texture.descriptor.imageView = texture.view;
-    texture.descriptor.sampler = texture.sampler;
+    aTexture.descriptor.imageLayout = vk::ImageLayout::eGeneral;
+    aTexture.descriptor.imageView = aTexture.view;
+    aTexture.descriptor.sampler = aTexture.sampler;
 
-    return texture;
+    return aTexture;
   }
 
   // Clean up vulkan resources used by a texture object

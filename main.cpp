@@ -66,6 +66,7 @@ int main(int aArgumentNumber, char **Arguments)
   };
 
   engine.mGraphicsSystem.CreateTileMap(map, tileSet);
+  engine.mGraphicsSystem.BuildCommandBuffer();
 
   std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
   std::chrono::time_point<std::chrono::high_resolution_clock> lastFrame = begin;

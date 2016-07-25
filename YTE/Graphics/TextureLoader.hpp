@@ -7,6 +7,7 @@
 #define YTE_TextureLoader_hpp
 
 #include <assert.h>
+#include <memory>
 
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
@@ -52,15 +53,34 @@ namespace YTE
 
   class TextureLoader
   {
-    private:
-    vk::PhysicalDevice physicalDevice;
-    vk::Device device;
-    vk::Queue queue;
-    vk::CommandBuffer cmdBuffer;
-    vk::CommandPool cmdPool;
-    vk::PhysicalDeviceMemoryProperties deviceMemoryProperties;
-
     public:
+
+    template <typename Type = u32>
+    struct Pixel
+    {
+      Type mR;
+      Type mG;
+      Type mB;
+      Type mA;
+    };
+
+    struct STBImageHolder
+    {
+      struct STBDeleter
+      {
+        void operator ()(stbi_uc* aPixels)
+        {
+          stbi_image_free(aPixels);
+        }
+      };
+
+      std::unique_ptr<stbi_uc, STBDeleter> mPixels;
+      std::vector<Pixel<u64>> mConvertedPixels;
+      i32 mWidth;
+      i32 mHeight;
+      i32 mChannels;
+    };
+
     TextureLoader(vk::PhysicalDevice aPhysicalDevice, vk::Device aDevice, vk::Queue aQueue, vk::CommandPool aCommandPool);
 
     ~TextureLoader();
@@ -73,7 +93,8 @@ namespace YTE
     void setImageLayout(vk::CommandBuffer cmdbuffer, vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout);
 
     // Load a 2D texture
-    Texture TextureLoader::loadTexture(const std::string &filename);
+    Texture loadTexture(const std::string &aFilename);
+    Texture loadTexture(std::vector<std::string> &aFilename);
 
     // Clean up vulkan resources used by a texture object
     void destroyTexture(Texture texture);
@@ -82,15 +103,28 @@ namespace YTE
     void createTextureImageView(Texture &aTexture);
     void createTextureSampler(Texture &aTexture);
 
-    void createImage(uint32_t aWidth, uint32_t aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
+    void createImage(u32 aWidth, u32 aHeight, u32 aImageCount, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
 
     void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height);
     vk::CommandBuffer beginSingleTimeCommands();
     void endSingleTimeCommands(vk::CommandBuffer commandBuffer);
-    void TextureLoader::transitionImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
-    Texture TextureLoader::createTextureImage(const std::string &aTextureFile);
+    void transitionImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
+    Texture createTextureImage(const std::string &aTextureFile);
+    Texture createTextureImage(std::vector<std::string> &aTextureFile);
+    Texture createTextureImage(std::vector<STBImageHolder> &aPixels);
+
+
+    Texture SetupTexture(Texture &aTexture);
 
     vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin);
+
+    private:
+    vk::PhysicalDevice physicalDevice;
+    vk::Device device;
+    vk::Queue queue;
+    vk::CommandBuffer cmdBuffer;
+    vk::CommandPool cmdPool;
+    vk::PhysicalDeviceMemoryProperties deviceMemoryProperties;
   };
 };
 

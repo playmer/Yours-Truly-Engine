@@ -32,24 +32,44 @@ namespace YTE
   class TileMap
   {
     public:
-    TileMap(std::vector<Tile> aMap, std::vector<std::string> aTextureFiles, VulkanContext *aContext);
+    struct InstanceData 
+    {
+      glm::vec2 mPostion;
+      u32 mTile;
+    };
+
+
+    struct InstanceBuffer
+    {
+      BufferMemory mBufferMemory;
+      size_t mSize = 0;
+      vk::DescriptorBufferInfo mDescriptor;
+    };
+
+    TileMap(std::vector<Tile> &aMap, std::vector<std::string> &aTextureFiles, VulkanContext *aContext);
 
     ~TileMap();
 
-    void Draw(u32 aImageId);
+    void PrepareInstanceData();
+
+    void SetupCommandBuffer();
+    void Draw();
 
     private:
     std::vector<Tile> mMap;
-    std::vector<Texture> mTextures;
+    Texture mTexture;
     VulkanContext *mContext;
     BufferMemory mVertexMemory;
     BufferMemory mIndexMemory;
+
+    InstanceBuffer mInstanceBuffer;
 
     UniformBufferObject mUniformObject;
     BufferMemory mUniformMemory;
 
     glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
-    float mZ = 0.0f;
+    glm::vec3 mScale = { 1.0f, 1.0f, 1.0f };
+    glm::vec3 mRotation = { 0.0f, 0.0f, 0.0f };
   };
 };
 

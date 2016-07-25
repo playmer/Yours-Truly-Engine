@@ -39,6 +39,7 @@ namespace YTE
     void Initialize();
 
     void Update(float aDt);
+    void BuildCommandBuffer();
     void VulkanRender();
 
     void CreateTileMap(std::vector<Tile> aMap, std::vector<std::string> aTextureFiles);

@@ -219,7 +219,10 @@ namespace YTE
 
     vk::Queue mQueue;
     vk::CommandBuffer mSetupCommandBuffer;
-    vk::CommandBuffer mDrawCommandBuffer;
+
+    std::vector<vk::CommandBuffer> mDrawCommandBuffers;
+    u32 mCurrentDrawBuffer;
+
     std::vector<vk::ImageView> mPresentImageViews;
 
     std::vector<vk::Image> mPresentImages;
