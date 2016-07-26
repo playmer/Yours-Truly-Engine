@@ -9,5 +9,6 @@
 namespace YTE
 {
   struct Tile;
+  struct Texture;
 }
 #endif

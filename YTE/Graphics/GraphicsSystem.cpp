@@ -376,7 +376,7 @@ namespace YTE
       self->mCommandPool = self->mLogicalDevice.createCommandPool(commandPoolCreateInfo);
       vulkan_assert(self->mCommandPool, "Failed to create command pool.");
 
-      TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, self->mCommandPool);
+      TextureLoader loader(self);
       self->mDefaultTexture = loader.loadTexture("./Textures/DefaultTexture.png");
 
       auto commandBufferAllocationInfo = vk::CommandBufferAllocateInfo()

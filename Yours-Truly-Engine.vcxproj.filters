@@ -3447,6 +3447,9 @@
     <ClInclude Include="YTE\Graphics\ForwardDeclarations.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="YTE\Graphics\Texture.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\glm\gtx\associated_min_max.inl">

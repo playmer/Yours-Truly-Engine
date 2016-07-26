@@ -5,27 +5,22 @@
 
 namespace YTE
 {
-  TextureLoader::TextureLoader(vk::PhysicalDevice aPhysicalDevice, vk::Device aDevice, vk::Queue aQueue, vk::CommandPool aCommandPool)
+  TextureLoader::TextureLoader(VulkanContext *aContext)
+    : mContext(aContext)
   {
-    physicalDevice = aPhysicalDevice;
-    device = aDevice;
-    queue = aQueue;
-    cmdPool = aCommandPool;
-    deviceMemoryProperties = physicalDevice.getMemoryProperties();
-
     // Create command buffer for submitting image barriers
     // and converting tilings
     vk::CommandBufferAllocateInfo cmdBufInfo = {};
-    cmdBufInfo.commandPool = cmdPool;
+    cmdBufInfo.commandPool = mContext->mCommandPool;
     cmdBufInfo.level = vk::CommandBufferLevel::ePrimary;
     cmdBufInfo.commandBufferCount = 1;
 
-    cmdBuffer = device.allocateCommandBuffers(cmdBufInfo)[0];
+    mCommandBuffer = mContext->mLogicalDevice.allocateCommandBuffers(cmdBufInfo)[0];
   }
 
   TextureLoader::~TextureLoader()
   {
-    device.freeCommandBuffers(cmdPool, cmdBuffer);
+    mContext->mLogicalDevice.freeCommandBuffers(mContext->mCommandPool, mCommandBuffer);
   }
 
   void TextureLoader::setImageLayout(vk::CommandBuffer cmdBuffer, vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout, vk::ImageSubresourceRange subresourceRange)
@@ -133,45 +128,48 @@ namespace YTE
                                   vk::DeviceMemory &aImageMemory)
   {
     //Staging Image creation
-    vk::ImageCreateInfo imageStagingInfo;
-    imageStagingInfo.imageType = vk::ImageType::e2D;
-    imageStagingInfo.extent.depth = 1;
-    imageStagingInfo.extent.width = aWidth;
-
-    imageStagingInfo.extent.height = aHeight;
-    imageStagingInfo.mipLevels = 1;
-    imageStagingInfo.arrayLayers = aImageCount;
-    imageStagingInfo.format = aFormat;
-    imageStagingInfo.tiling = aTiling;
-
+    vk::ImageCreateInfo imageInfo;
+    imageInfo.imageType = vk::ImageType::e2D;
+    imageInfo.extent.depth = 1;
+    imageInfo.extent.width = aWidth;
+    
+    imageInfo.extent.height = aHeight;
+    imageInfo.mipLevels = 1;
+    imageInfo.arrayLayers = aImageCount;
+    imageInfo.format = aFormat;
+    imageInfo.tiling = aTiling;
+    
     // We wish to preserve any texels. we would use vk::ImageLayout::eUninitialized
     // if we were using this for a depth or color buffer.
-    imageStagingInfo.initialLayout = vk::ImageLayout::ePreinitialized;
-    imageStagingInfo.usage = aUsage;
-    imageStagingInfo.sharingMode = vk::SharingMode::eExclusive;
-    imageStagingInfo.samples = vk::SampleCountFlagBits::e1;
-    imageStagingInfo.flags = (vk::ImageCreateFlagBits)0;
+    imageInfo.initialLayout = vk::ImageLayout::ePreinitialized;
+    imageInfo.usage = aUsage;
+    imageInfo.sharingMode = vk::SharingMode::eExclusive;
+    imageInfo.samples = vk::SampleCountFlagBits::e1;
+    imageInfo.flags = (vk::ImageCreateFlagBits)0;
+    
+    aImage = mContext->mLogicalDevice.createImage(imageInfo);
 
-    aImage = device.createImage(imageStagingInfo);
+    auto memoryRequirements = mContext->mLogicalDevice.getImageMemoryRequirements(aImage);
 
-    auto memoryRequirements = device.getImageMemoryRequirements(aImage);
+
+    auto deviceMemoryProperties = mContext->mPhysicalDevice.getMemoryProperties();
 
     vk::MemoryAllocateInfo allocInfo;
     allocInfo.allocationSize = memoryRequirements.size;
     allocInfo.memoryTypeIndex = GetMemoryType(memoryRequirements.memoryTypeBits, deviceMemoryProperties, properties);
 
-    aImageMemory = device.allocateMemory(allocInfo);
-    device.bindImageMemory(aImage, aImageMemory, 0);
+    aImageMemory = mContext->mLogicalDevice.allocateMemory(allocInfo);
+    mContext->mLogicalDevice.bindImageMemory(aImage, aImageMemory, 0);
   }
 
   vk::CommandBuffer TextureLoader::beginSingleTimeCommands()
   {
     vk::CommandBufferAllocateInfo allocInfo = {};
     allocInfo.level = vk::CommandBufferLevel::ePrimary;
-    allocInfo.commandPool = cmdPool;
+    allocInfo.commandPool = mContext->mCommandPool;
     allocInfo.commandBufferCount = 1;
 
-    vk::CommandBuffer commandBuffer = device.allocateCommandBuffers(allocInfo)[0];
+    vk::CommandBuffer commandBuffer = mContext->mLogicalDevice.allocateCommandBuffers(allocInfo)[0];
 
     vk::CommandBufferBeginInfo beginInfo = {};
     beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
@@ -189,10 +187,10 @@ namespace YTE
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    queue.submit(submitInfo, nullptr);
-    queue.waitIdle();
+    mContext->mQueue.submit(submitInfo, nullptr);
+    mContext->mQueue.waitIdle();
 
-    device.freeCommandBuffers(cmdPool, commandBuffer);
+    mContext->mLogicalDevice.freeCommandBuffers(mContext->mCommandPool, commandBuffer);
   }
   
   Texture TextureLoader::createTextureImage(std::vector<std::string> &aTextureFiles)
@@ -283,20 +281,29 @@ namespace YTE
              "Textures have mismatched width/height! Currently must be the same");
     }
 
-    vk::Image stagingImage;
-    vk::DeviceMemory stagingImageMemory;
+    //vk::Image stagingImage;
+    //vk::DeviceMemory stagingImageMemory;
+    //
+    //createImage(width,
+    //            height,
+    //            static_cast<u32>(aRawTexures.size()),
+    //            vk::Format::eR8G8B8A8Uint,
+    //            vk::ImageTiling::eOptimal,
+    //            vk::ImageUsageFlagBits::eTransferSrc,
+    //            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+    //            stagingImage,
+    //            stagingImageMemory);
 
-    createImage(width,
-                height,
-                static_cast<u32>(aRawTexures.size()),
-                vk::Format::eR8G8B8A8Uint,
-                vk::ImageTiling::eOptimal,
-                vk::ImageUsageFlagBits::eTransferSrc,
-                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                stagingImage,
-                stagingImageMemory);
 
-    u8 *data = (u8*)device.mapMemory(stagingImageMemory, 0, singleImageSize);
+
+    // TODO: Make the size of the Pixels/ImageFormat configurable.
+    auto bufferSize = width * height * aRawTexures.size() * sizeof(Pixel<u8>);
+    
+    auto stagingBuffer = mContext->CreateBuffer(static_cast<u32>(bufferSize),
+                                                vk::BufferUsageFlagBits::eTransferSrc,
+                                                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+
+    u8 *data = (u8*)mContext->mLogicalDevice.mapMemory(stagingBuffer.mMemory, 0, singleImageSize);
 
     u32 i = 0;
     for (auto &texture : aRawTexures)
@@ -305,7 +312,7 @@ namespace YTE
       ++i;
     }
 
-    device.unmapMemory(stagingImageMemory);
+    mContext->mLogicalDevice.unmapMemory(stagingBuffer.mMemory);
 
     createImage(width,
                 height,
@@ -318,9 +325,9 @@ namespace YTE
                 texture.deviceMemory
                 );
 
-    transitionImageLayout(stagingImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal);
+    //transitionImageLayout(stagingImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal);
     transitionImageLayout(texture.image, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
-    copyImage(stagingImage, texture.image, width, height);
+    copyImage(stagingBuffer.mBuffer, texture.image, width, height, static_cast<u32>(aRawTexures.size()));
     transitionImageLayout(texture.image, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
     return texture;
@@ -374,7 +381,8 @@ namespace YTE
     endSingleTimeCommands(commandBuffer);
   }
 
-  void TextureLoader::copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height)
+
+  void TextureLoader::copyImage(vk::Buffer srcImageBuffer, vk::Image dstImage, u32 aWidth, u32 aHeight, u32 aLayerCount)
   {
     vk::CommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -382,7 +390,35 @@ namespace YTE
     subResource.aspectMask = vk::ImageAspectFlagBits::eColor;
     subResource.baseArrayLayer = 0;
     subResource.mipLevel = 0;
-    subResource.layerCount = 1;
+    subResource.layerCount = aLayerCount;
+
+    vk::BufferImageCopy region = {};
+    region.imageSubresource = subResource;
+    region.imageExtent.width = aWidth;
+    region.imageExtent.height = aHeight;
+    region.imageExtent.depth = 1;
+    region.bufferOffset = 0;
+    region.imageOffset = { 0, 0, 0 };
+    region.bufferImageHeight;
+    region.bufferRowLength;
+
+    commandBuffer.copyBufferToImage(srcImageBuffer,
+                                    dstImage,
+                                    vk::ImageLayout::eTransferDstOptimal,
+                                    region);
+
+    endSingleTimeCommands(commandBuffer);
+  }
+
+  void TextureLoader::copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height, u32 aLayerCount)
+  {
+    vk::CommandBuffer commandBuffer = beginSingleTimeCommands();
+
+    vk::ImageSubresourceLayers subResource = {};
+    subResource.aspectMask = vk::ImageAspectFlagBits::eColor;
+    subResource.baseArrayLayer = 0;
+    subResource.mipLevel = 0;
+    subResource.layerCount = aLayerCount;
 
     vk::ImageCopy region = {};
     region.srcSubresource = subResource;
@@ -414,7 +450,7 @@ namespace YTE
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 
-    aImageView = device.createImageView(viewInfo);
+    aImageView = mContext->mLogicalDevice.createImageView(viewInfo);
   }
 
   void TextureLoader::createTextureImageView(Texture &aTexture)
@@ -449,7 +485,7 @@ namespace YTE
     samplerInfo.minLod = 0.0f;
     samplerInfo.maxLod = 0.0f;
 
-    aTexture.sampler = device.createSampler(samplerInfo);
+    aTexture.sampler = mContext->mLogicalDevice.createSampler(samplerInfo);
   }
 
   // Load a 2D texture
@@ -468,22 +504,22 @@ namespace YTE
   }
 
   // Clean up vulkan resources used by a texture object
-
   void TextureLoader::destroyTexture(Texture texture)
   {
-    device.destroyImageView(texture.view, nullptr);
-    device.destroyImage(texture.image, nullptr);
-    device.destroySampler(texture.sampler, nullptr);
-    device.freeMemory(texture.deviceMemory, nullptr);
+    mContext->mLogicalDevice.destroyImageView(texture.view, nullptr);
+    mContext->mLogicalDevice.destroyImage(texture.image, nullptr);
+    mContext->mLogicalDevice.destroySampler(texture.sampler, nullptr);
+    mContext->mLogicalDevice.freeMemory(texture.deviceMemory, nullptr);
   }
+
   inline vk::CommandBuffer TextureLoader::createCommandBuffer(vk::CommandBufferLevel level, bool begin)
   {
     vk::CommandBufferAllocateInfo cmdBufAllocateInfo;
-    cmdBufAllocateInfo.commandPool = cmdPool;
+    cmdBufAllocateInfo.commandPool = mContext->mCommandPool;
     cmdBufAllocateInfo.level = level;
     cmdBufAllocateInfo.commandBufferCount = 1;
 
-    auto cmdBuffer = device.allocateCommandBuffers(cmdBufAllocateInfo)[0];
+    auto cmdBuffer = mContext->mLogicalDevice.allocateCommandBuffers(cmdBufAllocateInfo)[0];
 
     // If requested, also start the new command buffer
     if (begin)

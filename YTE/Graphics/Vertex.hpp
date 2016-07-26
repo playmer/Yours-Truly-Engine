@@ -10,7 +10,7 @@
 
 #include "glm.hpp"
 
-struct Vertex
+struct RealVertex
 {
   glm::vec3 mPosition;
   glm::vec2 mTexture;
@@ -19,9 +19,9 @@ struct Vertex
   glm::vec3 mTangent;
   glm::vec3 mBinormal;
 
-  Vertex() {}
+  RealVertex() {}
 
-  Vertex(const glm::vec3& aPosition, const glm::vec2& aTexture, const glm::vec3& aNormal, const glm::vec3& aTangent, const glm::vec3& aBinormal, const glm::vec3& aColor)
+  RealVertex(const glm::vec3& aPosition, const glm::vec2& aTexture, const glm::vec3& aNormal, const glm::vec3& aTangent, const glm::vec3& aBinormal, const glm::vec3& aColor)
   {
     mPosition = aPosition;
     mTexture = aTexture;

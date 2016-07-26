@@ -34,7 +34,7 @@ namespace YTE
       uint32_t NumIndices;
       uint32_t MaterialIndex;
       uint32_t vertexBase;
-      std::vector<Vertex> Vertices;
+      std::vector<RealVertex> Vertices;
       std::vector<unsigned int> Indices;
     };
 

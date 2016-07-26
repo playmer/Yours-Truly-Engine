@@ -16,6 +16,11 @@
 
 #include "YTE/Core/Types.hpp"
 
+#include "YTE/Graphics/Texture.hpp"
+
+
+#include "YTE/Graphics/VulkanContext.hpp"
+
 namespace YTE
 {
   template<typename FlagType>
@@ -36,20 +41,6 @@ namespace YTE
     // todo : throw error
     return 0;
   }
-
-  struct Texture
-  {
-    vk::Sampler sampler;
-    vk::Image image;
-    vk::ImageLayout imageLayout;
-    vk::DeviceMemory deviceMemory;
-    vk::ImageView view;
-    u32 width;
-    u32 height;
-    u32 mipLevels;
-    u32 layerCount;
-    vk::DescriptorImageInfo descriptor;
-  };
 
   class TextureLoader
   {
@@ -81,7 +72,7 @@ namespace YTE
       i32 mChannels;
     };
 
-    TextureLoader(vk::PhysicalDevice aPhysicalDevice, vk::Device aDevice, vk::Queue aQueue, vk::CommandPool aCommandPool);
+    TextureLoader(VulkanContext *aContext);
 
     ~TextureLoader();
 
@@ -103,28 +94,26 @@ namespace YTE
     void createTextureImageView(Texture &aTexture);
     void createTextureSampler(Texture &aTexture);
 
-    void createImage(u32 aWidth, u32 aHeight, u32 aImageCount, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
-
-    void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height);
-    vk::CommandBuffer beginSingleTimeCommands();
-    void endSingleTimeCommands(vk::CommandBuffer commandBuffer);
-    void transitionImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
     Texture createTextureImage(const std::string &aTextureFile);
     Texture createTextureImage(std::vector<std::string> &aTextureFile);
     Texture createTextureImage(std::vector<STBImageHolder> &aPixels);
 
+    void createImage(u32 aWidth, u32 aHeight, u32 aImageCount, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
+
+    void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height, u32 aLayerCount);
+    void copyImage(vk::Buffer srcImageBuffer, vk::Image dstImage, u32 width, u32 height, u32 aLayerCount);
+
+    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin);
+    vk::CommandBuffer beginSingleTimeCommands();
+    void endSingleTimeCommands(vk::CommandBuffer commandBuffer);
+    void transitionImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
 
     Texture SetupTexture(Texture &aTexture);
 
-    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin);
 
     private:
-    vk::PhysicalDevice physicalDevice;
-    vk::Device device;
-    vk::Queue queue;
-    vk::CommandBuffer cmdBuffer;
-    vk::CommandPool cmdPool;
-    vk::PhysicalDeviceMemoryProperties deviceMemoryProperties;
+    VulkanContext *mContext;
+    vk::CommandBuffer mCommandBuffer;
   };
 };
 

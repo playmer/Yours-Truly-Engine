@@ -1183,6 +1183,7 @@
     <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp" />
     <ClInclude Include="YTE\Graphics\Mesh.hpp" />
     <ClInclude Include="YTE\Graphics\MeshLoader.hpp" />
+    <ClInclude Include="YTE\Graphics\Texture.hpp" />
     <ClInclude Include="YTE\Graphics\TextureLoader.hpp" />
     <ClInclude Include="YTE\Graphics\TileMap.hpp" />
     <ClInclude Include="YTE\Graphics\Vertex.hpp" />

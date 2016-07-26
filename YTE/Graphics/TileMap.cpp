@@ -1,8 +1,8 @@
 //////////////////////////////////////////////
 // Author: Joshua T. Fisher
 //////////////////////////////////////////////
+#include "YTE/Graphics/TextureLoader.hpp"
 #include "YTE/Graphics/TileMap.hpp"
-#include "TileMap.hpp"
 
 #include "gtc/matrix_transform.hpp"
 
@@ -17,7 +17,7 @@ namespace YTE
       //tile.mPosition.y *= -1;
     }
 
-    TextureLoader loader(mContext->mPhysicalDevice, mContext->mLogicalDevice, mContext->mQueue, mContext->mCommandPool);
+    TextureLoader loader(mContext);
 
     //for (auto &textureFile : aTextureFiles)
     //{
