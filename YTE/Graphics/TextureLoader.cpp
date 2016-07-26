@@ -266,8 +266,14 @@ namespace YTE
     assert(aRawTexures.size() > 0 && "No textures sent to be created!");
     Texture texture;
 
+
     u32 width = aRawTexures[0].mWidth;
+    texture.mHeight = width;
+
     u32 height = aRawTexures[0].mHeight;
+    texture.mHeight = height;
+
+    texture.mLayerCount = static_cast<u32>(aRawTexures.size());
 
     //vk::DeviceSize totalImageSize = 0;
     vk::DeviceSize singleImageSize = width * height * 4;
@@ -321,14 +327,14 @@ namespace YTE
                 vk::ImageTiling::eOptimal,
                 vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
                 vk::MemoryPropertyFlagBits::eDeviceLocal,
-                texture.image,
-                texture.deviceMemory
+                texture.mImage,
+                texture.mDeviceMemory
                 );
 
     //transitionImageLayout(stagingImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal);
-    transitionImageLayout(texture.image, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
-    copyImage(stagingBuffer.mBuffer, texture.image, width, height, static_cast<u32>(aRawTexures.size()));
-    transitionImageLayout(texture.image, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+    transitionImageLayout(texture.mImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
+    copyImage(stagingBuffer.mBuffer, texture.mImage, width, height, static_cast<u32>(aRawTexures.size()));
+    transitionImageLayout(texture.mImage, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
     return texture;
   }
@@ -438,24 +444,24 @@ namespace YTE
     endSingleTimeCommands(commandBuffer);
   }
 
-  void TextureLoader::createImageView(vk::Image aImage, vk::Format aFormat, vk::ImageView &aImageView)
+  void TextureLoader::createImageView(Texture &aTexture, vk::Format aFormat)
   {
     vk::ImageViewCreateInfo viewInfo = {};
-    viewInfo.image = aImage;
+    viewInfo.image = aTexture.mImage;
     viewInfo.viewType = vk::ImageViewType::e2D;
     viewInfo.format = aFormat;
     viewInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
     viewInfo.subresourceRange.baseArrayLayer = 0;
-    viewInfo.subresourceRange.layerCount = 1;
+    viewInfo.subresourceRange.layerCount = aTexture.mLayerCount;
 
-    aImageView = mContext->mLogicalDevice.createImageView(viewInfo);
+    aTexture.mView = mContext->mLogicalDevice.createImageView(viewInfo);
   }
 
   void TextureLoader::createTextureImageView(Texture &aTexture)
   {
-    createImageView(aTexture.image, vk::Format::eR8G8B8A8Uint, aTexture.view);
+    createImageView(aTexture, vk::Format::eR8G8B8A8Uint);
   }
 
 
@@ -485,7 +491,7 @@ namespace YTE
     samplerInfo.minLod = 0.0f;
     samplerInfo.maxLod = 0.0f;
 
-    aTexture.sampler = mContext->mLogicalDevice.createSampler(samplerInfo);
+    aTexture.mSampler = mContext->mLogicalDevice.createSampler(samplerInfo);
   }
 
   // Load a 2D texture
@@ -496,9 +502,9 @@ namespace YTE
     createTextureImageView(aTexture);
 
     // Fill descriptor image info that can be used for setting up descriptor sets
-    aTexture.descriptor.imageLayout = vk::ImageLayout::eGeneral;
-    aTexture.descriptor.imageView = aTexture.view;
-    aTexture.descriptor.sampler = aTexture.sampler;
+    aTexture.mDescriptor.imageLayout = vk::ImageLayout::eGeneral;
+    aTexture.mDescriptor.imageView = aTexture.mView;
+    aTexture.mDescriptor.sampler = aTexture.mSampler;
 
     return aTexture;
   }
@@ -506,10 +512,10 @@ namespace YTE
   // Clean up vulkan resources used by a texture object
   void TextureLoader::destroyTexture(Texture texture)
   {
-    mContext->mLogicalDevice.destroyImageView(texture.view, nullptr);
-    mContext->mLogicalDevice.destroyImage(texture.image, nullptr);
-    mContext->mLogicalDevice.destroySampler(texture.sampler, nullptr);
-    mContext->mLogicalDevice.freeMemory(texture.deviceMemory, nullptr);
+    mContext->mLogicalDevice.destroyImageView(texture.mView, nullptr);
+    mContext->mLogicalDevice.destroyImage(texture.mImage, nullptr);
+    mContext->mLogicalDevice.destroySampler(texture.mSampler, nullptr);
+    mContext->mLogicalDevice.freeMemory(texture.mDeviceMemory, nullptr);
   }
 
   inline vk::CommandBuffer TextureLoader::createCommandBuffer(vk::CommandBufferLevel level, bool begin)

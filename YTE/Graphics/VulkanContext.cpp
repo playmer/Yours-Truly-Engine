@@ -200,8 +200,8 @@ namespace YTE
 
     //ImageDescriptor for the color map texture;
     vk::DescriptorImageInfo textureDescriptor;
-    textureDescriptor.sampler = mDefaultTexture.sampler;
-    textureDescriptor.imageView = mDefaultTexture.view;
+    textureDescriptor.sampler = mDefaultTexture.mSampler;
+    textureDescriptor.imageView = mDefaultTexture.mView;
     textureDescriptor.imageLayout = vk::ImageLayout::eGeneral; // NOTE: Always this currently.
 
     // Update the descriptor set determining the shader binding points
@@ -228,8 +228,8 @@ namespace YTE
   {
     //ImageDescriptor for the color map texture;
     vk::DescriptorImageInfo textureDescriptor;
-    textureDescriptor.sampler = aTexture.sampler;
-    textureDescriptor.imageView = aTexture.view;
+    textureDescriptor.sampler = aTexture.mSampler;
+    textureDescriptor.imageView = aTexture.mView;
     textureDescriptor.imageLayout = vk::ImageLayout::eGeneral; // NOTE: Always this currently.
 
     mWriteDescriptorSet[1].pImageInfo = &textureDescriptor;
