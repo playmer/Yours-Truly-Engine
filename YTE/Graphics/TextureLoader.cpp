@@ -399,8 +399,8 @@ namespace YTE
     region.imageExtent.depth = 1;
     region.bufferOffset = 0;
     region.imageOffset = { 0, 0, 0 };
-    region.bufferImageHeight;
-    region.bufferRowLength;
+    region.bufferImageHeight = aHeight;
+    region.bufferRowLength = aWidth;
 
     commandBuffer.copyBufferToImage(srcImageBuffer,
                                     dstImage,
