@@ -214,16 +214,16 @@ namespace YTE
 
       auto size = rawTexture[0].mWidth * rawTexture[0].mHeight;
 
-      rawTexture[0].mConvertedPixels.resize(size);
-
-      for (u32 i = 0; i < size; ++i)
-      {
-        Pixel<u8> *rawPixels = (Pixel<u8> *)rawTexture[0].mPixels.get();
-        rawTexture[0].mConvertedPixels[i].mR = rawPixels[i].mR;
-        rawTexture[0].mConvertedPixels[i].mG = rawPixels[i].mG;
-        rawTexture[0].mConvertedPixels[i].mB = rawPixels[i].mB;
-        rawTexture[0].mConvertedPixels[i].mA = rawPixels[i].mA;
-      }
+      //rawTexture[0].mConvertedPixels.resize(size);
+      //
+      //for (u32 i = 0; i < size; ++i)
+      //{
+      //  Pixel<u8> *rawPixels = (Pixel<u8> *)rawTexture[0].mPixels.get();
+      //  rawTexture[0].mConvertedPixels[i].mR = rawPixels[i].mR;
+      //  rawTexture[0].mConvertedPixels[i].mG = rawPixels[i].mG;
+      //  rawTexture[0].mConvertedPixels[i].mB = rawPixels[i].mB;
+      //  rawTexture[0].mConvertedPixels[i].mA = rawPixels[i].mA;
+      //}
 
       ++i;
     }
@@ -246,16 +246,16 @@ namespace YTE
 
     auto size = rawTexture[0].mWidth * rawTexture[0].mHeight;
 
-    rawTexture[0].mConvertedPixels.resize(size);
-
-    for (u32 i = 0; i < size; ++i)
-    {
-      Pixel<u8> *rawPixels = (Pixel<u8> *)rawTexture[0].mPixels.get();
-      rawTexture[0].mConvertedPixels[i].mR = rawPixels[i].mR;
-      rawTexture[0].mConvertedPixels[i].mG = rawPixels[i].mG;
-      rawTexture[0].mConvertedPixels[i].mB = rawPixels[i].mB;
-      rawTexture[0].mConvertedPixels[i].mA = rawPixels[i].mA;
-    }
+    //rawTexture[0].mConvertedPixels.resize(size);
+    //
+    //for (u32 i = 0; i < size; ++i)
+    //{
+    //  Pixel<u8> *rawPixels = (Pixel<u8> *)rawTexture[0].mPixels.get();
+    //  rawTexture[0].mConvertedPixels[i].mR = rawPixels[i].mR;
+    //  rawTexture[0].mConvertedPixels[i].mG = rawPixels[i].mG;
+    //  rawTexture[0].mConvertedPixels[i].mB = rawPixels[i].mB;
+    //  rawTexture[0].mConvertedPixels[i].mA = rawPixels[i].mA;
+    //}
 
     return createTextureImage(rawTexture);
   }
@@ -272,7 +272,7 @@ namespace YTE
     u32 height = aRawTexures[0].mHeight;
 
     //vk::DeviceSize totalImageSize = 0;
-    vk::DeviceSize singleImageSize = width * height * sizeof(Pixel<u64>);
+    vk::DeviceSize singleImageSize = width * height * 4;
 
     for (auto &holder : aRawTexures)
     {
@@ -289,7 +289,7 @@ namespace YTE
     createImage(width,
                 height,
                 static_cast<u32>(aRawTexures.size()),
-                vk::Format::eBc2UnormBlock,
+                vk::Format::eR8G8B8A8Uint,
                 vk::ImageTiling::eLinear,
                 vk::ImageUsageFlagBits::eTransferSrc,
                 vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
@@ -300,7 +300,7 @@ namespace YTE
 
     for (auto &texture : aRawTexures)
     {
-      memcpy(data, texture.mConvertedPixels.data(), (size_t)singleImageSize);
+      memcpy(data, texture.mPixels.get(), (size_t)singleImageSize);
     }
 
     device.unmapMemory(stagingImageMemory);
@@ -308,7 +308,7 @@ namespace YTE
     createImage(width,
                 height,
                 static_cast<u32>(aRawTexures.size()),
-                vk::Format::eBc2UnormBlock,
+                vk::Format::eR8G8B8A8Uint,
                 vk::ImageTiling::eOptimal,
                 vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
                 vk::MemoryPropertyFlagBits::eDeviceLocal,
@@ -417,7 +417,7 @@ namespace YTE
 
   void TextureLoader::createTextureImageView(Texture &aTexture)
   {
-    createImageView(aTexture.image, vk::Format::eBc2UnormBlock, aTexture.view);
+    createImageView(aTexture.image, vk::Format::eR8G8B8A8Uint, aTexture.view);
   }
 
 

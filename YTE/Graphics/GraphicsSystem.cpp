@@ -480,7 +480,7 @@ namespace YTE
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
           vk::ClearColorValue clear;
-          clear.setFloat32( { 0.0f, 0.5f, 1.0f, 1.0f });
+          clear.setFloat32( { 0.0f, 0.0f, 0.0f, 1.0f });
           self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[self->mCurrentDrawBuffer],
                                                     vk::ImageLayout::eTransferDstOptimal,
                                                     clear,
@@ -969,7 +969,7 @@ namespace YTE
     auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &self->mCurrentDrawBuffer);
     checkVulkanResult(result, "Could not acquireNextImageKHR.");
 
-    BuildCommandBuffer();
+    //BuildCommandBuffer();
 
     // present:
     vk::Fence renderFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());
