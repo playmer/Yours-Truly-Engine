@@ -290,7 +290,7 @@ namespace YTE
                 height,
                 static_cast<u32>(aRawTexures.size()),
                 vk::Format::eR8G8B8A8Uint,
-                vk::ImageTiling::eLinear,
+                vk::ImageTiling::eOptimal,
                 vk::ImageUsageFlagBits::eTransferSrc,
                 vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
                 stagingImage,
@@ -298,9 +298,11 @@ namespace YTE
 
     u8 *data = (u8*)device.mapMemory(stagingImageMemory, 0, singleImageSize);
 
+    u32 i = 0;
     for (auto &texture : aRawTexures)
     {
-      memcpy(data, texture.mPixels.get(), (size_t)singleImageSize);
+      memcpy(data + (i * singleImageSize), texture.mPixels.get(), (size_t)singleImageSize);
+      ++i;
     }
 
     device.unmapMemory(stagingImageMemory);

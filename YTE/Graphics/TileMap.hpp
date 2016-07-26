@@ -58,6 +58,7 @@ namespace YTE
     private:
     std::vector<Tile> mMap;
     std::vector<Texture> mTextures;
+    Texture mTexture;
     VulkanContext *mContext;
     BufferMemory mVertexMemory;
     BufferMemory mIndexMemory;

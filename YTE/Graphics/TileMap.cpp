@@ -19,11 +19,13 @@ namespace YTE
 
     TextureLoader loader(mContext->mPhysicalDevice, mContext->mLogicalDevice, mContext->mQueue, mContext->mCommandPool);
 
-    for (auto &textureFile : aTextureFiles)
-    {
-      mTextures.emplace_back(loader.loadTexture(textureFile));
-    }
+    //for (auto &textureFile : aTextureFiles)
+    //{
+    //  mTextures.emplace_back(loader.loadTexture(textureFile));
+    //}
 
+
+    mTexture = loader.loadTexture(aTextureFiles);
 
 
 
@@ -236,65 +238,57 @@ namespace YTE
     auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
     layoutTransitionBarrier.subresourceRange = resourceRange;
 
+    auto result = commandBuffer.begin(&beginInfo);
 
-    for (auto &tile : mMap)
-    {
-        mContext->UpdateDescriptorSet(mTextures[tile.mTile]);
+    commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
+                                  vk::PipelineStageFlagBits::eTopOfPipe,
+                                  vk::DependencyFlags(),
+                                  nullptr,
+                                  nullptr,
+                                  layoutTransitionBarrier);
 
-
-        auto result = commandBuffer.begin(&beginInfo);
-
-        commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
-                                      vk::PipelineStageFlagBits::eTopOfPipe,
-                                      vk::DependencyFlags(),
-                                      nullptr,
-                                      nullptr,
-                                      layoutTransitionBarrier);
-
-        commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
+    commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
 
-        // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
-        commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, mContext->mPipeline);
+    // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
+    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, mContext->mPipeline);
 
-        // Bind descriptor sets describing shader binding points
-        commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mContext->mPipelineLayout, 0, mContext->mDescriptorSets, nullptr);
+    // Bind descriptor sets describing shader binding points
+    commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mContext->mPipelineLayout, 0, mContext->mDescriptorSets, nullptr);
 
-        // take care of dynamic state:
-        commandBuffer.setViewport(0, viewport);
-        commandBuffer.setScissor(0, scissor);
+    // take care of dynamic state:
+    commandBuffer.setViewport(0, viewport);
+    commandBuffer.setScissor(0, scissor);
 
-        // Binding point 0 : Mesh vertex buffer
-        commandBuffer.bindVertexBuffers(0, mVertexMemory.mBuffer, vk::DeviceSize());
-        // Binding point 1 : Instance data buffer
-        commandBuffer.bindVertexBuffers(1, mInstanceBuffer.mBufferMemory.mBuffer, vk::DeviceSize());
-        commandBuffer.bindIndexBuffer(mIndexMemory.mBuffer, 0, vk::IndexType::eUint32);
+    // Binding point 0 : Mesh vertex buffer
+    commandBuffer.bindVertexBuffers(0, mVertexMemory.mBuffer, vk::DeviceSize());
+    // Binding point 1 : Instance data buffer
+    commandBuffer.bindVertexBuffers(1, mInstanceBuffer.mBufferMemory.mBuffer, vk::DeviceSize());
+    commandBuffer.bindIndexBuffer(mIndexMemory.mBuffer, 0, vk::IndexType::eUint32);
 
-        commandBuffer.drawIndexed(6, static_cast<u32>(mMap.size()), 0, 0, 1);
+    commandBuffer.drawIndexed(6, static_cast<u32>(mMap.size()), 0, 0, 1);
 
-        commandBuffer.endRenderPass();
+    commandBuffer.endRenderPass();
 
-        // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-        vk::ImageMemoryBarrier prePresentBarrier = {};
-        prePresentBarrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
-        prePresentBarrier.dstAccessMask = vk::AccessFlagBits::eMemoryRead;
-        prePresentBarrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
-        prePresentBarrier.newLayout = vk::ImageLayout::ePresentSrcKHR;
-        prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        prePresentBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-        prePresentBarrier.image = mContext->mPresentImages[mContext->mCurrentDrawBuffer];
+    // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+    vk::ImageMemoryBarrier prePresentBarrier = {};
+    prePresentBarrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+    prePresentBarrier.dstAccessMask = vk::AccessFlagBits::eMemoryRead;
+    prePresentBarrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
+    prePresentBarrier.newLayout = vk::ImageLayout::ePresentSrcKHR;
+    prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    prePresentBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    prePresentBarrier.image = mContext->mPresentImages[mContext->mCurrentDrawBuffer];
 
-        commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
-                                      vk::PipelineStageFlagBits::eBottomOfPipe,
-                                      vk::DependencyFlags(),
-                                      nullptr,
-                                      nullptr,
-                                      prePresentBarrier);
+    commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
+                                  vk::PipelineStageFlagBits::eBottomOfPipe,
+                                  vk::DependencyFlags(),
+                                  nullptr,
+                                  nullptr,
+                                  prePresentBarrier);
 
-        commandBuffer.end();
-    }
-
+    commandBuffer.end();
   }
 };
 

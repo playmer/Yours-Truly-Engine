@@ -75,7 +75,7 @@ namespace YTE
       };
 
       std::unique_ptr<stbi_uc, STBDeleter> mPixels;
-      std::vector<Pixel<u64>> mConvertedPixels;
+      //std::vector<Pixel<u64>> mConvertedPixels;
       i32 mWidth;
       i32 mHeight;
       i32 mChannels;
