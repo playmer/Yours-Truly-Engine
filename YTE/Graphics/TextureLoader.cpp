@@ -448,7 +448,7 @@ namespace YTE
   {
     vk::ImageViewCreateInfo viewInfo = {};
     viewInfo.image = aTexture.mImage;
-    viewInfo.viewType = vk::ImageViewType::e2D;
+    viewInfo.viewType = (aTexture.mLayerCount > 1) ? vk::ImageViewType::e2DArray : vk::ImageViewType::e2D;
     viewInfo.format = aFormat;
     viewInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
     viewInfo.subresourceRange.baseMipLevel = 0;

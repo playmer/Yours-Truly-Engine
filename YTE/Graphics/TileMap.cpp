@@ -196,6 +196,8 @@ namespace YTE
   {
     auto &commandBuffer = mContext->mDrawCommandBuffers[mContext->mCurrentDrawBuffer];
 
+    mContext->UpdateDescriptorSet(mTexture);
+
     vk::CommandBufferBeginInfo beginInfo = {};
     beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
 
@@ -211,8 +213,8 @@ namespace YTE
     //clearValues[1].color.float32[2] = 0.0f;
 
     clearValues[0].color.float32[0] = 0.0f;
-    clearValues[0].color.float32[1] = 0.0f;
-    clearValues[0].color.float32[2] = 0.0f;
+    clearValues[0].color.float32[1] = 0.7f;
+    clearValues[0].color.float32[2] = 1.0f;
     clearValues[0].color.float32[3] = 0.0f;
     clearValues[1].color.float32[0] = 0.0f;
     clearValues[1].color.float32[2] = 0.0f;
