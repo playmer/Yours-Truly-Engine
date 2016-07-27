@@ -765,7 +765,7 @@ namespace YTE
       vertexBindingDescription[0].inputRate = vk::VertexInputRate::eVertex;
       vertexBindingDescription[0].binding = 0;
 
-      // Binding Point 0: Instance Data
+      // Binding Point 1: Instance Data
       vertexBindingDescription[1].stride = sizeof(TileMap::InstanceData);
       vertexBindingDescription[1].inputRate = vk::VertexInputRate::eInstance;
       vertexBindingDescription[1].binding = 1;
