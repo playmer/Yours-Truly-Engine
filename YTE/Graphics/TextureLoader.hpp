@@ -98,7 +98,7 @@ namespace YTE
     Texture createTextureImage(std::vector<std::string> &aTextureFile);
     Texture createTextureImage(std::vector<STBImageHolder> &aPixels);
 
-    void createImage(u32 aWidth, u32 aHeight, u32 aImageCount, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
+    void createImage(u32 aWidth, u32 aHeight, u32 aImageCount, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::ImageLayout aLayout, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
 
     void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height, u32 aLayerCount);
     void copyImage(vk::Buffer srcImageBuffer, vk::Image dstImage, u32 width, u32 height, u32 aLayerCount);

@@ -221,7 +221,7 @@ namespace YTE
     mWriteDescriptorSet[1].dstBinding = 1;
     mWriteDescriptorSet[1].pImageInfo = &textureDescriptor;
 
-    mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, nullptr);
+    mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, VK_NULL_HANDLE);
   }
 
   void VulkanContext::UpdateDescriptorSet(Texture &aTexture)
@@ -234,6 +234,6 @@ namespace YTE
 
     mWriteDescriptorSet[1].pImageInfo = &textureDescriptor;
 
-    mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, nullptr);
+    mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, VK_NULL_HANDLE);
   }
 }

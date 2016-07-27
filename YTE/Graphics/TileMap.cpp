@@ -14,7 +14,9 @@ namespace YTE
     for (auto &tile : aMap)
     {
       assert(tile.mTile <= aTextureFiles.size() && "Malformed tile input.");
-      //tile.mPosition.y *= -1;
+
+      // Invert the y axis, since vulkan has y point down.
+      tile.mPosition.y *= -1;
     }
 
     TextureLoader loader(mContext);
@@ -51,7 +53,7 @@ namespace YTE
     indexbufferInfo.size = 6 * sizeof(u32);
     indexbufferInfo.usage = vk::BufferUsageFlagBits::eIndexBuffer;
 
-    mContext->mLogicalDevice.createBuffer(&indexbufferInfo, nullptr, &mIndexMemory.mBuffer);
+    mContext->mLogicalDevice.createBuffer(&indexbufferInfo, VK_NULL_HANDLE, &mIndexMemory.mBuffer);
     auto requirements = mContext->mLogicalDevice.getBufferMemoryRequirements(mIndexMemory.mBuffer);
 
     memAlloc.allocationSize = requirements.size;
@@ -215,9 +217,9 @@ namespace YTE
     clearValues[0].color.float32[0] = 0.0f;
     clearValues[0].color.float32[1] = 0.7f;
     clearValues[0].color.float32[2] = 1.0f;
-    clearValues[0].color.float32[3] = 0.0f;
+    clearValues[0].color.float32[3] = 1.0f;
     clearValues[1].color.float32[0] = 0.0f;
-    clearValues[1].color.float32[2] = 0.0f;
+    clearValues[1].color.float32[2] = 1.0f;
 
     vk::RenderPassBeginInfo renderPassBeginInfo = {};
     renderPassBeginInfo.renderPass = mContext->mRenderPass;
@@ -245,8 +247,8 @@ namespace YTE
     commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
                                   vk::PipelineStageFlagBits::eTopOfPipe,
                                   vk::DependencyFlags(),
-                                  nullptr,
-                                  nullptr,
+                                  VK_NULL_HANDLE,
+                                  VK_NULL_HANDLE,
                                   layoutTransitionBarrier);
 
     commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
@@ -286,8 +288,8 @@ namespace YTE
     commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
                                   vk::PipelineStageFlagBits::eBottomOfPipe,
                                   vk::DependencyFlags(),
-                                  nullptr,
-                                  nullptr,
+                                  VK_NULL_HANDLE,
+                                  VK_NULL_HANDLE,
                                   prePresentBarrier);
 
     commandBuffer.end();

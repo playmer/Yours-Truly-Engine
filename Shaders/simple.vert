@@ -22,6 +22,7 @@ layout (binding = 0) uniform UBO
 } uniformBufferObject;
 
 layout (location = 0) out vec3 outUVCoordinates;
+//layout (location = 0) out vec2 outUVCoordinates;
 layout (location = 1) out vec3 outColor;
 
 out gl_PerVertex 
@@ -32,6 +33,8 @@ out gl_PerVertex
 void main() 
 {
   outUVCoordinates = vec3(inUVCoordinates, instancePosition);
+  //outUVCoordinates = inUVCoordinates;
+
   outColor = inColor;
 
   vec4 position = vec4(instancePosition, 0.0f, 0.0f) + inPosition;

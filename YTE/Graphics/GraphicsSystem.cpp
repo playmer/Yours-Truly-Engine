@@ -489,8 +489,8 @@ namespace YTE
           self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
                                                     vk::PipelineStageFlagBits::eTopOfPipe, 
                                                     vk::DependencyFlags(),
-                                                    nullptr, 
-                                                    nullptr,
+                                                    VK_NULL_HANDLE,
+                                                    VK_NULL_HANDLE,
                                                     layoutTransitionBarrier);
       
           self->mSetupCommandBuffer.end();
@@ -555,8 +555,8 @@ namespace YTE
       self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
                                                 vk::PipelineStageFlagBits::eTopOfPipe,
                                                 vk::DependencyFlags(),
-                                                nullptr,
-                                                nullptr,
+                                                VK_NULL_HANDLE,
+                                                VK_NULL_HANDLE,
                                                 layoutTransitionBarrier);
 
       self->mSetupCommandBuffer.end();
@@ -970,6 +970,7 @@ namespace YTE
     checkVulkanResult(result, "Could not acquireNextImageKHR.");
 
     //BuildCommandBuffer();
+    //mTileMaps[0].SetupCommandBuffer();
 
     // present:
     vk::Fence renderFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());

@@ -90,7 +90,7 @@ namespace YTE
     vk::PipelineStageFlags srcStageFlags = vk::PipelineStageFlagBits::eTopOfPipe;
     vk::PipelineStageFlags destStageFlags = vk::PipelineStageFlagBits::eTopOfPipe;
 
-    cmdBuffer.pipelineBarrier(srcStageFlags, destStageFlags, vk::DependencyFlags(), nullptr, nullptr, imageMemoryBarrier);
+    cmdBuffer.pipelineBarrier(srcStageFlags, destStageFlags, vk::DependencyFlags(), VK_NULL_HANDLE, VK_NULL_HANDLE, imageMemoryBarrier);
   }
 
   // Fixed sub resource on first mip level and layer
@@ -124,11 +124,14 @@ namespace YTE
                                   vk::ImageTiling aTiling, 
                                   vk::ImageUsageFlags aUsage, 
                                   vk::MemoryPropertyFlags properties, 
+                                  vk::ImageLayout aLayout,
                                   vk::Image& aImage, 
                                   vk::DeviceMemory &aImageMemory)
   {
     //Staging Image creation
     vk::ImageCreateInfo imageInfo;
+    imageInfo.imageType = vk::ImageType::e2D;
+    //imageInfo.imageType = (aImageCount > 1) ? vk::ImageType::e2D : vk::ImageType::e2D;
     imageInfo.imageType = vk::ImageType::e2D;
     imageInfo.extent.depth = 1;
     imageInfo.extent.width = aWidth;
@@ -141,7 +144,7 @@ namespace YTE
     
     // We wish to preserve any texels. we would use vk::ImageLayout::eUninitialized
     // if we were using this for a depth or color buffer.
-    imageInfo.initialLayout = vk::ImageLayout::ePreinitialized;
+    imageInfo.initialLayout = aLayout;// vk::ImageLayout::ePreinitialized;
     imageInfo.usage = aUsage;
     imageInfo.sharingMode = vk::SharingMode::eExclusive;
     imageInfo.samples = vk::SampleCountFlagBits::e1;
@@ -187,7 +190,7 @@ namespace YTE
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    mContext->mQueue.submit(submitInfo, nullptr);
+    mContext->mQueue.submit(submitInfo, VK_NULL_HANDLE);
     mContext->mQueue.waitIdle();
 
     mContext->mLogicalDevice.freeCommandBuffers(mContext->mCommandPool, commandBuffer);
@@ -327,12 +330,13 @@ namespace YTE
                 vk::ImageTiling::eOptimal,
                 vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
                 vk::MemoryPropertyFlagBits::eDeviceLocal,
+                vk::ImageLayout::eUndefined,
                 texture.mImage,
                 texture.mDeviceMemory
                 );
 
     //transitionImageLayout(stagingImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal);
-    transitionImageLayout(texture.mImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
+    transitionImageLayout(texture.mImage, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
     copyImage(stagingBuffer.mBuffer, texture.mImage, width, height, static_cast<u32>(aRawTexures.size()));
     transitionImageLayout(texture.mImage, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
@@ -367,6 +371,11 @@ namespace YTE
       barrier.srcAccessMask = vk::AccessFlagBits::eHostWrite;
       barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
     }
+    else if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal)
+    {
+      barrier.srcAccessMask = vk::AccessFlagBits(0);
+      barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+    }
     else if (oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
     {
       barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
@@ -380,8 +389,8 @@ namespace YTE
     commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
                                   vk::PipelineStageFlagBits::eTopOfPipe, 
                                   vk::DependencyFlags(), 
-                                  nullptr, 
-                                  nullptr, 
+                                  VK_NULL_HANDLE, 
+                                  VK_NULL_HANDLE,
                                   barrier);
 
     endSingleTimeCommands(commandBuffer);
@@ -512,10 +521,10 @@ namespace YTE
   // Clean up vulkan resources used by a texture object
   void TextureLoader::destroyTexture(Texture texture)
   {
-    mContext->mLogicalDevice.destroyImageView(texture.mView, nullptr);
-    mContext->mLogicalDevice.destroyImage(texture.mImage, nullptr);
-    mContext->mLogicalDevice.destroySampler(texture.mSampler, nullptr);
-    mContext->mLogicalDevice.freeMemory(texture.mDeviceMemory, nullptr);
+    mContext->mLogicalDevice.destroyImageView(texture.mView, VK_NULL_HANDLE);
+    mContext->mLogicalDevice.destroyImage(texture.mImage, VK_NULL_HANDLE);
+    mContext->mLogicalDevice.destroySampler(texture.mSampler, VK_NULL_HANDLE);
+    mContext->mLogicalDevice.freeMemory(texture.mDeviceMemory, VK_NULL_HANDLE);
   }
 
   inline vk::CommandBuffer TextureLoader::createCommandBuffer(vk::CommandBufferLevel level, bool begin)

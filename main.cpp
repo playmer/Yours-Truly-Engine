@@ -24,7 +24,7 @@ int main(int aArgumentNumber, char **Arguments)
 
   // This is how to create SubWindows
   //YTE::Window subWindow1( &engine, "subWindow1", nullptr, nullptr, 246, 360, &engine.mWindow );
-
+  
   std::vector<std::string> tileSet = {
     "./Textures/Dirt.png",
     "./Textures/Grass.png",
@@ -34,35 +34,35 @@ int main(int aArgumentNumber, char **Arguments)
   std::vector<YTE::Tile> map = {
     ////Floor
     //Dirt
-    {{0, 0}, 0},
-    {{1, 0}, 0},
-    {{2, 0}, 0},
-    {{3, 0}, 0},
-    {{4, 0}, 0},
-    {{5, 0}, 0},
-    {{6, 0}, 0},
-    {{7, 0}, 0},
-
+    { { 0, 0 }, 0 },
+    { { 1, 0 }, 0 },
+    { { 2, 0 }, 0 },
+    { { 3, 0 }, 0 },
+    { { 4, 0 }, 0 },
+    { { 5, 0 }, 0 },
+    { { 6, 0 }, 0 },
+    { { 7, 0 }, 0 },
+    
     //Grass
-    {{0, 1}, 1},
-    {{1, 1}, 1},
-    {{2, 1}, 1},
-    {{3, 1}, 1},
-    {{4, 1}, 1},
-    {{5, 1}, 1},
-    {{6, 1}, 1},
-    {{7, 1}, 1},
-
+    { { 0, 1 }, 1 },
+    { { 1, 1 }, 1 },
+    { { 2, 1 }, 1 },
+    { { 3, 1 }, 1 },
+    { { 4, 1 }, 1 },
+    { { 5, 1 }, 1 },
+    { { 6, 1 }, 1 },
+    { { 7, 1 }, 1 },
+    
     ////Sky
     //Clouds
-    {{0, 4}, 2},
-    {{1, 6}, 2},
-    {{2, 3}, 2},
-    {{3, 5}, 2},
-    {{4, 7}, 2},
-    {{5, 3}, 2},
-    {{6, 3}, 2},
-    {{7, 6}, 2}
+    { { 0, 4 }, 2 },
+    { { 1, 6 }, 2 },
+    { { 2, 3 }, 2 },
+    { { 3, 5 }, 2 },
+    { { 4, 7 }, 2 },
+    { { 5, 3 }, 2 },
+    { { 6, 3 }, 2 },
+    { { 7, 6 }, 2 }
   };
 
   engine.mGraphicsSystem.CreateTileMap(map, tileSet);
