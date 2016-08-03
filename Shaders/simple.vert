@@ -4,8 +4,9 @@
 #extension GL_ARB_shading_language_420pack : enable
 
 layout (location = 0) in vec4 inPosition;
-layout (location = 1) in vec2 inUVCoordinates;
-layout (location = 2) in vec3 inNormal;
+layout (location = 1) in vec3 inColor;
+layout (location = 2) in vec2 inUVCoordinates;
+layout (location = 3) in vec3 inNormal;
 
 layout (binding = 0) uniform UBO 
 {
@@ -15,7 +16,8 @@ layout (binding = 0) uniform UBO
   float mLevelOfDetailBias;
 } uniformBufferObject;
 
-layout (location = 0) out vec2 outUVCoordinates;
+layout (location = 0) out vec3 outColor;
+layout (location = 1) out vec2 outUVCoordinates;
 
 out gl_PerVertex 
 {
@@ -24,6 +26,7 @@ out gl_PerVertex
 
 void main() 
 {
+  outColor = inColor;
   outUVCoordinates = inUVCoordinates;
 
   gl_Position = uniformBufferObject.mProjectionMatrix * 

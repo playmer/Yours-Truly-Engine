@@ -20,15 +20,14 @@
 #include <gtc/matrix_transform.hpp>
 
 
-YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, const char *aTextureFile)
+YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = glm::vec3(-1, -1, -1))
 {
   auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();
   YTE::Object object;
 
-  YTE::TextureLoader loader(context->mPhysicalDevice, context->mLogicalDevice, context->mQueue, context->mCommandPool);
-  object.mTexture = loader.loadTexture(aTextureFile); // TODO: Format is wrong.
-  
   object.mIndicies = context->CreateIndexBuffer({ 0, 1, 2, 2, 3, 0 }, false);
+
+  object.mColor = aColor;
 
   YTE::Vertex mVertex1;
 
@@ -75,10 +74,18 @@ int main(int aArgumentNumber, char **Arguments)
   glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
   glm::vec3 rotate = glm::vec3();
 
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, "./Textures/Skeleman.png"));
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 1, 0)));
   engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
 
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, "./Textures/Happy.png"));
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
+
+
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
+  engine.mGraphicsSystem.mObjects[2].mTranslation = { 1.0, -1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
+  engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, -1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0.5, 0.5, 0.5)));
+  engine.mGraphicsSystem.mObjects[4].mTranslation = { -1.0, 1.0, 0.0 };
   
 
   while (engine.mShouldUpdate)

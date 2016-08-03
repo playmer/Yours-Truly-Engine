@@ -55,6 +55,14 @@ namespace YTE
 
   struct Vertex
   {
+    Vertex()
+    {
+      mPosition = { 0,0,0,0 };
+      mColor = { -1,-1,-1 };
+      mUVCoordinates = { 0,0 };
+      mNormal = { 0,0,0 };
+    }
+
     void Translate(const glm::vec3 &aTranslation)
     {
       auto translate = glm::translate(glm::mat4(), aTranslation);
@@ -79,6 +87,7 @@ namespace YTE
     }
 
     glm::vec4 mPosition;
+    glm::vec3 mColor;
     glm::vec2 mUVCoordinates;
     glm::vec3 mNormal;
   };

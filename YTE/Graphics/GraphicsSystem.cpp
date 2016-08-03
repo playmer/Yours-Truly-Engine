@@ -780,33 +780,41 @@ namespace YTE
 
       u32 vertexOffset = 0;
       
-      vk::VertexInputAttributeDescription vertexAttributeDescritpion[3];
-      vertexAttributeDescritpion[0].binding = 0;
-      vertexAttributeDescritpion[0].location = 0;
-      vertexAttributeDescritpion[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[0].offset = vertexOffset;
+      std::array<vk::VertexInputAttributeDescription, 4> vertexAttributeDescription;
+      vertexAttributeDescription[0].binding = 0;
+      vertexAttributeDescription[0].location = 0;
+      vertexAttributeDescription[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescription[0].offset = vertexOffset;
 
       //glm::vec4 mPosition;
       vertexOffset += sizeof(glm::vec4);
 
-      vertexAttributeDescritpion[1].binding = 0;
-      vertexAttributeDescritpion[1].location = 1;
-      vertexAttributeDescritpion[1].format = vk::Format::eR32G32Sfloat;
-      vertexAttributeDescritpion[1].offset = vertexOffset;
+      vertexAttributeDescription[1].binding = 0;
+      vertexAttributeDescription[1].location = 1;
+      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[1].offset = vertexOffset;
+
+      //glm::vec3 mColor;
+      vertexOffset += sizeof(glm::vec3);
+
+      vertexAttributeDescription[2].binding = 0;
+      vertexAttributeDescription[2].location = 2;
+      vertexAttributeDescription[2].format = vk::Format::eR32G32Sfloat;
+      vertexAttributeDescription[2].offset = vertexOffset;
 
       //glm::vec2 mUVCoordinates;
       vertexOffset += sizeof(glm::vec2);
 
-      vertexAttributeDescritpion[2].binding = 0;
-      vertexAttributeDescritpion[2].location = 2;
-      vertexAttributeDescritpion[2].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescritpion[2].offset = vertexOffset;
+      vertexAttributeDescription[3].binding = 0;
+      vertexAttributeDescription[3].location = 3;
+      vertexAttributeDescription[3].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescription[3].offset = vertexOffset;
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
       vertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexBindingDescription;
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 3;
-      vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescritpion;
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = vertexAttributeDescription.size();
+      vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescription.data();
 
       // vertex topology config:
       vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
@@ -1002,6 +1010,11 @@ namespace YTE
       dirtyQuad.Translate(object.mTranslation);
       dirtyQuad.Scale(object.mScale);
       dirtyQuad.Rotate(object.mRotate);
+
+      dirtyQuad.mVertex1.mColor = object.mColor;
+      dirtyQuad.mVertex2.mColor = object.mColor;
+      dirtyQuad.mVertex3.mColor = object.mColor;
+      dirtyQuad.mVertex4.mColor = object.mColor;
 
       auto *data = (Quad*)self->mLogicalDevice.mapMemory(object.mVerts.mMemory, 0, sizeof(u32) * 6);
       *data = dirtyQuad;

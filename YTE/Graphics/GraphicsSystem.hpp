@@ -34,6 +34,8 @@ namespace YTE
     glm::vec3 mScale = { 1.0f, 1.0f, 1.0f };
     glm::vec3 mRotate = { 0.0f, 0.0f, 0.0f };
 
+    glm::vec3 mColor = { -1.0f, -1.0f, -1.0f };
+
     BufferMemory mVerts;
     BufferMemory mIndicies;
 
