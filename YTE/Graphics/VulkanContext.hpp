@@ -145,10 +145,8 @@ namespace YTE
 
   struct UniformBufferObject
   {
-    glm::mat4 mProjectionMatrix;
-    glm::mat4 mModelMatrix;
-    glm::vec4 mViewPosition;
-    float mLevelOfDetailBias = 1.0f;
+    glm::mat4 mProjection;
+    glm::mat4 mView;
   };
 
   struct BufferMemory
@@ -192,7 +190,6 @@ namespace YTE
 
     void UpdateDescriptorSet(Texture &aTexture);
     void UpdateUniformBuffers(bool aRecalculation);
-    void UpdateUniformBuffers(YTE::Tile *aTile);
 
 
     u32 mWidth = 0;

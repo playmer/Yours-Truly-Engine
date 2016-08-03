@@ -15,9 +15,8 @@ layout (location = 5) in int instanceTexIndex;
 
 layout (binding = 0) uniform UBO 
 {
-  mat4 mProjectionMatrix;
-  mat4 mModelMatrix;
-  vec4 mViewPosition;
+  mat4 mProjection;
+  mat4 mView;
   float mLevelOfDetailBias;
 } uniformBufferObject;
 
@@ -40,7 +39,7 @@ void main()
   vec4 position = vec4(instancePosition, 0.0f, 0.0f) + inPosition;
   //vec4 position = inPosition;
 
-  gl_Position = uniformBufferObject.mProjectionMatrix * 
-                uniformBufferObject.mModelMatrix      * 
+  gl_Position = uniformBufferObject.mProjection * 
+                uniformBufferObject.mView      * 
                 position;
 }

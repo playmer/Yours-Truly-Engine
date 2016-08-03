@@ -82,40 +82,15 @@ namespace YTE
     if (aRecalculation)
     {
       // Update matrices
-      mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)mWidth / (float)mHeight, 0.1f, 256.0f);
+      mUniformBufferData.mProjection = glm::perspective(glm::radians(60.0f), (float)mWidth / (float)mHeight, 0.1f, 256.0f);
 
       auto viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, mZoom));
 
-      mUniformBufferData.mModelMatrix = viewMatrix * glm::translate(glm::mat4(), mCameraPosition);
-      mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-      mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-      mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-      mUniformBufferData.mViewPosition = glm::vec4(0.0f, 0.0f, -mZoom, 0.0f);
+      mUniformBufferData.mView = viewMatrix * glm::translate(glm::mat4(), mCameraPosition);
+      mUniformBufferData.mView = glm::rotate(mUniformBufferData.mView, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+      mUniformBufferData.mView = glm::rotate(mUniformBufferData.mView, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+      mUniformBufferData.mView = glm::rotate(mUniformBufferData.mView, glm::radians(mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
     }
-
-    // Map uniform buffer and update it
-
-    u8 *data = (u8*)mLogicalDevice.mapMemory(mUniformBufferMemory, 0, sizeof(UniformBufferObject));
-    memcpy(data, &mUniformBufferData, sizeof(UniformBufferObject));
-    mLogicalDevice.unmapMemory(mUniformBufferMemory);
-  }
-
-  void VulkanContext::UpdateUniformBuffers(Tile *aTile)
-  {
-    // Update matrices
-    mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)mWidth / (float)mHeight, 0.1f, 256.0f);
-
-    auto viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, mZoom));
-      
-    auto position = glm::vec3(aTile->mPosition, 1.0f);
-
-    mUniformBufferData.mModelMatrix = viewMatrix * glm::translate(glm::mat4(), position);
-    mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    mUniformBufferData.mViewPosition = glm::vec4(0.0f, 0.0f, -mZoom, 0.0f);
 
     // Map uniform buffer and update it
 

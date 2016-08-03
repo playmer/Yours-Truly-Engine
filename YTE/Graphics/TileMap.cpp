@@ -207,19 +207,13 @@ namespace YTE
     vk::Rect2D scissor{ { 0, 0 },{ mContext->mWidth, mContext->mHeight } };
 
     std::array<vk::ClearValue, 2> clearValues;
-    //clearValues[0].color.float32[0] = 0.0f;
-    //clearValues[0].color.float32[1] = 0.0f;
-    //clearValues[0].color.float32[2] = 0.0f;
-    //clearValues[0].color.float32[3] = 0.0f;
-    //clearValues[1].color.float32[0] = 0.0f;
-    //clearValues[1].color.float32[2] = 0.0f;
 
     clearValues[0].color.float32[0] = 0.0f;
     clearValues[0].color.float32[1] = 0.7f;
     clearValues[0].color.float32[2] = 1.0f;
-    clearValues[0].color.float32[3] = 1.0f;
+    clearValues[0].color.float32[3] = 0.0f;
     clearValues[1].color.float32[0] = 0.0f;
-    clearValues[1].color.float32[2] = 1.0f;
+    clearValues[1].color.float32[2] = 0.0f;
 
     vk::RenderPassBeginInfo renderPassBeginInfo = {};
     renderPassBeginInfo.renderPass = mContext->mRenderPass;
