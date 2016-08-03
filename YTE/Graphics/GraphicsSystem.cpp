@@ -85,160 +85,6 @@ namespace YTE
     }
   }
 
-
-  void GraphicsSystem::UpdateUniformBuffers()
-  {
-    if (false == mVulkanSuccess)
-    {
-      return;
-    }
-
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
-
-    // Update matrices
-    self->mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)self->mWidth / (float)self->mHeight, 0.1f, 256.0f);
-
-    auto viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, self->mZoom));
-
-    self->mUniformBufferData.mModelMatrix = viewMatrix * glm::translate(glm::mat4(), self->mCameraPosition);
-    self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    self->mUniformBufferData.mModelMatrix = glm::rotate(self->mUniformBufferData.mModelMatrix, glm::radians(self->mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-
-    self->mUniformBufferData.mViewPosition = glm::vec4(0.0f, 0.0f, -self->mZoom, 0.0f);
-
-    // Map uniform buffer and update it
-      
-    u8 *data = (u8*)self->mLogicalDevice.mapMemory(self->mUniformBufferMemory, 0, sizeof(UniformBufferObject));
-    memcpy(data, &self->mUniformBufferData, sizeof(UniformBufferObject));
-    self->mLogicalDevice.unmapMemory(self->mUniformBufferMemory);
-  }
-
-
-  void GraphicsSystem::SetupDescriptorSetLayout()
-  {
-    if (false == mVulkanSuccess)
-    {
-      return;
-    }
-
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
-
-    // Setup layout of descriptors used in this example
-    // Basically connects the different shader stages to descriptors
-    // for binding uniform buffers, image samplers, etc.
-    // So every shader binding should map to one descriptor set layout
-    // binding
-
-    // Binding 0 : Uniform buffer (Vertex shader)
-
-    std::array<vk::DescriptorSetLayoutBinding, 2> layoutBinding;
-
-    layoutBinding[0].descriptorCount = 1;
-    layoutBinding[0].binding = 0;
-    layoutBinding[0].stageFlags = vk::ShaderStageFlagBits::eVertex;
-    layoutBinding[0].descriptorType = vk::DescriptorType::eUniformBuffer;
-
-    layoutBinding[1].descriptorCount = 1;
-    layoutBinding[1].binding = 1;
-    layoutBinding[1].stageFlags = vk::ShaderStageFlagBits::eFragment;
-    layoutBinding[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
-
-    vk::DescriptorSetLayoutCreateInfo descriptorLayout = {};
-    descriptorLayout.pNext = nullptr;
-    descriptorLayout.bindingCount = (u32)layoutBinding.size();
-    descriptorLayout.pBindings = layoutBinding.data();
-
-    self->mDescriptorSetLayout = self->mLogicalDevice.createDescriptorSetLayout(descriptorLayout);
-
-    // Create the pipeline layout that is used to generate the rendering pipelines that
-    // are based on this descriptor set layout
-    // In a more complex scenario you would have different pipeline layouts for different
-    // descriptor set layouts that could be reused
-    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
-    pipelineLayoutCreateInfo.setLayoutCount = 1;
-    pipelineLayoutCreateInfo.pSetLayouts = &self->mDescriptorSetLayout;
-
-    self->mPipelineLayout = self->mLogicalDevice.createPipelineLayout(pipelineLayoutCreateInfo);
-  }
-
-  void GraphicsSystem::SetupDescriptorPool()
-  {
-    if (false == mVulkanSuccess)
-    {
-      return;
-    }
-
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
-
-    // We need to tell the API the number of max. requested descriptors per type
-    static vk::DescriptorPoolSize typeCounts[2];
-
-    typeCounts[0].type = vk::DescriptorType::eUniformBuffer;
-    typeCounts[0].descriptorCount = 1;
-
-    typeCounts[1].type = vk::DescriptorType::eCombinedImageSampler;
-    typeCounts[1].descriptorCount = 1; // TODO: Make sure the layers don't yell.
-
-    // Create the global descriptor pool
-    // All descriptors used in this example are allocated from this pool
-    vk::DescriptorPoolCreateInfo descriptorPoolInfo = {};
-    descriptorPoolInfo.poolSizeCount = 2;
-    descriptorPoolInfo.pPoolSizes = typeCounts;
-
-    // Set the max. number of sets that can be requested
-    // Requesting descriptors beyond maxSets will result in an error
-    descriptorPoolInfo.maxSets = 2;
-
-    self->mDescriptorPool = self->mLogicalDevice.createDescriptorPool(descriptorPoolInfo);
-  }
-
-  void GraphicsSystem::SetupDescriptorSet()
-  {
-    if (false == mVulkanSuccess)
-    {
-      return;
-    }
-    
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
-
-    // Allocate a new descriptor set from the global descriptor pool
-    vk::DescriptorSetAllocateInfo allocInfo = {};
-    allocInfo.descriptorPool = self->mDescriptorPool;
-    allocInfo.descriptorSetCount = 1;
-    allocInfo.pSetLayouts = &self->mDescriptorSetLayout;
-
-    self->mDescriptorSets = self->mLogicalDevice.allocateDescriptorSets(allocInfo);
-
-    //ImageDescriptor for the color map texture;
-    vk::DescriptorImageInfo textureDescriptor;
-    textureDescriptor.sampler = self->mDefaultTexture.mSampler;
-    textureDescriptor.imageView = self->mDefaultTexture.mView;
-    textureDescriptor.imageLayout = vk::ImageLayout::eGeneral; // NOTE: Always this currently.
-
-    // Update the descriptor set determining the shader binding points
-    // For every binding point used in a shader there needs to be one
-    // descriptor set matching that binding point
-    std::array<vk::WriteDescriptorSet, 2> writeDescriptorSet;
-
-    // Binding 0 : Uniform buffer
-    writeDescriptorSet[0].dstSet = self->mDescriptorSets[0];
-    writeDescriptorSet[0].descriptorCount = 1;
-    writeDescriptorSet[0].descriptorType = vk::DescriptorType::eUniformBuffer;
-    writeDescriptorSet[0].pBufferInfo = &self->mUniformBufferInfo;
-    writeDescriptorSet[0].dstBinding = 0;
-
-    writeDescriptorSet[1].dstSet = self->mDescriptorSets[0];
-    writeDescriptorSet[1].descriptorCount = 1;
-    writeDescriptorSet[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
-    writeDescriptorSet[1].pBufferInfo = &self->mUniformBufferInfo;
-    writeDescriptorSet[1].dstBinding = 1;
-    writeDescriptorSet[1].pImageInfo = &textureDescriptor;
-
-    self->mLogicalDevice.updateDescriptorSets(writeDescriptorSet, nullptr);
-  }
-
   void GraphicsSystem::SetUpWindow(Window *aWindow)
   {
     if (mVulkanSuccess)
@@ -542,11 +388,11 @@ namespace YTE
                                         .setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer)
                                         .setQueueFamilyIndex(self->mPresentQueueIdx);
 
-      auto commandPool = self->mLogicalDevice.createCommandPool(commandPoolCreateInfo);
-      vulkan_assert(commandPool, "Failed to create command pool.");
+      self->mCommandPool = self->mLogicalDevice.createCommandPool(commandPoolCreateInfo);
+      vulkan_assert(self->mCommandPool, "Failed to create command pool.");
 
       auto commandBufferAllocationInfo = vk::CommandBufferAllocateInfo()
-                                              .setCommandPool(commandPool)
+                                              .setCommandPool(self->mCommandPool)
                                               .setLevel(vk::CommandBufferLevel::ePrimary)
                                               .setCommandBufferCount(1);
 
@@ -704,7 +550,7 @@ namespace YTE
         vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
       }
 
-      TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, commandPool);
+      TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, self->mCommandPool);
       self->mDefaultTexture = loader.loadTexture("./Textures/Happy.png"); // TODO: Format is wrong.
 
 
@@ -871,9 +717,9 @@ namespace YTE
       self->mUniformBufferInfo.offset = 0;
       self->mUniformBufferInfo.range = sizeof(UniformBufferObject);
 
-      UpdateUniformBuffers();
+      self->UpdateUniformBuffers(true);
 
-      SetupDescriptorSetLayout();
+      self->SetupDescriptorSetLayout();
 
       // Loading up Shaders.
       uint32_t codeSize;
@@ -1047,8 +893,8 @@ namespace YTE
 
       vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
 
-      SetupDescriptorPool();
-      SetupDescriptorSet();
+      self->SetupDescriptorPool();
+      self->SetupDescriptorSet();
     } 
   }
 
@@ -1076,7 +922,7 @@ namespace YTE
 
     if (zoom != self->mZoom || true == mouse.mLeftMouseDown)
     {
-      UpdateUniformBuffers();
+      self->UpdateUniformBuffers(true);
     }
 
     vk::SemaphoreCreateInfo semaphoreCreateInfo = vk::SemaphoreCreateInfo();
@@ -1160,12 +1006,13 @@ namespace YTE
       auto *data = (Quad*)self->mLogicalDevice.mapMemory(object.mVerts.mMemory, 0, sizeof(u32) * 6);
       *data = dirtyQuad;
       self->mLogicalDevice.unmapMemory(object.mVerts.mMemory);
-
+      
       self->mDrawCommandBuffers[0].bindVertexBuffers(0, object.mVerts.mBuffer, offsets);
       self->mDrawCommandBuffers[0].bindIndexBuffer(object.mIndicies.mBuffer, 0, vk::IndexType::eUint32);
 
       self->mDrawCommandBuffers[0].drawIndexed(6, 1, 0, 0, 1);
     }
+
     self->mDrawCommandBuffers[0].endRenderPass();
 
     // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR

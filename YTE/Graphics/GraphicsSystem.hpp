@@ -36,6 +36,8 @@ namespace YTE
 
     BufferMemory mVerts;
     BufferMemory mIndicies;
+
+    Texture mTexture;
   };
 
   class GraphicsSystem
@@ -50,10 +52,6 @@ namespace YTE
 
     void Update(float aDt);
     void VulkanRender();
-    void UpdateUniformBuffers();
-    void SetupDescriptorSetLayout();
-    void SetupDescriptorSet();
-    void SetupDescriptorPool();
 
     Quad *mQuad;
 

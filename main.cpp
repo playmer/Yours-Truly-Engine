@@ -13,16 +13,20 @@
 
 #include "YTE/DataStructures/UniqueHandle.hpp"
 #include "YTE/Graphics/GraphicsSystem.hpp"
+#include "YTE/Graphics/TextureLoader.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
 
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
 
 
-YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem)
+YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, const char *aTextureFile)
 {
   auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();
   YTE::Object object;
+
+  YTE::TextureLoader loader(context->mPhysicalDevice, context->mLogicalDevice, context->mQueue, context->mCommandPool);
+  object.mTexture = loader.loadTexture(aTextureFile); // TODO: Format is wrong.
   
   object.mIndicies = context->CreateIndexBuffer({ 0, 1, 2, 2, 3, 0 }, false);
 
@@ -71,10 +75,10 @@ int main(int aArgumentNumber, char **Arguments)
   glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
   glm::vec3 rotate = glm::vec3();
 
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, "./Textures/Skeleman.png"));
   engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
 
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, "./Textures/Happy.png"));
   
 
   while (engine.mShouldUpdate)
