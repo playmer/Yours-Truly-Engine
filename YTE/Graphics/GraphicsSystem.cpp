@@ -6,6 +6,7 @@
 
 #include "YTE/Graphics/GraphicsSystem.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
+#include "YTE/Graphics/VulkanContext.hpp"
 
 #include "YTE/Platform/Window.hpp"
 #include "YTE/Platform/Windows/WindowData_Windows.hpp"
@@ -19,108 +20,6 @@
 
 namespace YTE
 {
-  struct UniformBufferObject
-  {
-    glm::mat4 mProjectionMatrix;
-    glm::mat4 mModelMatrix;
-    glm::vec4 mViewPosition;
-    float mLevelOfDetailBias = 1.0f;
-  };
-
-
-  class vulkan_context
-  {
-    public:
-    u32 mWidth = 0;
-    u32 mHeight = 0;
-    float mZoom = -2.5f;
-
-    UniformBufferObject mUniformBufferData;
-
-    glm::vec3 mRotation = glm::vec3();
-    glm::vec3 mCameraPosition = glm::vec3();
-
-    vk::Instance mInstance;
-    vk::SurfaceKHR mSurface;
-    vk::DebugReportCallbackEXT mCallback;
-    vk::PhysicalDevice mPhysicalDevice;
-    vk::PhysicalDeviceProperties mPhysicalDeviceProperties;
-    vk::PhysicalDeviceMemoryProperties mPhysicalMemoryProperties;
-
-    i32 mPresentQueueIdx;
-    vk::Device mLogicalDevice;
-    vk::SwapchainKHR mSwapChain;
-
-    vk::Queue mQueue;
-    vk::CommandBuffer mSetupCommandBuffer;
-    vk::CommandBuffer mDrawCommandBuffer;
-    std::vector<vk::ImageView> mPresentImageViews;
-
-    std::vector<vk::Image> mPresentImages;
-    vk::Image mDepthImage;
-    vk::ImageView mDepthImageView;
-
-    vk::RenderPass mRenderPass;
-
-    std::vector<vk::Framebuffer> mFrameBuffers;
-
-    vk::Buffer mVertexInputBuffer;
-    vk::Buffer mIndexInputBuffer;
-
-    vk::Buffer mUniformBuffer;
-    vk::DeviceMemory mUniformBufferMemory;
-    vk::DescriptorBufferInfo mUniformBufferInfo;
-
-    vk::Pipeline mPipeline;
-    vk::PipelineLayout mPipelineLayout;
-
-    std::vector<vk::DescriptorSet> mDescriptorSets;
-    vk::DescriptorSetLayout mDescriptorSetLayout;
-    vk::DescriptorPool mDescriptorPool;
-
-    Texture mTexture;
-  };
-
-  inline void vulkan_actual_assert(u64 flag, char *msg = "")
-  {
-    if (!flag)
-    {
-      printf("ASSERT: ");
-      printf("%s", msg);
-      printf("\n");
-
-      int *base = 0;
-      *base = 1;
-    }
-  }
-
-  inline void vulkan_assert(u64 flag, char *msg = "")
-  {
-    vulkan_actual_assert(flag, msg);
-  }
-
-  inline void vulkan_assert(void *flag, char *msg = "")
-  {
-      vulkan_actual_assert(reinterpret_cast<u64>(flag), msg);
-  }
-
-  template<typename Type>
-  inline void vulkan_assert(Type flag, char *msg = "")
-  {
-    vulkan_actual_assert(static_cast<bool>(flag), msg);
-  }
-
-  void checkVulkanResult(vk::Result &aResult, char *aMessage) 
-  {
-    vulkan_assert(aResult == vk::Result::eSuccess, aMessage);
-  }
-
-
-  void checkVulkanResult(VkResult &aResult, char *aMessage)
-  {
-    vulkan_assert(aResult == VK_SUCCESS, aMessage);
-  }
-
   enum class StringComparison
   {
     String1Null,     // (We check this first)
@@ -175,7 +74,7 @@ namespace YTE
 
   GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine), mVulkanSuccess(0)
   {
-    auto self = mPlatformSpecificData.ConstructAndGet<vulkan_context>();
+    auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
   }
 
   GraphicsSystem::~GraphicsSystem()
@@ -194,7 +93,7 @@ namespace YTE
       return;
     }
 
-    auto self = mPlatformSpecificData.Get<vulkan_context>();
+    auto self = mPlatformSpecificData.Get<VulkanContext>();
 
     // Update matrices
     self->mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)self->mWidth / (float)self->mHeight, 0.1f, 256.0f);
@@ -224,7 +123,7 @@ namespace YTE
       return;
     }
 
-    auto self = mPlatformSpecificData.Get<vulkan_context>();
+    auto self = mPlatformSpecificData.Get<VulkanContext>();
 
     // Setup layout of descriptors used in this example
     // Basically connects the different shader stages to descriptors
@@ -271,7 +170,7 @@ namespace YTE
       return;
     }
 
-    auto self = mPlatformSpecificData.Get<vulkan_context>();
+    auto self = mPlatformSpecificData.Get<VulkanContext>();
 
     // We need to tell the API the number of max. requested descriptors per type
     static vk::DescriptorPoolSize typeCounts[2];
@@ -302,7 +201,7 @@ namespace YTE
       return;
     }
     
-    auto self = mPlatformSpecificData.Get<vulkan_context>();
+    auto self = mPlatformSpecificData.Get<VulkanContext>();
 
     // Allocate a new descriptor set from the global descriptor pool
     vk::DescriptorSetAllocateInfo allocInfo = {};
@@ -314,8 +213,8 @@ namespace YTE
 
     //ImageDescriptor for the color map texture;
     vk::DescriptorImageInfo textureDescriptor;
-    textureDescriptor.sampler = self->mTexture.sampler;
-    textureDescriptor.imageView = self->mTexture.view;
+    textureDescriptor.sampler = self->mDefaultTexture.mSampler;
+    textureDescriptor.imageView = self->mDefaultTexture.mView;
     textureDescriptor.imageLayout = vk::ImageLayout::eGeneral; // NOTE: Always this currently.
 
     // Update the descriptor set determining the shader binding points
@@ -351,9 +250,25 @@ namespace YTE
   {
     mVulkanSuccess = vkelInit();
 
+    mBaseQuad.mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
+    mBaseQuad.mVertex1.mUVCoordinates = { 0.0f, 0.0f };
+    mBaseQuad.mVertex1.mNormal = { 0.0f, 0.0f, 1.0 };
+
+    mBaseQuad.mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
+    mBaseQuad.mVertex2.mUVCoordinates = { 1.0f, 0.0f };
+    mBaseQuad.mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
+
+    mBaseQuad.mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
+    mBaseQuad.mVertex3.mUVCoordinates = { 1.0f, 1.0f };
+    mBaseQuad.mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
+
+    mBaseQuad.mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
+    mBaseQuad.mVertex4.mUVCoordinates = { 0.0f, 1.0f };
+    mBaseQuad.mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
+
     if (mVulkanSuccess)
     {
-      auto self = mPlatformSpecificData.Get<vulkan_context>();
+      auto self = mPlatformSpecificData.Get<VulkanContext>();
 
       auto appInfo = vk::ApplicationInfo()
         .setPApplicationName("First Test")
@@ -638,8 +553,8 @@ namespace YTE
       self->mSetupCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
       vulkan_assert(self->mSetupCommandBuffer, "Failed to allocate setup command buffer.");
 
-      self->mDrawCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
-      vulkan_assert(self->mDrawCommandBuffer, "Failed to allocate draw command buffer.");
+      self->mDrawCommandBuffers = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo);
+      vulkan_assert(self->mDrawCommandBuffers.size(), "Failed to allocate draw command buffer.");
 
       self->mPresentImages = self->mLogicalDevice.getSwapchainImagesKHR(self->mSwapChain);
 
@@ -790,7 +705,7 @@ namespace YTE
       }
 
       TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, commandPool);
-      self->mTexture = loader.loadTexture("./Textures/Happy.png"); // TODO: Format is wrong.
+      self->mDefaultTexture = loader.loadTexture("./Textures/Happy.png"); // TODO: Format is wrong.
 
 
       self->mSetupCommandBuffer.begin(beginInfo);
@@ -918,100 +833,6 @@ namespace YTE
         auto result = self->mLogicalDevice.createFramebuffer(&frameBufferCreateInfo, NULL, &self->mFrameBuffers[i]);
         checkVulkanResult(result, "Failed to create framebuffer.");
       }
-
-
-      // Create our Index buffer
-      vk::MemoryAllocateInfo memAlloc;
-
-      // Index buffer
-      vk::BufferCreateInfo indexbufferInfo = {};
-      indexbufferInfo.size = 6 * sizeof(u32);
-      indexbufferInfo.usage = vk::BufferUsageFlagBits::eIndexBuffer;
-
-      self->mLogicalDevice.createBuffer(&indexbufferInfo, nullptr, &self->mIndexInputBuffer);
-      auto requirements = self->mLogicalDevice.getBufferMemoryRequirements(self->mIndexInputBuffer);
-
-      memAlloc.allocationSize = requirements.size;
-
-
-      memAlloc.memoryTypeIndex = GetMemoryType(requirements.memoryTypeBits, self->mPhysicalMemoryProperties,vk::MemoryPropertyFlagBits::eHostVisible);
-      auto indexMemory = self->mLogicalDevice.allocateMemory(memAlloc);
-
-      void *indexPtr = self->mLogicalDevice.mapMemory(indexMemory, 0, indexbufferInfo.size);
-      auto indices = (u32*)indexPtr;
-      indices[0] = 0;
-      indices[1] = 1;
-      indices[2] = 2;
-      indices[3] = 2;
-      indices[4] = 3;
-      indices[5] = 0;
-
-      self->mLogicalDevice.unmapMemory(indexMemory);
-
-      self->mLogicalDevice.bindBufferMemory(self->mIndexInputBuffer, indexMemory, 0);
-
-      // Create our vertex buffer:
-      auto vertexInputBufferInfo = vk::BufferCreateInfo()
-                                        .setSize(sizeof(Triangle) * 4) // Size in bytes.
-                                        .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
-                                        .setSharingMode(vk::SharingMode::eExclusive); // TODO: Change to not exclusive.
-
-      self->mVertexInputBuffer = self->mLogicalDevice.createBuffer(vertexInputBufferInfo);
-
-      vulkan_assert(self->mVertexInputBuffer, "Failed to create vertex input buffer.");
-
-      auto vertexBufferMemoryRequirements = self->mLogicalDevice.getBufferMemoryRequirements(self->mVertexInputBuffer);
-
-      auto bufferAllocateInfo = vk::MemoryAllocateInfo()
-                                     .setAllocationSize(vertexBufferMemoryRequirements.size);
-
-      u32 vertexMemoryTypeBits = vertexBufferMemoryRequirements.memoryTypeBits;
-      vk::MemoryPropertyFlags vertexDesiredMemoryFlags = vk::MemoryPropertyFlagBits::eHostVisible;
-
-      u32 i = 0;
-      for (auto &memoryType : self->mPhysicalMemoryProperties.memoryTypes)
-      {
-        if (vertexMemoryTypeBits & 1) 
-        {
-          if ((memoryType.propertyFlags & vertexDesiredMemoryFlags) == vertexDesiredMemoryFlags) 
-          {
-            bufferAllocateInfo.memoryTypeIndex = (u32)i;
-            break;
-          }
-        }
-
-        vertexMemoryTypeBits = vertexMemoryTypeBits >> 1;
-
-        ++i;
-      }
-
-      auto vertexBufferMemory =  self->mLogicalDevice.allocateMemory(bufferAllocateInfo);
-      vulkan_assert(vertexBufferMemory, "Failed to allocate buffer memory.");
-
-      void *mapped = self->mLogicalDevice.mapMemory(vertexBufferMemory, 0, VK_WHOLE_SIZE);
-      vulkan_assert(mapped, "Failed to map buffer memory.");
-
-      mQuad = (Quad*)mapped;
-      mQuad->mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
-      mQuad->mVertex1.mUVCoordinates = { 0.0f, 0.0f};
-      mQuad->mVertex1.mNormal = { 0.0f, 0.0f, 1.0};
-
-      mQuad->mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
-      mQuad->mVertex2.mUVCoordinates = { 1.0f, 0.0f };
-      mQuad->mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
-
-      mQuad->mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
-      mQuad->mVertex3.mUVCoordinates = { 1.0f, 1.0f };
-      mQuad->mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
-
-      mQuad->mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
-      mQuad->mVertex4.mUVCoordinates = { 0.0f, 1.0f };
-      mQuad->mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
-
-      self->mLogicalDevice.unmapMemory(vertexBufferMemory);
-
-      self->mLogicalDevice.bindBufferMemory(self->mVertexInputBuffer, vertexBufferMemory, 0);
-
       // Prepare and initialize a uniform buffer block containing shader uniforms
       // In Vulkan there are no more single uniforms like in GL
       // All shader uniforms are passed as uniform buffer blocks 
@@ -1233,7 +1054,7 @@ namespace YTE
 
   void GraphicsSystem::VulkanRender()
   {
-    auto self = mPlatformSpecificData.Get<vulkan_context>();
+    auto self = mPlatformSpecificData.Get<VulkanContext>();
 
     const float zoomSpeed = 0.15f;
     const float rotationSpeed = 1.25f;
@@ -1271,7 +1092,7 @@ namespace YTE
     vk::CommandBufferBeginInfo beginInfo = {};
     beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
 
-    self->mDrawCommandBuffer.begin(beginInfo);
+    self->mDrawCommandBuffers[0].begin(beginInfo);
 
     // change image layout from VK_IMAGE_LAYOUT_PRESENT_SRC_KHR to VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
     vk::ImageMemoryBarrier layoutTransitionBarrier = {};
@@ -1287,12 +1108,12 @@ namespace YTE
     auto resourceRange = vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
     layoutTransitionBarrier.subresourceRange = resourceRange;
 
-    self->mDrawCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
-                                             vk::PipelineStageFlagBits::eTopOfPipe,
-                                             vk::DependencyFlags(),
-                                             nullptr,
-                                             nullptr,
-                                             layoutTransitionBarrier);
+    self->mDrawCommandBuffers[0].pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
+                                                 vk::PipelineStageFlagBits::eTopOfPipe,
+                                                 vk::DependencyFlags(),
+                                                 nullptr,
+                                                 nullptr,
+                                                 layoutTransitionBarrier);
 
     // activate render pass:
     vk::ClearValue clearValue[2];
@@ -1314,25 +1135,38 @@ namespace YTE
     vk::Viewport viewport{ 0, 0, static_cast<float>(self->mWidth), static_cast<float>(self->mHeight), 0, 1 };
     vk::Rect2D scissor{ { 0, 0 },{ self->mWidth, self->mHeight } };
 
-    self->mDrawCommandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
+    self->mDrawCommandBuffers[0].beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
     // Bind descriptor sets describing shader binding points
-    self->mDrawCommandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, self->mPipelineLayout, 0, self->mDescriptorSets, nullptr);
+    self->mDrawCommandBuffers[0].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, self->mPipelineLayout, 0, self->mDescriptorSets, nullptr);
 
     // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
-    self->mDrawCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, self->mPipeline);
+    self->mDrawCommandBuffers[0].bindPipeline(vk::PipelineBindPoint::eGraphics, self->mPipeline);
 
     // take care of dynamic state:
-    self->mDrawCommandBuffer.setViewport(0, viewport);
-    self->mDrawCommandBuffer.setScissor(0, scissor);
+    self->mDrawCommandBuffers[0].setViewport(0, viewport);
+    self->mDrawCommandBuffers[0].setScissor(0, scissor);
 
     // render the triangle:
     vk::DeviceSize offsets = {};
-    self->mDrawCommandBuffer.bindVertexBuffers(0, self->mVertexInputBuffer, offsets);
-    self->mDrawCommandBuffer.bindIndexBuffer(self->mIndexInputBuffer, 0, vk::IndexType::eUint32);
 
-    self->mDrawCommandBuffer.drawIndexed(6, 1, 0, 0, 1);
-    self->mDrawCommandBuffer.endRenderPass();
+    for (auto &object : mObjects)
+    {
+      YTE::Quad dirtyQuad = mBaseQuad;
+      dirtyQuad.Translate(object.mTranslation);
+      dirtyQuad.Scale(object.mScale);
+      dirtyQuad.Rotate(object.mRotate);
+
+      auto *data = (Quad*)self->mLogicalDevice.mapMemory(object.mVerts.mMemory, 0, sizeof(u32) * 6);
+      *data = dirtyQuad;
+      self->mLogicalDevice.unmapMemory(object.mVerts.mMemory);
+
+      self->mDrawCommandBuffers[0].bindVertexBuffers(0, object.mVerts.mBuffer, offsets);
+      self->mDrawCommandBuffers[0].bindIndexBuffer(object.mIndicies.mBuffer, 0, vk::IndexType::eUint32);
+
+      self->mDrawCommandBuffers[0].drawIndexed(6, 1, 0, 0, 1);
+    }
+    self->mDrawCommandBuffers[0].endRenderPass();
 
     // change layout back to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
     vk::ImageMemoryBarrier prePresentBarrier = {};
@@ -1345,13 +1179,13 @@ namespace YTE
     prePresentBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
     prePresentBarrier.image = self->mPresentImages[nextImageIdx];
 
-    self->mDrawCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
+    self->mDrawCommandBuffers[0].pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
                                              vk::PipelineStageFlagBits::eBottomOfPipe,
                                              vk::DependencyFlags(),
                                              nullptr,
                                              nullptr,
                                              prePresentBarrier);
-    self->mDrawCommandBuffer.end();
+    self->mDrawCommandBuffers[0].end();
 
     // present:
     vk::Fence renderFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());
@@ -1362,7 +1196,7 @@ namespace YTE
     submitInfo.pWaitSemaphores = &presentCompleteSemaphore;
     submitInfo.pWaitDstStageMask = &waitStageMash;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &self->mDrawCommandBuffer;
+    submitInfo.pCommandBuffers = &self->mDrawCommandBuffers[0];
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &renderingCompleteSemaphore;
     

@@ -213,14 +213,14 @@ namespace YTE
                 vk::ImageTiling::eOptimal,
                 vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
                 vk::MemoryPropertyFlagBits::eDeviceLocal,
-                texture.image,
-                texture.deviceMemory
+                texture.mImage,
+                texture.mDeviceMemory
                 );
 
     transitionImageLayout(stagingImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal);
-    transitionImageLayout(texture.image, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
-    copyImage(stagingImage, texture.image, texWidth, texHeight);
-    transitionImageLayout(texture.image, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+    transitionImageLayout(texture.mImage, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal);
+    copyImage(stagingImage, texture.mImage, texWidth, texHeight);
+    transitionImageLayout(texture.mImage, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
     return texture;
   }
@@ -318,7 +318,7 @@ namespace YTE
 
   void TextureLoader::createTextureImageView(Texture &aTexture)
   {
-    createImageView(aTexture.image, vk::Format::eR8G8B8A8Unorm, aTexture.view);
+    createImageView(aTexture.mImage, vk::Format::eR8G8B8A8Unorm, aTexture.mView);
   }
 
 
@@ -348,7 +348,7 @@ namespace YTE
     samplerInfo.minLod = 0.0f;
     samplerInfo.maxLod = 0.0f;
 
-    aTexture.sampler = device.createSampler(samplerInfo);
+    aTexture.mSampler = device.createSampler(samplerInfo);
   }
 
   // Load a 2D texture
@@ -362,9 +362,9 @@ namespace YTE
     createTextureImageView(texture);
 
     // Fill descriptor image info that can be used for setting up descriptor sets
-    texture.descriptor.imageLayout = vk::ImageLayout::eGeneral;
-    texture.descriptor.imageView = texture.view;
-    texture.descriptor.sampler = texture.sampler;
+    texture.mDescriptor.imageLayout = vk::ImageLayout::eGeneral;
+    texture.mDescriptor.imageView = texture.mView;
+    texture.mDescriptor.sampler = texture.mSampler;
 
     return texture;
   }
@@ -373,10 +373,10 @@ namespace YTE
 
   void TextureLoader::destroyTexture(Texture texture)
   {
-    device.destroyImageView(texture.view, nullptr);
-    device.destroyImage(texture.image, nullptr);
-    device.destroySampler(texture.sampler, nullptr);
-    device.freeMemory(texture.deviceMemory, nullptr);
+    device.destroyImageView(texture.mView, nullptr);
+    device.destroyImage(texture.mImage, nullptr);
+    device.destroySampler(texture.mSampler, nullptr);
+    device.freeMemory(texture.mDeviceMemory, nullptr);
   }
   inline vk::CommandBuffer TextureLoader::createCommandBuffer(vk::CommandBufferLevel level, bool begin)
   {

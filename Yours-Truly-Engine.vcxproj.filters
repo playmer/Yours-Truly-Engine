@@ -1085,6 +1085,9 @@
       <Filter>Dependencies\glbinding\source</Filter>
     </ClCompile>
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="YTE\Graphics\VulkanContext.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -3428,6 +3431,12 @@
       <Filter>Dependencies\assimp\contrib\zlib</Filter>
     </ClInclude>
     <ClInclude Include="YTE\Graphics\TextureLoader.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\VulkanContext.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Texture.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

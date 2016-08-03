@@ -8,12 +8,13 @@
 
 #include <assert.h>
 
+#include "YTE/Core/Types.hpp"
+
+#include "YTE/Graphics/Texture.hpp"
+
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
 #include "stb/stb_image.h"
-
-
-#include "YTE/Core/Types.hpp"
 
 namespace YTE
 {
@@ -35,20 +36,6 @@ namespace YTE
     // todo : throw error
     return 0;
   }
-
-  struct Texture
-  {
-    vk::Sampler sampler;
-    vk::Image image;
-    vk::ImageLayout imageLayout;
-    vk::DeviceMemory deviceMemory;
-    vk::ImageView view;
-    u32 width;
-    u32 height;
-    u32 mipLevels;
-    u32 layerCount;
-    vk::DescriptorImageInfo descriptor;
-  };
 
   class TextureLoader
   {

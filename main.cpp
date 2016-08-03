@@ -12,8 +12,48 @@
 #include <chrono>
 
 #include "YTE/DataStructures/UniqueHandle.hpp"
+#include "YTE/Graphics/GraphicsSystem.hpp"
+#include "YTE/Graphics/VulkanContext.hpp"
+
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
+
+
+YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem)
+{
+  auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();
+  YTE::Object object;
+  
+  object.mIndicies = context->CreateIndexBuffer({ 0, 1, 2, 2, 3, 0 }, false);
+
+  YTE::Vertex mVertex1;
+
+  mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
+  mVertex1.mUVCoordinates = { 0.0f, 0.0f };
+  mVertex1.mNormal = { 0.0f, 0.0f, 1.0 };
+
+  YTE::Vertex mVertex2;
+
+  mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
+  mVertex2.mUVCoordinates = { 1.0f, 0.0f };
+  mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
+  
+  YTE::Vertex mVertex3;
+
+  mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
+  mVertex3.mUVCoordinates = { 1.0f, 1.0f };
+  mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
+
+  YTE::Vertex mVertex4;
+
+  mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
+  mVertex4.mUVCoordinates = { 0.0f, 1.0f };
+  mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
+
+  object.mVerts = context->CreateVertexBuffer({ mVertex1, mVertex2, mVertex3, mVertex4 }, false);
+
+  return object;
+}
 
 
 int main(int aArgumentNumber, char **Arguments)
@@ -26,6 +66,16 @@ int main(int aArgumentNumber, char **Arguments)
 
   std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
   std::chrono::time_point<std::chrono::high_resolution_clock> lastFrame = begin;
+
+  glm::vec3 translation = glm::vec3();
+  glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+  glm::vec3 rotate = glm::vec3();
+
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
+  engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
+
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
+  
 
   while (engine.mShouldUpdate)
   {
@@ -40,35 +90,27 @@ int main(int aArgumentNumber, char **Arguments)
       engine.mShouldUpdate = false;
     }
 
-    glm::vec3 transform = glm::vec3();
-    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 rotate = glm::vec3();
-
     // Translation
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Right) ||
         engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::D))
     {
-      transform.x += 0.5f * dt;
+      translation.x += 0.5f * dt;
     }
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Left) ||
         engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::A))
     {
-      transform.x += -0.5f * dt;
+      translation.x += -0.5f * dt;
     }
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Up) ||
         engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::W))
     {
-      transform.y += -0.5f * dt;
+      translation.y += -0.5f * dt;
     }
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Down) ||
         engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::S))
     {
-      transform.y += 0.5f * dt;
+      translation.y += 0.5f * dt;
     }
-
-    engine.mGraphicsSystem.mQuad->Translate(transform);
-
-
 
     // Scaling
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N1))
@@ -87,8 +129,6 @@ int main(int aArgumentNumber, char **Arguments)
     {
       scale.y += 0.5f * dt;
     }
-
-    engine.mGraphicsSystem.mQuad->Scale(scale);
 
     // Rotation
     //About X Axis
@@ -121,7 +161,9 @@ int main(int aArgumentNumber, char **Arguments)
       rotate.z -= glm::pi<float>() / 2 * dt;
     }
 
-    engine.mGraphicsSystem.mQuad->Rotate(rotate);
+    engine.mGraphicsSystem.mObjects[1].mTranslation = translation;
+    engine.mGraphicsSystem.mObjects[1].mScale = scale;
+    engine.mGraphicsSystem.mObjects[1].mRotate = rotate;
   }
 
   return 0;
