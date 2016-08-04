@@ -23,10 +23,10 @@ void main()
   
   float colorFilled = ceil(max(max(max(0.0,  colorFilledVec.x), colorFilledVec.y), colorFilledVec.z));
   
-  //outFragColor = vec4(mix(textureColor.x, inColor.x, colorFilled),
-  //                    mix(textureColor.y, inColor.y, colorFilled),
-  //                    mix(textureColor.z, inColor.z, colorFilled),
-  //                    mix(textureColor.w, 1.0, colorFilled));
+  outFragColor = vec4(mix(textureColor.x, inColor.x, colorFilled),
+                      mix(textureColor.y, inColor.y, colorFilled),
+                      mix(textureColor.z, inColor.z, colorFilled),
+                      mix(textureColor.w, 1.0, colorFilled));
 
-  outFragColor = vec4(1.0, 1.0, 1.0, 1.0);
+  //outFragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

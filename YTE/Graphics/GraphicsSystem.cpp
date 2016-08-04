@@ -991,7 +991,10 @@ namespace YTE
       SetupObjectBuffer();
     }
 
-    memcpy(mObjectsBufferPtr, mObjects.data(), mObjects.size());
+    auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
+    mObjectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
+    memcpy(mObjectsBufferPtr, mObjects.data(), bufferSize);
+    self->mLogicalDevice.unmapMemory(mObjectsBuffer.mMemory);
 
     const float zoomSpeed = 0.15f;
     const float rotationSpeed = 1.25f;
@@ -1174,7 +1177,6 @@ namespace YTE
     mObjectsBuffer = self->CreateBuffer(size, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
     mObjectsBufferSize = static_cast<u32>(mObjects.size());
-    mObjectsBufferPtr = self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, size);
   }
 
   void GraphicsSystem::Update(float aDt)

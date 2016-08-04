@@ -68,7 +68,7 @@ namespace YTE
     BufferMemory mQuadIndicies;
 
     BufferMemory mObjectsBuffer;
-    void *mObjectsBufferPtr = nullptr;
+    Object *mObjectsBufferPtr = nullptr;
 
     u32 mObjectsBufferSize = 0;
 
