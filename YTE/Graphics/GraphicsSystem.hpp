@@ -35,11 +35,6 @@ namespace YTE
     glm::vec3 mRotate = { 0.0f, 0.0f, 0.0f };
 
     glm::vec3 mColor = { -1.0f, -1.0f, -1.0f };
-
-    BufferMemory mVerts;
-    BufferMemory mIndicies;
-
-    Texture mTexture;
   };
 
   class GraphicsSystem
@@ -55,6 +50,8 @@ namespace YTE
     void Update(float aDt);
     void VulkanRender();
 
+    void SetupObjectBuffer();
+
     Quad *mQuad;
 
     YTE::Quad mBaseQuad;
@@ -67,6 +64,13 @@ namespace YTE
     private:
     Engine *mEngine;
 
+    BufferMemory mQuadVerticies;
+    BufferMemory mQuadIndicies;
+
+    BufferMemory mObjectsBuffer;
+    void *mObjectsBufferPtr = nullptr;
+
+    u32 mObjectsBufferSize = 0;
 
 	  i32 mVulkanSuccess;
   };

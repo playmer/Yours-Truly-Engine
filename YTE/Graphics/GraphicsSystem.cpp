@@ -774,46 +774,91 @@ namespace YTE
       shaderStageCreateInfo[1].pName = "main";        // shader entry point function name
       shaderStageCreateInfo[1].pSpecializationInfo = NULL;
 
-      vk::VertexInputBindingDescription vertexBindingDescription;
-      vertexBindingDescription.stride = sizeof(Vertex);
-      vertexBindingDescription.inputRate = vk::VertexInputRate::eVertex;
+      std::array<vk::VertexInputBindingDescription, 2> vertexBindingDescription;
+      vertexBindingDescription[0].stride = sizeof(Vertex);
+      vertexBindingDescription[0].inputRate = vk::VertexInputRate::eVertex;
+      vertexBindingDescription[0].binding = 0;
 
+      vertexBindingDescription[1].stride = sizeof(Object);
+      vertexBindingDescription[1].inputRate = vk::VertexInputRate::eInstance;
+      vertexBindingDescription[1].binding = 1;
+      
       u32 vertexOffset = 0;
       
       std::array<vk::VertexInputAttributeDescription, 4> vertexAttributeDescription;
+
+      //glm::vec4 mPosition;
       vertexAttributeDescription[0].binding = 0;
       vertexAttributeDescription[0].location = 0;
       vertexAttributeDescription[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
       vertexAttributeDescription[0].offset = vertexOffset;
-
-      //glm::vec4 mPosition;
       vertexOffset += sizeof(glm::vec4);
 
-      vertexAttributeDescription[1].binding = 0;
-      vertexAttributeDescription[1].location = 1;
-      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[1].offset = vertexOffset;
 
-      //glm::vec3 mColor;
-      vertexOffset += sizeof(glm::vec3);
-
+      //glm::vec2 mUVCoordinates;
       vertexAttributeDescription[2].binding = 0;
       vertexAttributeDescription[2].location = 2;
       vertexAttributeDescription[2].format = vk::Format::eR32G32Sfloat;
       vertexAttributeDescription[2].offset = vertexOffset;
-
-      //glm::vec2 mUVCoordinates;
       vertexOffset += sizeof(glm::vec2);
 
+      //glm::vec2 mNormal;
       vertexAttributeDescription[3].binding = 0;
       vertexAttributeDescription[3].location = 3;
       vertexAttributeDescription[3].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
       vertexAttributeDescription[3].offset = vertexOffset;
 
+
+
+      ///////////////////////////////////////////////////////////
+      // Instance Attributes
+      ///////////////////////////////////////////////////////////
+      vertexOffset = 0;
+
+      //glm::vec3 mTranslation
+      vertexAttributeDescription[1].binding = 1;
+      vertexAttributeDescription[1].location = 4;
+      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexOffset += sizeof(glm::vec3);
+      
+      //glm::vec3 mScale
+      vertexAttributeDescription[1].binding = 1;
+      vertexAttributeDescription[1].location = 5;
+      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexOffset += sizeof(glm::vec3);
+
+      //glm::vec3 mRotation;
+      vertexAttributeDescription[1].binding = 1;
+      vertexAttributeDescription[1].location = 6;
+      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexOffset += sizeof(glm::vec3);
+
+      //glm::vec3 mColor
+      vertexAttributeDescription[1].binding = 1;
+      vertexAttributeDescription[1].location = 7;
+      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[1].offset = vertexOffset;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
-      vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
-      vertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexBindingDescription;
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = vertexAttributeDescription.size();
+      vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
+      vertexInputStateCreateInfo.pVertexBindingDescriptions = vertexBindingDescription.data();
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(vertexAttributeDescription.size());
       vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescription.data();
 
       // vertex topology config:
@@ -903,12 +948,50 @@ namespace YTE
 
       self->SetupDescriptorPool();
       self->SetupDescriptorSet();
+
+
+
+
+      mQuadIndicies = self->CreateIndexBuffer({ 0, 1, 2, 2, 3, 0 }, true);
+
+      YTE::Vertex mVertex1;
+
+      mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
+      mVertex1.mUVCoordinates = { 0.0f, 0.0f };
+      mVertex1.mNormal = { 0.0f, 0.0f, 1.0 };
+
+      YTE::Vertex mVertex2;
+
+      mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
+      mVertex2.mUVCoordinates = { 1.0f, 0.0f };
+      mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
+
+      YTE::Vertex mVertex3;
+
+      mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
+      mVertex3.mUVCoordinates = { 1.0f, 1.0f };
+      mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
+
+      YTE::Vertex mVertex4;
+
+      mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
+      mVertex4.mUVCoordinates = { 0.0f, 1.0f };
+      mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
+
+      mQuadVerticies = self->CreateVertexBuffer({ mVertex1, mVertex2, mVertex3, mVertex4 }, false);
     } 
   }
 
   void GraphicsSystem::VulkanRender()
   {
     auto self = mPlatformSpecificData.Get<VulkanContext>();
+
+    if (mObjectsBufferSize < mObjects.size())
+    {
+      SetupObjectBuffer();
+    }
+
+    memcpy(mObjectsBufferPtr, mObjects.data(), mObjects.size());
 
     const float zoomSpeed = 0.15f;
     const float rotationSpeed = 1.25f;
@@ -1004,27 +1087,32 @@ namespace YTE
     // render the triangle:
     vk::DeviceSize offsets = {};
 
-    for (auto &object : mObjects)
-    {
-      YTE::Quad dirtyQuad = mBaseQuad;
-      dirtyQuad.Translate(object.mTranslation);
-      dirtyQuad.Scale(object.mScale);
-      dirtyQuad.Rotate(object.mRotate);
+    //for (auto &object : mObjects)
+    //{
+    //  YTE::Quad dirtyQuad = mBaseQuad;
+    //  dirtyQuad.Translate(object.mTranslation);
+    //  dirtyQuad.Scale(object.mScale);
+    //  dirtyQuad.Rotate(object.mRotate);
+    //
+    //  dirtyQuad.mVertex1.mColor = object.mColor;
+    //  dirtyQuad.mVertex2.mColor = object.mColor;
+    //  dirtyQuad.mVertex3.mColor = object.mColor;
+    //  dirtyQuad.mVertex4.mColor = object.mColor;
+    //
+    //  auto *data = (Quad*)self->mLogicalDevice.mapMemory(object.mVerts.mMemory, 0, sizeof(u32) * 6);
+    //  *data = dirtyQuad;
+    //  self->mLogicalDevice.unmapMemory(object.mVerts.mMemory);
+    //  
+    //  self->mDrawCommandBuffers[0].bindVertexBuffers(0, object.mVerts.mBuffer, offsets);
+    //  self->mDrawCommandBuffers[0].bindIndexBuffer(object.mIndicies.mBuffer, 0, vk::IndexType::eUint32);
+    //
+    //  self->mDrawCommandBuffers[0].drawIndexed(6, 1, 0, 0, 1);
+    //}
 
-      dirtyQuad.mVertex1.mColor = object.mColor;
-      dirtyQuad.mVertex2.mColor = object.mColor;
-      dirtyQuad.mVertex3.mColor = object.mColor;
-      dirtyQuad.mVertex4.mColor = object.mColor;
-
-      auto *data = (Quad*)self->mLogicalDevice.mapMemory(object.mVerts.mMemory, 0, sizeof(u32) * 6);
-      *data = dirtyQuad;
-      self->mLogicalDevice.unmapMemory(object.mVerts.mMemory);
-      
-      self->mDrawCommandBuffers[0].bindVertexBuffers(0, object.mVerts.mBuffer, offsets);
-      self->mDrawCommandBuffers[0].bindIndexBuffer(object.mIndicies.mBuffer, 0, vk::IndexType::eUint32);
-
-      self->mDrawCommandBuffers[0].drawIndexed(6, 1, 0, 0, 1);
-    }
+    self->mDrawCommandBuffers[0].bindVertexBuffers(0, mQuadVerticies.mBuffer, offsets);
+    self->mDrawCommandBuffers[0].bindVertexBuffers(1, mObjectsBuffer.mBuffer, offsets);
+    self->mDrawCommandBuffers[0].bindIndexBuffer(mQuadIndicies.mBuffer, 0, vk::IndexType::eUint32);
+    self->mDrawCommandBuffers[0].drawIndexed(6, static_cast<u32>(mObjects.size()), 0, 0, 1);
 
     self->mDrawCommandBuffers[0].endRenderPass();
 
@@ -1076,6 +1164,17 @@ namespace YTE
 
     self->mLogicalDevice.destroySemaphore(presentCompleteSemaphore);
     self->mLogicalDevice.destroySemaphore(renderingCompleteSemaphore);
+  }
+
+  void GraphicsSystem::SetupObjectBuffer()
+  {
+    auto self = mPlatformSpecificData.Get<VulkanContext>();
+
+    auto size = static_cast<u32>(mObjects.size() * sizeof(Object));
+    mObjectsBuffer = self->CreateBuffer(size, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+
+    mObjectsBufferSize = static_cast<u32>(mObjects.size());
+    mObjectsBufferPtr = self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, size);
   }
 
   void GraphicsSystem::Update(float aDt)

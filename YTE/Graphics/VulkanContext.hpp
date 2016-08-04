@@ -12,7 +12,6 @@
 
 namespace YTE
 {
-
   inline void vulkan_actual_assert(u64 flag, char *msg = "")
   {
     if (!flag)
@@ -58,7 +57,6 @@ namespace YTE
     Vertex()
     {
       mPosition = { 0,0,0,0 };
-      mColor = { -1,-1,-1 };
       mUVCoordinates = { 0,0 };
       mNormal = { 0,0,0 };
     }
@@ -76,6 +74,7 @@ namespace YTE
 
       mPosition = scale * mPosition;
     }
+
     void Rotate(const glm::vec3 &aRotation)
     {
       auto rotation = glm::mat4();
@@ -87,7 +86,6 @@ namespace YTE
     }
 
     glm::vec4 mPosition;
-    glm::vec3 mColor;
     glm::vec2 mUVCoordinates;
     glm::vec3 mNormal;
   };

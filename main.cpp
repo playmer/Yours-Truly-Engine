@@ -24,37 +24,7 @@ YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = 
 {
   auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();
   YTE::Object object;
-
-  object.mIndicies = context->CreateIndexBuffer({ 0, 1, 2, 2, 3, 0 }, false);
-
   object.mColor = aColor;
-
-  YTE::Vertex mVertex1;
-
-  mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
-  mVertex1.mUVCoordinates = { 0.0f, 0.0f };
-  mVertex1.mNormal = { 0.0f, 0.0f, 1.0 };
-
-  YTE::Vertex mVertex2;
-
-  mVertex2.mPosition = { 0.5f, -0.5f, 0.0f, 1.0f };
-  mVertex2.mUVCoordinates = { 1.0f, 0.0f };
-  mVertex2.mNormal = { 0.0f, 0.0f, 1.0 };
-  
-  YTE::Vertex mVertex3;
-
-  mVertex3.mPosition = { 0.5f, 0.5f, 0.0f, 1.0f };
-  mVertex3.mUVCoordinates = { 1.0f, 1.0f };
-  mVertex3.mNormal = { 0.0f, 0.0f, 1.0 };
-
-  YTE::Vertex mVertex4;
-
-  mVertex4.mPosition = { -0.5f, 0.5f, 0.0f, 1.0f };
-  mVertex4.mUVCoordinates = { 0.0f, 1.0f };
-  mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
-
-  object.mVerts = context->CreateVertexBuffer({ mVertex1, mVertex2, mVertex3, mVertex4 }, false);
-
   return object;
 }
 
@@ -76,16 +46,14 @@ int main(int aArgumentNumber, char **Arguments)
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 1, 0)));
   engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
+  engine.mGraphicsSystem.mObjects[1].mTranslation = { 1.0, -1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
+  engine.mGraphicsSystem.mObjects[2].mTranslation = { -1.0, -1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0.5, 0.5, 0.5)));
+  engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, 1.0, 0.0 };
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
-
-
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
-  engine.mGraphicsSystem.mObjects[2].mTranslation = { 1.0, -1.0, 0.0 };
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
-  engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, -1.0, 0.0 };
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0.5, 0.5, 0.5)));
-  engine.mGraphicsSystem.mObjects[4].mTranslation = { -1.0, 1.0, 0.0 };
   
 
   while (engine.mShouldUpdate)
@@ -172,9 +140,9 @@ int main(int aArgumentNumber, char **Arguments)
       rotate.z -= glm::pi<float>() / 2 * dt;
     }
 
-    engine.mGraphicsSystem.mObjects[1].mTranslation = translation;
-    engine.mGraphicsSystem.mObjects[1].mScale = scale;
-    engine.mGraphicsSystem.mObjects[1].mRotate = rotate;
+    engine.mGraphicsSystem.mObjects[4].mTranslation = translation;
+    engine.mGraphicsSystem.mObjects[4].mScale = scale;
+    engine.mGraphicsSystem.mObjects[4].mRotate = rotate;
   }
 
   return 0;
