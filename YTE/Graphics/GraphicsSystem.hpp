@@ -50,6 +50,8 @@ namespace YTE
     void Update(float aDt);
     void VulkanRender();
 
+    void SetupDrawing();
+
     void SetupObjectBuffer();
 
     Quad *mQuad;

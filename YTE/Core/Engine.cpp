@@ -25,6 +25,7 @@ namespace YTE
 
   void Engine::Update(float aDt)
   {
+    ++mCurrentFrame;
     mGraphicsSystem.Update(aDt);
 
     for (auto &window : mWindows)

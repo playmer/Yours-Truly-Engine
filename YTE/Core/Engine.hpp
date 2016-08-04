@@ -29,6 +29,8 @@ namespace YTE
     Window *mPrimaryWindow;
 
     bool mShouldUpdate;
+
+    u64 mCurrentFrame = 0;
   };
 }
 #endif
