@@ -140,9 +140,9 @@ int main(int aArgumentNumber, char **Arguments)
       rotate.z -= glm::pi<float>() / 2 * dt;
     }
 
-    engine.mGraphicsSystem.mObjects[4].mTranslation = translation;
-    engine.mGraphicsSystem.mObjects[4].mScale = scale;
-    engine.mGraphicsSystem.mObjects[4].mRotate = rotate;
+    engine.mGraphicsSystem.mObjectsBufferPtr[4].mTranslation = translation;
+    engine.mGraphicsSystem.mObjectsBufferPtr[4].mScale = scale;
+    engine.mGraphicsSystem.mObjectsBufferPtr[4].mRotate = rotate;
   }
 
   return 0;

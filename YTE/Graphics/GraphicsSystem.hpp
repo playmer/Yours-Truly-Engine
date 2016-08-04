@@ -61,6 +61,8 @@ namespace YTE
 
     PrivateImplementation<4096> mPlatformSpecificData;
 
+    Object *mObjectsBufferPtr = nullptr;
+
     private:
     Engine *mEngine;
 
@@ -68,7 +70,6 @@ namespace YTE
     BufferMemory mQuadIndicies;
 
     BufferMemory mObjectsBuffer;
-    Object *mObjectsBufferPtr = nullptr;
 
     u32 mObjectsBufferSize = 0;
 

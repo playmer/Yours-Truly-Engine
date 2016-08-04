@@ -152,7 +152,7 @@ namespace YTE
       }
       else
       {
-          printf("Could not find validation layer.");
+          printf("Could not find validation layers.");
       }
 
       auto extensions = vk::enumerateInstanceExtensionProperties();
@@ -785,7 +785,7 @@ namespace YTE
       
       u32 vertexOffset = 0;
       
-      std::array<vk::VertexInputAttributeDescription, 4> vertexAttributeDescription;
+      std::array<vk::VertexInputAttributeDescription, 7> vertexAttributeDescription;
 
       //glm::vec4 mPosition;
       vertexAttributeDescription[0].binding = 0;
@@ -796,17 +796,17 @@ namespace YTE
 
 
       //glm::vec2 mUVCoordinates;
-      vertexAttributeDescription[2].binding = 0;
-      vertexAttributeDescription[2].location = 2;
-      vertexAttributeDescription[2].format = vk::Format::eR32G32Sfloat;
-      vertexAttributeDescription[2].offset = vertexOffset;
+      vertexAttributeDescription[1].binding = 0;
+      vertexAttributeDescription[1].location = 1;
+      vertexAttributeDescription[1].format = vk::Format::eR32G32Sfloat;
+      vertexAttributeDescription[1].offset = vertexOffset;
       vertexOffset += sizeof(glm::vec2);
 
       //glm::vec2 mNormal;
-      vertexAttributeDescription[3].binding = 0;
-      vertexAttributeDescription[3].location = 3;
-      vertexAttributeDescription[3].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescription[3].offset = vertexOffset;
+      vertexAttributeDescription[2].binding = 0;
+      vertexAttributeDescription[2].location = 2;
+      vertexAttributeDescription[2].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
+      vertexAttributeDescription[2].offset = vertexOffset;
 
 
 
@@ -816,31 +816,31 @@ namespace YTE
       vertexOffset = 0;
 
       //glm::vec3 mTranslation
-      vertexAttributeDescription[1].binding = 1;
-      vertexAttributeDescription[1].location = 4;
-      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexAttributeDescription[3].binding = 1;
+      vertexAttributeDescription[3].location = 3;
+      vertexAttributeDescription[3].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[3].offset = vertexOffset;
       vertexOffset += sizeof(glm::vec3);
       
       //glm::vec3 mScale
-      vertexAttributeDescription[1].binding = 1;
-      vertexAttributeDescription[1].location = 5;
-      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexAttributeDescription[4].binding = 1;
+      vertexAttributeDescription[4].location = 4;
+      vertexAttributeDescription[4].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[4].offset = vertexOffset;
       vertexOffset += sizeof(glm::vec3);
 
       //glm::vec3 mRotation;
-      vertexAttributeDescription[1].binding = 1;
-      vertexAttributeDescription[1].location = 6;
-      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexAttributeDescription[5].binding = 1;
+      vertexAttributeDescription[5].location = 5;
+      vertexAttributeDescription[5].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[5].offset = vertexOffset;
       vertexOffset += sizeof(glm::vec3);
 
       //glm::vec3 mColor
-      vertexAttributeDescription[1].binding = 1;
-      vertexAttributeDescription[1].location = 7;
-      vertexAttributeDescription[1].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[1].offset = vertexOffset;
+      vertexAttributeDescription[6].binding = 1;
+      vertexAttributeDescription[6].location = 6;
+      vertexAttributeDescription[6].format = vk::Format::eR32G32B32Sfloat;
+      vertexAttributeDescription[6].offset = vertexOffset;
 
 
 
@@ -864,7 +864,7 @@ namespace YTE
       // vertex topology config:
       vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
       inputAssemblyStateCreateInfo.topology = vk::PrimitiveTopology::eTriangleList;
-
+      
       vk::Viewport viewport = {};
       viewport.width = static_cast<float>(self->mWidth);
       viewport.height = static_cast<float>(self->mHeight);
@@ -989,12 +989,12 @@ namespace YTE
     if (mObjectsBufferSize < mObjects.size())
     {
       SetupObjectBuffer();
-    }
 
-    auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
-    mObjectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
-    memcpy(mObjectsBufferPtr, mObjects.data(), bufferSize);
-    self->mLogicalDevice.unmapMemory(mObjectsBuffer.mMemory);
+      auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
+      mObjectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
+      memcpy(mObjectsBufferPtr, mObjects.data(), bufferSize);
+      self->mLogicalDevice.unmapMemory(mObjectsBuffer.mMemory);
+    }
 
     const float zoomSpeed = 0.15f;
     const float rotationSpeed = 1.25f;
@@ -1115,7 +1115,7 @@ namespace YTE
     self->mDrawCommandBuffers[0].bindVertexBuffers(0, mQuadVerticies.mBuffer, offsets);
     self->mDrawCommandBuffers[0].bindVertexBuffers(1, mObjectsBuffer.mBuffer, offsets);
     self->mDrawCommandBuffers[0].bindIndexBuffer(mQuadIndicies.mBuffer, 0, vk::IndexType::eUint32);
-    self->mDrawCommandBuffers[0].drawIndexed(6, static_cast<u32>(mObjects.size()), 0, 0, 1);
+    self->mDrawCommandBuffers[0].drawIndexed(6, static_cast<u32>(mObjects.size()), 0, 0, 0);
 
     self->mDrawCommandBuffers[0].endRenderPass();
 
