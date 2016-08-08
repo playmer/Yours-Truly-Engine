@@ -63,8 +63,6 @@ namespace YTE
 
     PrivateImplementation<4096> mPlatformSpecificData;
 
-    Object *mObjectsBufferPtr = nullptr;
-
     private:
     Engine *mEngine;
 

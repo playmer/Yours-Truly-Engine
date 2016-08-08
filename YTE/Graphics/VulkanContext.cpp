@@ -124,6 +124,8 @@ namespace YTE
 
       auto viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, mZoom));
 
+      auto test = glm::scale(glm::mat4(), glm::vec3());
+
       mUniformBufferData.mModelMatrix = viewMatrix * glm::translate(glm::mat4(), mCameraPosition);
       mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
       mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));

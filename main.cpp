@@ -46,12 +46,16 @@ int main(int aArgumentNumber, char **Arguments)
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 1, 0)));
   engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[0].mScale = { 1.0, 2.0, 0.0 };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
   engine.mGraphicsSystem.mObjects[1].mTranslation = { 1.0, -1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[1].mScale = { 2.0, 1.0, 0.0 };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
   engine.mGraphicsSystem.mObjects[2].mTranslation = { -1.0, -1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[2].mScale = { 0.5, 1.0, 0.0 };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0.5, 0.5, 0.5)));
   engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, 1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[3].mScale = { 1.0, 0.5, 0.0 };
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   
@@ -140,9 +144,9 @@ int main(int aArgumentNumber, char **Arguments)
       rotate.z -= glm::pi<float>() / 2 * dt;
     }
 
-    engine.mGraphicsSystem.mObjectsBufferPtr[4].mTranslation = translation;
-    engine.mGraphicsSystem.mObjectsBufferPtr[4].mScale = scale;
-    engine.mGraphicsSystem.mObjectsBufferPtr[4].mRotate = rotate;
+    engine.mGraphicsSystem.mObjects[4].mTranslation = translation;
+    engine.mGraphicsSystem.mObjects[4].mScale = scale;
+    engine.mGraphicsSystem.mObjects[4].mRotate = rotate;
   }
 
   return 0;

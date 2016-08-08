@@ -843,19 +843,6 @@ namespace YTE
       vertexAttributeDescription[6].format = vk::Format::eR32G32B32Sfloat;
       vertexAttributeDescription[6].offset = vertexOffset;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
       vertexInputStateCreateInfo.pVertexBindingDescriptions = vertexBindingDescription.data();
@@ -1092,14 +1079,14 @@ namespace YTE
     {
       SetupObjectBuffer();
 
-      auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
-      mObjectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
-      memcpy(mObjectsBufferPtr, mObjects.data(), bufferSize);
-      self->mLogicalDevice.unmapMemory(mObjectsBuffer.mMemory);
-
-
       SetupDrawing();
     }
+
+    auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
+
+    auto objectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
+    memcpy(objectsBufferPtr, mObjects.data(), bufferSize);
+    self->mLogicalDevice.unmapMemory(mObjectsBuffer.mMemory);
 
     const float zoomSpeed = 0.15f;
     const float rotationSpeed = 1.25f;
