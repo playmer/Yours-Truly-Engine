@@ -58,7 +58,7 @@ mat4 rotate(mat4 m, float angle, vec3 v)
   float s = sin(a);
 
   vec3 axis = normalize(v);
-  vec3 temp = (vec3(1.0, 0.0, 0.0) - c) * axis;
+  vec3 temp = (1.0 - c) * axis;
 
   mat4 Rotate;
   Rotate[0][0] = c + temp[0] * axis[0];
@@ -98,9 +98,9 @@ void main()
 
   objectToWorld = scale(objectToWorld, inInstanceScale);
   
-  //objectToWorld = rotate(objectToWorld, radians(inInstanceRotation.x), vec3(1.0, 0.0, 0.0));
-  //objectToWorld = rotate(objectToWorld, radians(inInstanceRotation.y), vec3(0.0, 1.0, 0.0));
-  //objectToWorld = rotate(objectToWorld, radians(inInstanceRotation.z), vec3(0.0, 0.0, 1.0));
+  objectToWorld = rotate(objectToWorld, inInstanceRotation.x, vec3(1.0, 0.0, 0.0));
+  objectToWorld = rotate(objectToWorld, inInstanceRotation.y, vec3(0.0, 1.0, 0.0));
+  objectToWorld = rotate(objectToWorld, inInstanceRotation.z, vec3(0.0, 0.0, 1.0));
 
   gl_Position = uniformBufferObject.mProjectionMatrix * 
                 uniformBufferObject.mModelMatrix      * 
