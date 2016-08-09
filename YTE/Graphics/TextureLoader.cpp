@@ -187,6 +187,9 @@ namespace YTE
                                 STBI_rgb_alpha);
     vk::DeviceSize imageSize = texWidth * texHeight * 4;
 
+    texture.mWidth = static_cast<u32>(texWidth);
+    texture.mHeight = static_cast<u32>(texHeight);
+
     assert(pixels && "failed to load texture image!");
 
     vk::Image stagingImage;

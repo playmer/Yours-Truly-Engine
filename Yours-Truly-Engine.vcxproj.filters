@@ -259,6 +259,12 @@
     <Filter Include="Dependencies\assimp\contrib\zlib">
       <UniqueIdentifier>{7e5cb4c9-f59b-4d1d-9092-bfbb3e90b182}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\libsoundio">
+      <UniqueIdentifier>{50326cbe-67d1-433e-9f51-061932f65bdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\libsoundio\soundio">
+      <UniqueIdentifier>{62e1518f-72c6-4963-94df-df193456ca98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -3438,6 +3444,12 @@
     </ClInclude>
     <ClInclude Include="YTE\Graphics\Texture.hpp">
       <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\libsoundio\soundio\endian.h">
+      <Filter>Dependencies\libsoundio\soundio</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\libsoundio\soundio\soundio.h">
+      <Filter>Dependencies\libsoundio\soundio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

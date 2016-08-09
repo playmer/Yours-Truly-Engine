@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 
 #include "Windows.h"
 
@@ -551,8 +552,18 @@ namespace YTE
         vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
       }
 
+
+
+      namespace fs = std::experimental::filesystem;
+
       TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, self->mCommandPool);
-      self->mDefaultTexture = loader.loadTexture("./Textures/Happy.png"); // TODO: Format is wrong.
+
+      u32 i = 0;
+      for (auto& file : fs::directory_iterator(L"./Textures"))
+      {
+        std::string texturePath = file.path().string();
+        self->mTextures.emplace_back(loader.loadTexture(texturePath));
+      }
 
 
       self->mSetupCommandBuffer.begin(beginInfo);
@@ -786,7 +797,7 @@ namespace YTE
       
       u32 vertexOffset = 0;
       
-      std::array<vk::VertexInputAttributeDescription, 7> vertexAttributeDescription;
+      std::array<vk::VertexInputAttributeDescription, 8> vertexAttributeDescription;
 
       //glm::vec4 mPosition;
       vertexAttributeDescription[0].binding = 0;
@@ -842,6 +853,12 @@ namespace YTE
       vertexAttributeDescription[6].location = 6;
       vertexAttributeDescription[6].format = vk::Format::eR32G32B32Sfloat;
       vertexAttributeDescription[6].offset = vertexOffset;
+
+      //u32 mTextureId
+      vertexAttributeDescription[7].binding = 1;
+      vertexAttributeDescription[7].location = 7;
+      vertexAttributeDescription[7].format = vk::Format::eR32Uint;
+      vertexAttributeDescription[7].offset = vertexOffset;
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
@@ -930,12 +947,14 @@ namespace YTE
       pipelineCreateInfo.layout = self->mPipelineLayout;
       pipelineCreateInfo.renderPass = self->mRenderPass;
 
-      self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
 
-      vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
 
       self->SetupDescriptorPool();
       self->SetupDescriptorSet();
+
+      self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
+
+      vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
 
 
 

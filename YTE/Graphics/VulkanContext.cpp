@@ -151,6 +151,9 @@ namespace YTE
 
     // Binding 0 : Uniform buffer (Vertex shader)
 
+    //std::vector<vk::DescriptorSetLayoutBinding> layoutBinding;
+    //layoutBinding.resize(mTextures.size() + 1);
+
     std::array<vk::DescriptorSetLayoutBinding, 2> layoutBinding;
 
     layoutBinding[0].descriptorCount = 1;
@@ -158,14 +161,14 @@ namespace YTE
     layoutBinding[0].stageFlags = vk::ShaderStageFlagBits::eVertex;
     layoutBinding[0].descriptorType = vk::DescriptorType::eUniformBuffer;
 
-    layoutBinding[1].descriptorCount = 1;
+    layoutBinding[1].descriptorCount = static_cast<u32>(mTextures.size());
     layoutBinding[1].binding = 1;
     layoutBinding[1].stageFlags = vk::ShaderStageFlagBits::eFragment;
     layoutBinding[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
 
     vk::DescriptorSetLayoutCreateInfo descriptorLayout = {};
     descriptorLayout.pNext = nullptr;
-    descriptorLayout.bindingCount = (u32)layoutBinding.size();
+    descriptorLayout.bindingCount = static_cast<u32>(layoutBinding.size());
     descriptorLayout.pBindings = layoutBinding.data();
 
     mDescriptorSetLayout = mLogicalDevice.createDescriptorSetLayout(descriptorLayout);
@@ -190,7 +193,7 @@ namespace YTE
     typeCounts[0].descriptorCount = 1;
 
     typeCounts[1].type = vk::DescriptorType::eCombinedImageSampler;
-    typeCounts[1].descriptorCount = 1; // TODO: Make sure the layers don't yell.
+    typeCounts[1].descriptorCount = static_cast<u32>(mTextures.size()); // TODO: Make sure the layers don't yell.
 
                                        // Create the global descriptor pool
                                        // All descriptors used in this example are allocated from this pool
@@ -207,6 +210,8 @@ namespace YTE
   
   void VulkanContext::SetupDescriptorSet()
   {
+    mWriteDescriptorSet.resize(2); // Need at least 1 for the uniform buffer.
+
     // Allocate a new descriptor set from the global descriptor pool
     vk::DescriptorSetAllocateInfo allocInfo = {};
     allocInfo.descriptorPool = mDescriptorPool;
@@ -215,11 +220,7 @@ namespace YTE
 
     mDescriptorSets = mLogicalDevice.allocateDescriptorSets(allocInfo);
 
-    //ImageDescriptor for the color map texture;
-    vk::DescriptorImageInfo textureDescriptor;
-    textureDescriptor.sampler = mDefaultTexture.mSampler;
-    textureDescriptor.imageView = mDefaultTexture.mView;
-    textureDescriptor.imageLayout = vk::ImageLayout::eGeneral; // NOTE: Always this currently.
+
 
     // Update the descriptor set determining the shader binding points
     // For every binding point used in a shader there needs to be one
@@ -231,12 +232,21 @@ namespace YTE
     mWriteDescriptorSet[0].pBufferInfo = &mUniformBufferInfo;
     mWriteDescriptorSet[0].dstBinding = 0;
 
+
+    std::vector<vk::DescriptorImageInfo> imageInfos;
+    imageInfos.reserve(mTextures.size());
+
+    for (auto &texture : mTextures)
+    {
+      imageInfos.emplace_back(texture.mDescriptor);
+    }
+
     mWriteDescriptorSet[1].dstSet = mDescriptorSets[0];
-    mWriteDescriptorSet[1].descriptorCount = 1;
     mWriteDescriptorSet[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
-    mWriteDescriptorSet[1].pBufferInfo = &mUniformBufferInfo;
     mWriteDescriptorSet[1].dstBinding = 1;
-    mWriteDescriptorSet[1].pImageInfo = &textureDescriptor;
+    mWriteDescriptorSet[1].dstArrayElement = 0;
+    mWriteDescriptorSet[1].pImageInfo = imageInfos.data();
+    mWriteDescriptorSet[1].descriptorCount = imageInfos.size();
 
     mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, VK_NULL_HANDLE);
   }

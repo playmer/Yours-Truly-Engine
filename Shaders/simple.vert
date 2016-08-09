@@ -13,6 +13,8 @@ layout (location = 4) in vec3 inInstanceScale;
 layout (location = 5) in vec3 inInstanceRotation;
 layout (location = 6) in vec3 inInstanceColor;
 
+layout (location = 7) in uint inTextureId;
+
 layout (binding = 0) uniform UBO 
 {
   mat4 mProjectionMatrix;
@@ -23,6 +25,7 @@ layout (binding = 0) uniform UBO
 
 layout (location = 0) out vec3 outColor;
 layout (location = 1) out vec2 outUVCoordinates;
+layout (location = 2) out flat uint outTextureId;
 
 out gl_PerVertex 
 {
@@ -89,6 +92,7 @@ float radians(float degrees)
 
 void main() 
 {
+  outTextureId = inTextureId;
   outColor = inInstanceColor;
   outUVCoordinates = inUVCoordinates;
 

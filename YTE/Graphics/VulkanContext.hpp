@@ -250,8 +250,8 @@ namespace YTE
     vk::DescriptorSetLayout mDescriptorSetLayout;
     vk::DescriptorPool mDescriptorPool;
 
-    std::array<vk::WriteDescriptorSet, 2> mWriteDescriptorSet;
+    std::vector<vk::WriteDescriptorSet> mWriteDescriptorSet;
 
-    Texture mDefaultTexture;
+    std::vector<Texture> mTextures;
   };
 }
