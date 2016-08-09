@@ -27,6 +27,7 @@ namespace YTE
   {
     ++mCurrentFrame;
     mGraphicsSystem.Update(aDt);
+    mAudioManager.Update(aDt);
 
     for (auto &window : mWindows)
     {

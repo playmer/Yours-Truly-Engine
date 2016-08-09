@@ -74,6 +74,7 @@ namespace YTE
 
     AudioManager()
     {
+      gc_initialize(0);
       mManager = gau_manager_create();
 
 

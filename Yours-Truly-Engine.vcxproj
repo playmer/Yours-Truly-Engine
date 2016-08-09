@@ -96,7 +96,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;./Dependencies/gorilla/gorilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:/Program Files (x86)/OpenAL 1.1 SDK/libs/Win64/OpenAL32.lib;C:/Program Files (x86)/OpenAL 1.1 SDK/libs/Win64/EFX-Util_MTDLL/EFX-Util.lib;opengl32.lib;./Dependencies/gorilla/gorillaD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
