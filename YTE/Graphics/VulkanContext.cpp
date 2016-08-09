@@ -246,7 +246,7 @@ namespace YTE
     mWriteDescriptorSet[1].dstBinding = 1;
     mWriteDescriptorSet[1].dstArrayElement = 0;
     mWriteDescriptorSet[1].pImageInfo = imageInfos.data();
-    mWriteDescriptorSet[1].descriptorCount = imageInfos.size();
+    mWriteDescriptorSet[1].descriptorCount = static_cast<u32>(imageInfos.size());
 
     mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, VK_NULL_HANDLE);
   }

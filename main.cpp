@@ -20,6 +20,9 @@
 #include <gtc/matrix_transform.hpp>
 
 
+#include "YTE/Audio/Audio.hpp"
+
+
 YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = glm::vec3(-1, -1, -1))
 {
   auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();
@@ -27,7 +30,6 @@ YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = 
   object.mColor = aColor;
   return object;
 }
-
 
 int main(int aArgumentNumber, char **Arguments)
 {
@@ -60,6 +62,7 @@ int main(int aArgumentNumber, char **Arguments)
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   
+  engine.mAudioManager.Play("Panel", 1.0, true);
 
   while (engine.mShouldUpdate)
   {
@@ -148,6 +151,11 @@ int main(int aArgumentNumber, char **Arguments)
     engine.mGraphicsSystem.mObjects[4].mTranslation = translation;
     engine.mGraphicsSystem.mObjects[4].mScale = scale;
     engine.mGraphicsSystem.mObjects[4].mRotate = rotate;
+
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::M))
+    {
+      engine.mAudioManager.Play("ShortEhomevAlliance");
+    }
   }
 
   return 0;

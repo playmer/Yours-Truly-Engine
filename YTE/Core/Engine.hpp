@@ -10,6 +10,8 @@
 #include <memory>
 #include <vector>
 
+#include "YTE/Audio/Audio.hpp"
+
 #include "YTE/Graphics/GraphicsSystem.hpp"
 
 #include "YTE/Platform/Window.hpp"
@@ -24,6 +26,7 @@ namespace YTE
     void Update(float aDt);
 
     GraphicsSystem mGraphicsSystem;
+    AudioManager mAudioManager;
 
     std::vector<std::unique_ptr<Window>> mWindows;
     Window *mPrimaryWindow;

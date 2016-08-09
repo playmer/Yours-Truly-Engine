@@ -91,12 +91,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\Dependencies/libsoundio;.\Dependencies/stb;.\Dependencies;.\Dependencies/assimp/include;.\Dependencies/assimp;\Dependencies\tiny_obj_loader;.\Dependencies\glm;.\Dependencies\vulkan;.\Dependencies\glbinding;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependencies/gorilla;.\Dependencies/stb;.\Dependencies;.\Dependencies/assimp/include;.\Dependencies/assimp;\Dependencies\tiny_obj_loader;.\Dependencies\glm;.\Dependencies\vulkan;.\Dependencies\glbinding;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_MBCS;GLM_FORCE_RADIANS;GLM_FORCE_DEPTH_ZERO_TO_ONE;GLBINDING_STATIC_DEFINE;SYSTEM_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;.\Dependencies\libsoundio\soundio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;./Dependencies/gorilla/gorilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,6 +129,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>./Dependencies/gorilla/gorilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -1166,14 +1167,21 @@
     <ClInclude Include="Dependencies\glm\vec3.hpp" />
     <ClInclude Include="Dependencies\glm\vec4.hpp" />
     <ClInclude Include="Dependencies\glm\vector_relational.hpp" />
-    <ClInclude Include="Dependencies\libsoundio\soundio\endian.h" />
-    <ClInclude Include="Dependencies\libsoundio\soundio\soundio.h" />
+    <ClInclude Include="Dependencies\gorilla\common\gc_common.h" />
+    <ClInclude Include="Dependencies\gorilla\common\gc_thread.h" />
+    <ClInclude Include="Dependencies\gorilla\common\gc_types.h" />
+    <ClInclude Include="Dependencies\gorilla\devices\ga_openal.h" />
+    <ClInclude Include="Dependencies\gorilla\devices\ga_xaudio2.h" />
+    <ClInclude Include="Dependencies\gorilla\ga.h" />
+    <ClInclude Include="Dependencies\gorilla\gau.h" />
+    <ClInclude Include="Dependencies\gorilla\ga_internal.h" />
     <ClInclude Include="Dependencies\stb\stb_image.h" />
     <ClInclude Include="Dependencies\tiny_obj_loader\tiny_obj_loader.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vkel.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vk_cpp.hpp" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h" />
+    <ClInclude Include="YTE\Audio\Audio.hpp" />
     <ClInclude Include="YTE\Core\Engine.hpp" />
     <ClInclude Include="YTE\Core\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Core\PrivateImplementation.hpp" />
