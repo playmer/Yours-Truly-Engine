@@ -53,9 +53,10 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
   engine.mGraphicsSystem.mObjects[2].mTranslation = { -1.0, -1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[2].mScale = { 0.5, 1.0, 0.0 };
-  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0.5, 0.5, 0.5)));
+  engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, 1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[3].mScale = { 1.0, 0.5, 0.0 };
+  engine.mGraphicsSystem.mObjects[3].mTextureId = 1;
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   

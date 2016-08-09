@@ -853,6 +853,7 @@ namespace YTE
       vertexAttributeDescription[6].location = 6;
       vertexAttributeDescription[6].format = vk::Format::eR32G32B32Sfloat;
       vertexAttributeDescription[6].offset = vertexOffset;
+      vertexOffset += sizeof(glm::vec3);
 
       //u32 mTextureId
       vertexAttributeDescription[7].binding = 1;
