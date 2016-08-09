@@ -860,6 +860,7 @@ namespace YTE
       vertexAttributeDescription[7].location = 7;
       vertexAttributeDescription[7].format = vk::Format::eR32Uint;
       vertexAttributeDescription[7].offset = vertexOffset;
+      vertexOffset += sizeof(u32);
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
