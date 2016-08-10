@@ -91,12 +91,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\Dependencies/gorilla;.\Dependencies/stb;.\Dependencies;.\Dependencies/assimp/include;.\Dependencies/assimp;\Dependencies\tiny_obj_loader;.\Dependencies\glm;.\Dependencies\vulkan;.\Dependencies\glbinding;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Dependencies/gorilla;./Dependencies/stb;./Dependencies;./Dependencies/assimp/include;./Dependencies/assimp;./Dependencies/tiny_obj_loader;./Dependencies/glm;./Dependencies/vulkan;./Dependencies/glbinding;./;./Dependencies/OpenALSoft;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_MBCS;GLM_FORCE_RADIANS;GLM_FORCE_DEPTH_ZERO_TO_ONE;GLBINDING_STATIC_DEFINE;SYSTEM_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>C:/Program Files (x86)/OpenAL 1.1 SDK/libs/Win64/OpenAL32.lib;C:/Program Files (x86)/OpenAL 1.1 SDK/libs/Win64/EFX-Util_MTDLL/EFX-Util.lib;opengl32.lib;./Dependencies/gorilla/gorillaD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>./Dependencies/OpenALSoft/OpenAL32.lib;./Dependencies/OpenALSoft/common.lib;opengl32.lib;./Dependencies/gorilla/gorillaD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

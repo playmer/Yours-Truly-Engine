@@ -162,7 +162,6 @@ namespace YTE
         if (false == aLooping)
         {
           handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), nullptr);
-
           //gau_sample_source_loop_set(handle->mLoopSource, ga_sound_size(sound), 0);
         }
         else

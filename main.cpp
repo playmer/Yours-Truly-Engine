@@ -62,7 +62,7 @@ int main(int aArgumentNumber, char **Arguments)
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   
-  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.Play("Alarm", 1.0, true);
+  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.Play("Panel", 1.0, true);
 
   std::vector<std::unique_ptr<YTE::AudioManager::SoundHandle>> mHandles;
 
