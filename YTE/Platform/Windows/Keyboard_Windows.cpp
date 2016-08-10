@@ -49,4 +49,10 @@ namespace YTE
     auto keyState = mKeys[(int)aKey].mCurrentState;
     return KeyState::Down == keyState || KeyState::Pressed == keyState;
   }
+
+  bool Keyboard::IsKeyOnlyPressedSpecifically(KeyCode aKey)
+  {
+    auto keyState = mKeys[(int)aKey].mCurrentState;
+    return KeyState::Pressed == keyState;
+  }
 }

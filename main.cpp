@@ -61,10 +61,10 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects[3].mTextureId = 1;
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
-  
-  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.Play("Panel", 1.0, true);
+
 
   std::vector<std::unique_ptr<YTE::AudioManager::SoundHandle>> mHandles;
+  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.Play("Panel", 1.0, true);
 
   while (engine.mShouldUpdate)
   {
@@ -154,7 +154,7 @@ int main(int aArgumentNumber, char **Arguments)
     engine.mGraphicsSystem.mObjects[4].mScale = scale;
     engine.mGraphicsSystem.mObjects[4].mRotate = rotate;
 
-    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::M))
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyOnlyPressedSpecifically(YTE::KeyCode::M))
     {
       mHandles.emplace_back(engine.mAudioManager.Play("Alarm"));
     }
