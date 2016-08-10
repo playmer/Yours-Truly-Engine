@@ -62,7 +62,9 @@ int main(int aArgumentNumber, char **Arguments)
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   
-  engine.mAudioManager.Play("Panel", 1.0, true);
+  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.Play("Alarm", 1.0, true);
+
+  std::vector<std::unique_ptr<YTE::AudioManager::SoundHandle>> mHandles;
 
   while (engine.mShouldUpdate)
   {
@@ -154,7 +156,7 @@ int main(int aArgumentNumber, char **Arguments)
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::M))
     {
-      engine.mAudioManager.Play("ShortEhomevAlliance");
+      mHandles.emplace_back(engine.mAudioManager.Play("Alarm"));
     }
   }
 
