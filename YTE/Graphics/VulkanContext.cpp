@@ -187,7 +187,7 @@ namespace YTE
   void VulkanContext::SetupDescriptorPool()
   {
     // We need to tell the API the number of max. requested descriptors per type
-    static vk::DescriptorPoolSize typeCounts[2];
+    std::array<vk::DescriptorPoolSize, 2> typeCounts;
 
     typeCounts[0].type = vk::DescriptorType::eUniformBuffer;
     typeCounts[0].descriptorCount = 1;
@@ -198,8 +198,8 @@ namespace YTE
                                        // Create the global descriptor pool
                                        // All descriptors used in this example are allocated from this pool
     vk::DescriptorPoolCreateInfo descriptorPoolInfo = {};
-    descriptorPoolInfo.poolSizeCount = 2;
-    descriptorPoolInfo.pPoolSizes = typeCounts;
+    descriptorPoolInfo.poolSizeCount = static_cast<u32>(typeCounts.size());
+    descriptorPoolInfo.pPoolSizes = typeCounts.data();
 
     // Set the max. number of sets that can be requested
     // Requesting descriptors beyond maxSets will result in an error
