@@ -8,9 +8,6 @@
 
 #include <stddef.h>
 
-#include <glbinding/gl/gl.h>
-#include <glbinding/Binding.h>
-
 #include "YTE/Core/ForwardDeclarations.hpp"
 #include "YTE/Core/Types.hpp"
 

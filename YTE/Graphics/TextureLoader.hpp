@@ -79,7 +79,6 @@ namespace YTE
 
     vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level, bool begin);
   };
-
 };
 
 #endif
