@@ -1,6 +1,9 @@
 #include "Composition.hpp"
 
-YTE::Composition::Composition(Composition *aParent)
-  : mParent(aParent)
+namespace YTE
 {
+  Composition::Composition(Composition *aParent)
+    : mParent(aParent)
+  {
+  }
 }
