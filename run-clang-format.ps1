@@ -3,4 +3,5 @@ $fileNames = Get-ChildItem -Path "YTE" -Recurse -Include *.cpp, *.c, *.hpp, *.h,
 foreach ($fileName in $fileNames) 
 {
   clang-format -i $fileName.FullName;
+  #clang-tidy $fileName.FullName -fix -checks="readability-braces-around-statements" -- COMPILE_OPTIONS
 }
