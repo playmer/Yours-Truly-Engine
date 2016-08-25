@@ -13,7 +13,7 @@
 struct Vertex
 {
   glm::vec3 mPosition;
-  glm::vec2 mTexture;
+  glm::vec2 mTextureCoordinates;
   glm::vec3 mNormal;
   glm::vec3 mColor;
   glm::vec3 mTangent;
@@ -21,15 +21,16 @@ struct Vertex
 
   Vertex() {}
 
-  Vertex(const glm::vec3& aPosition, const glm::vec2& aTexture, const glm::vec3& aNormal, const glm::vec3& aTangent, const glm::vec3& aBinormal, const glm::vec3& aColor)
+  Vertex(const glm::vec3& aPosition, const glm::vec2& aTextureCoordinates, const glm::vec3& aNormal, const glm::vec3& aTangent, const glm::vec3& aBinormal, const glm::vec3& aColor)
+    : mPosition(aPosition),
+      mTextureCoordinates(aTextureCoordinates),
+      mNormal(aNormal),
+      mColor(aColor),
+      mTangent(aTangent),
+      mBinormal(aBinormal)
   {
-    mPosition = aPosition;
-    mTexture = aTexture;
-    mNormal = aNormal;
-    mColor = aColor;
-    mTangent = aTangent;
-    mBinormal = aBinormal;
   }
+
 };
 
 

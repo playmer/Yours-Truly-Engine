@@ -9,5 +9,8 @@
 namespace YTE
 {
   class Engine;
+  class Composition;
+  class Component;
+  class Interface;
 }
 #endif

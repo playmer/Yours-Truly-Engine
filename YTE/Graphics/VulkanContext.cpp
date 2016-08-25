@@ -35,62 +35,6 @@ namespace YTE
     mLogicalDevice.freeCommandBuffers(mCommandPool, commandBuffer);
   }
 
-  BufferMemory VulkanContext::CreateVertexBuffer(std::vector<Vertex> aVertices, bool aUseStaging)
-  {
-    vk::DeviceSize bufferSize = sizeof(Vertex) * aVertices.size();
-
-    BufferMemory toReturn;
-
-    auto bufferMemory = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-
-    void *data = mLogicalDevice.mapMemory(bufferMemory.mMemory, 0, bufferSize);
-    memcpy(data, aVertices.data(), (size_t)bufferSize);
-    mLogicalDevice.unmapMemory(bufferMemory.mMemory);
-
-    if (aUseStaging)
-    {
-      auto staging = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
-
-      CopyBuffer(bufferMemory.mBuffer, staging.mBuffer, bufferSize);
-
-      toReturn = staging;
-    }
-    else
-    {
-      toReturn = bufferMemory;
-    }
-
-    return toReturn;
-  }
-
-  BufferMemory VulkanContext::CreateIndexBuffer(std::vector<u32> aIndices, bool aUseStaging)
-  {
-    vk::DeviceSize bufferSize = sizeof(u32) * aIndices.size();
-
-    BufferMemory toReturn;
-
-    auto bufferMemory = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-
-    void *data = mLogicalDevice.mapMemory(bufferMemory.mMemory, 0, bufferSize);
-    memcpy(data, aIndices.data(), (size_t)bufferSize);
-    mLogicalDevice.unmapMemory(bufferMemory.mMemory);
-
-    if (aUseStaging)
-    {
-      auto staging = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
-
-      CopyBuffer(bufferMemory.mBuffer, staging.mBuffer, bufferSize);
-
-      toReturn = staging;
-    }
-    else
-    {
-      toReturn = bufferMemory;
-    }
-
-    return toReturn;
-  }
-
   BufferMemory VulkanContext::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties)
   {
     BufferMemory toReturn;

@@ -1,0 +1,7 @@
+BasedOnStyle: LLVM
+PointerAlignment: Right
+IndentWidth: 2
+UseTab: Never
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: true

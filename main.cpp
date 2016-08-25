@@ -63,8 +63,7 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
 
 
-  std::vector<std::unique_ptr<YTE::AudioManager::SoundHandle>> mHandles;
-  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.Play("Panel", 1.0, true);
+  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.PlayLoop("Panel", 1.0);
 
   while (engine.mShouldUpdate)
   {
@@ -156,7 +155,7 @@ int main(int aArgumentNumber, char **Arguments)
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyOnlyPressedSpecifically(YTE::KeyCode::M))
     {
-      mHandles.emplace_back(engine.mAudioManager.Play("Alarm"));
+      engine.mAudioManager.PlayOnce("Alarm");
     }
   }
 

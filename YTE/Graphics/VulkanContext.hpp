@@ -190,8 +190,52 @@ namespace YTE
     BufferMemory CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties);
     void CopyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size);
 
-    BufferMemory CreateVertexBuffer(std::vector<Vertex> aVertices, bool aUseStaging = true);
-    BufferMemory CreateIndexBuffer(std::vector<u32> aIndices, bool aUseStaging = true);
+    template <typename Type>
+    BufferMemory CreateFilledBuffer(const Type *aData, u64 aSize, bool aUseStaging = true)
+    {
+      vk::DeviceSize bufferSize = static_cast<u32>(sizeof(Type) * aSize);
+
+      BufferMemory toReturn;
+
+      auto bufferMemory = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+
+      void *data = mLogicalDevice.mapMemory(bufferMemory.mMemory, 0, bufferSize);
+      memcpy(data, aData, (size_t)bufferSize);
+      mLogicalDevice.unmapMemory(bufferMemory.mMemory);
+
+      if (aUseStaging)
+      {
+        auto staging = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+        CopyBuffer(bufferMemory.mBuffer, staging.mBuffer, bufferSize);
+
+        toReturn = staging;
+      }
+      else
+      {
+        toReturn = bufferMemory;
+      }
+
+      return toReturn;
+    }
+
+    template <typename Type>
+    BufferMemory CreateFilledBuffer(std::initializer_list<Type> aData, bool aUseStaging = true)
+    {
+      return CreateFilledBuffer(aData.begin(), aData.size(), aUseStaging);
+    }
+
+    template <typename Type>
+    BufferMemory CreateFilledBuffer(std::vector<Type> aData, bool aUseStaging = true)
+    {
+      return CreateFilledBuffer(aData.data(), aData.size(), aUseStaging);
+    }
+
+    template <typename Type, u32 Size>
+    BufferMemory CreateFilledBuffer(std::array<Type, Size> aData, bool aUseStaging = true)
+    {
+      return CreateFilledBuffer(aData.data(), aData.size(), aUseStaging);
+    }
 
     void SetupDescriptorSetLayout();
     void SetupDescriptorPool();

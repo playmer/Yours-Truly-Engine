@@ -22,6 +22,7 @@ namespace YTE
     };
 
   public:
+
     struct SoundHandle
     {
       static void DeleteSound(ga_Handle* in_finishedHandle, void* in_context)
@@ -148,8 +149,7 @@ namespace YTE
       gau_manager_update(mManager);
     }
 
-    // Make sure to check if the soundhandle is valid.
-    std::unique_ptr<SoundHandle> Play(const std::string &aSoundName, float aVolume = 1.0f, bool aLooping = false)
+    std::unique_ptr<SoundHandle> PlayLoop(const std::string &aSoundName, float aVolume = 1.0f)
     {
       auto handle = std::make_unique<SoundHandle>();
 
@@ -159,22 +159,14 @@ namespace YTE
       {
         auto sound = it->second.get();
 
-        if (false == aLooping)
-        {
-          handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), nullptr);
-          //gau_sample_source_loop_set(handle->mLoopSource, ga_sound_size(sound), 0);
-        }
-        else
-        {
-          handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), &handle->mLoopSource);
+        handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), &handle->mLoopSource);
 
-          gau_sample_source_loop_set(handle->mLoopSource, -1, 0);
-        }
+        gau_sample_source_loop_set(handle->mLoopSource, -1, 0);
 
         handle->mName = it->first.c_str();
         handle->SetVolume(aVolume);
         handle->Play();
-        
+
       }
       else
       {
@@ -182,6 +174,52 @@ namespace YTE
       }
 
       return handle;
+    }
+
+    std::unique_ptr<SoundHandle> PlayOnceManaged(const std::string &aSoundName, float aVolume = 1.0f)
+    {
+      auto handle = std::make_unique<SoundHandle>();
+
+      auto it = mSounds.find(aSoundName);
+
+      if (it != mSounds.end())
+      {
+        auto sound = it->second.get();
+
+        handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), nullptr);
+
+        handle->mName = it->first.c_str();
+        handle->SetVolume(aVolume);
+        handle->Play();
+      }
+      else
+      {
+        printf("Couldn't find sound named %s", aSoundName.c_str());
+      }
+
+      return handle;
+    }
+
+    void PlayOnce(const std::string &aSoundName, float aVolume = 1.0f)
+    {
+      auto it = mSounds.find(aSoundName);
+
+      if (it != mSounds.end())
+      {
+        auto sound = it->second.get();
+
+        SoundHandle handle;
+
+        handle.mHandle = gau_create_handle_sound(mMixer, sound, gau_on_finish_destroy, nullptr, nullptr);
+
+        handle.mName = it->first.c_str();
+        handle.SetVolume(aVolume);
+        handle.Play();
+      }
+      else
+      {
+        printf("Couldn't find sound named %s", aSoundName.c_str());
+      }
     }
 
   private:

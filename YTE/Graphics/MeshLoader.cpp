@@ -162,8 +162,8 @@ namespace YTE
           // Texture coordinates
           if (layoutDetail == VertexLayout::VERTEX_LAYOUT_UV)
           {
-            vertexBuffer.push_back(mEntries[m].Vertices[i].mTexture.s);
-            vertexBuffer.push_back(mEntries[m].Vertices[i].mTexture.t);
+            vertexBuffer.push_back(mEntries[m].Vertices[i].mTextureCoordinates.s);
+            vertexBuffer.push_back(mEntries[m].Vertices[i].mTextureCoordinates.t);
           }
 
           // Color

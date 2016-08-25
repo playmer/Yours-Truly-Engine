@@ -271,6 +271,12 @@
     <Filter Include="Dependencies\gorilla\devices">
       <UniqueIdentifier>{fc6388cc-f372-4ef9-9e70-537fee801a73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="YTE\Reflection">
+      <UniqueIdentifier>{071d419b-032e-44be-b113-f36f571edb78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\constexpr">
+      <UniqueIdentifier>{316b7e42-ebc3-4a91-bc49-8477b5896a34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -1100,6 +1106,8 @@
     <ClCompile Include="YTE\Graphics\VulkanContext.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\Core\Component.cpp" />
+    <ClCompile Include="YTE\Core\Composition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -3477,6 +3485,68 @@
     </ClInclude>
     <ClInclude Include="Dependencies\gorilla\devices\ga_xaudio2.h">
       <Filter>Dependencies\gorilla\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="Composition.hpp" />
+    <ClInclude Include="YTE\Core\Component.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\Composition.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Interace.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Reflection\ReflectionSystem.hpp">
+      <Filter>YTE\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Reflection\Type.hpp">
+      <Filter>YTE\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Reflection\Reflectable.hpp">
+      <Filter>YTE\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_algorithm.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_array.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_counter.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_fnv1.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_guid.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_math.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_md5.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_murmur3.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_numeric.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_pcg32.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_sha256.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_strenc.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_typeid.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_utils.h">
+      <Filter>Dependencies\constexpr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
