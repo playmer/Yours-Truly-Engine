@@ -631,7 +631,8 @@ namespace YTE
       passAttachments[1].format = vk::Format::eD16Unorm;
       passAttachments[1].samples = vk::SampleCountFlagBits::e1;
       passAttachments[1].loadOp = vk::AttachmentLoadOp::eClear;
-      passAttachments[1].storeOp = vk::AttachmentStoreOp::eDontCare;
+      //passAttachments[1].storeOp = vk::AttachmentStoreOp::eDontCare;
+      passAttachments[1].storeOp = vk::AttachmentStoreOp::eStore;
       passAttachments[1].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
       passAttachments[1].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
       passAttachments[1].initialLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
@@ -888,25 +889,32 @@ namespace YTE
 
       vk::PipelineRasterizationStateCreateInfo rasterizationState;
       rasterizationState.polygonMode = vk::PolygonMode::eFill;
+      //rasterizationState.cullMode = vk::CullModeFlagBits::eBack; // TODO: Investigate
       rasterizationState.cullMode = vk::CullModeFlagBits::eNone;
       rasterizationState.frontFace = vk::FrontFace::eCounterClockwise;
       rasterizationState.lineWidth = 1;
+      rasterizationState.depthClampEnable = true;
+      rasterizationState.depthBiasEnable = true;
 
       vk::PipelineMultisampleStateCreateInfo multisampleState = {};
       multisampleState.rasterizationSamples = vk::SampleCountFlagBits::e1;
 
-      vk::StencilOpState noOPStencilState = {};
-      noOPStencilState.failOp = vk::StencilOp::eKeep;
-      noOPStencilState.passOp = vk::StencilOp::eKeep;
-      noOPStencilState.depthFailOp = vk::StencilOp::eKeep;
-      noOPStencilState.compareOp = vk::CompareOp::eAlways;
+      vk::StencilOpState stencilState = {};
+      stencilState.failOp = vk::StencilOp::eReplace;
+      stencilState.passOp = vk::StencilOp::eKeep;
+      stencilState.depthFailOp = vk::StencilOp::eReplace;
+      stencilState.compareOp = vk::CompareOp::eLessOrEqual;
 
       vk::PipelineDepthStencilStateCreateInfo depthState;
       depthState.depthTestEnable = true;
       depthState.depthWriteEnable = true;
+      depthState.stencilTestEnable = true;
       depthState.depthCompareOp = vk::CompareOp::eLessOrEqual;
-      depthState.front = noOPStencilState;
-      depthState.back = noOPStencilState;
+      //depthState.front = noOPStencilState;
+      //depthState.back = noOPStencilState;
+      depthState.front = stencilState;
+      //depthState.back.compareOp = vk::CompareOp::eAlways;
+      depthState.back = stencilState;
 
       vk::PipelineColorBlendAttachmentState colorBlendAttachmentState;
       colorBlendAttachmentState.srcColorBlendFactor = vk::BlendFactor::eSrc1Color;
@@ -1032,8 +1040,9 @@ namespace YTE
       clearValue[0].color.float32[2] = 0.0f;
       clearValue[0].color.float32[3] = 1.0f;
 
-      clearValue[1].color.float32[0] = 1.0f;
-      clearValue[1].color.float32[2] = 0.0f;
+      //color.float32[0] = 1.0f;
+      //color.float32[2] = 0.0f;
+      clearValue[1].depthStencil = { 1.0f, 0 };
 
       vk::RenderPassBeginInfo renderPassBeginInfo = {};
       renderPassBeginInfo.renderPass = self->mRenderPass;

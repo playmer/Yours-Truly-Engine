@@ -1102,12 +1102,18 @@
     <ClCompile Include="Dependencies\glbinding\source\GlValue.cpp">
       <Filter>Dependencies\glbinding\source</Filter>
     </ClCompile>
-    <ClCompile Include="YTE\Graphics\TextureLoader.cpp" />
     <ClCompile Include="YTE\Graphics\VulkanContext.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="YTE\Core\Component.cpp" />
-    <ClCompile Include="YTE\Core\Composition.cpp" />
+    <ClCompile Include="YTE\Core\Component.cpp">
+      <Filter>YTE\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Core\Composition.cpp">
+      <Filter>YTE\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\TextureLoader.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -3486,8 +3492,6 @@
     <ClInclude Include="Dependencies\gorilla\devices\ga_xaudio2.h">
       <Filter>Dependencies\gorilla\devices</Filter>
     </ClInclude>
-    <ClInclude Include="Component.hpp" />
-    <ClInclude Include="Composition.hpp" />
     <ClInclude Include="YTE\Core\Component.hpp">
       <Filter>YTE\Core</Filter>
     </ClInclude>
@@ -3547,6 +3551,12 @@
     </ClInclude>
     <ClInclude Include="Dependencies\constexpr\cx_utils.h">
       <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Composition.hpp">
+      <Filter>YTE\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

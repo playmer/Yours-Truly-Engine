@@ -99,6 +99,14 @@ int main(int aArgumentNumber, char **Arguments)
     {
       translation.y += 0.5f * dt;
     }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Z))
+    {
+      translation.z += -0.5f * dt;
+    }
+    if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::X))
+    {
+      translation.z += 0.5f * dt;
+    }
 
     // Scaling
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::N1))
