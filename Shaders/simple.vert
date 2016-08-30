@@ -99,12 +99,13 @@ void main()
   mat4 temp = mat4(1.0);
   
   mat4 objectToWorld = translate(temp, inInstanceTranslation);
-
-  objectToWorld = scale(objectToWorld, inInstanceScale);
   
   objectToWorld = rotate(objectToWorld, inInstanceRotation.x, vec3(1.0, 0.0, 0.0));
   objectToWorld = rotate(objectToWorld, inInstanceRotation.y, vec3(0.0, 1.0, 0.0));
   objectToWorld = rotate(objectToWorld, inInstanceRotation.z, vec3(0.0, 0.0, 1.0));
+
+  objectToWorld = scale(objectToWorld, inInstanceScale);
+  
 
   gl_Position = uniformBufferObject.mProjectionMatrix * 
                 uniformBufferObject.mModelMatrix      * 
