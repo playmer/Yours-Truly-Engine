@@ -117,10 +117,10 @@ namespace YTE
     {
       auto self = mPlatformSpecificData.Get<VulkanContext>();
 
-      auto appInfo = vk::ApplicationInfo()
-        .setPApplicationName("First Test")
-        .setEngineVersion(1)
-        .setApiVersion(VK_MAKE_VERSION(1, 0, 0));
+      vk::ApplicationInfo appInfo;
+      appInfo.setPApplicationName("First Test");
+      appInfo.setEngineVersion(1);
+      appInfo.setApiVersion(VK_MAKE_VERSION(1, 0, 0));
 
       auto instanceInfo = vk::InstanceCreateInfo()
         .setPApplicationInfo(&appInfo);
@@ -203,11 +203,11 @@ namespace YTE
 
       if (requiredExtensions.size() == foundExtensions)
       {
-        auto  callbackCreateInfo = vk::DebugReportCallbackCreateInfoEXT()
-          .setFlags(vk::DebugReportFlagBitsEXT::eError |
-                    vk::DebugReportFlagBitsEXT::eWarning |
-                    vk::DebugReportFlagBitsEXT::ePerformanceWarning)
-          .setPfnCallback(&DebugReportCallback);
+        vk::DebugReportCallbackCreateInfoEXT callbackCreateInfo;
+        callbackCreateInfo.setFlags(vk::DebugReportFlagBitsEXT::eError |
+                                    vk::DebugReportFlagBitsEXT::eWarning |
+                                    vk::DebugReportFlagBitsEXT::ePerformanceWarning);
+        callbackCreateInfo.setPfnCallback(&DebugReportCallback);
 
         auto debugReport = self->mInstance.createDebugReportCallbackEXT(callbackCreateInfo);
         vulkan_assert(static_cast<bool>(debugReport), "Failed to create degub report callback.");
@@ -216,9 +216,9 @@ namespace YTE
       // TODO: Abstract this for multiple windows.
       auto window = mEngine->mPrimaryWindow;
       auto windowData = window->mPlatformSpecificData.Get<WindowData>();
-      auto surfaceCreateInfo = vk::Win32SurfaceCreateInfoKHR()
-        .setHinstance(windowData->mInstance)
-        .setHwnd(windowData->mWindowHandle);
+      vk::Win32SurfaceCreateInfoKHR surfaceCreateInfo;
+      surfaceCreateInfo.setHinstance(windowData->mInstance);
+      surfaceCreateInfo.setHwnd(windowData->mWindowHandle);
 
       self->mHeight = window->mHeight;
       self->mWidth = window->mWidth;
@@ -264,22 +264,22 @@ namespace YTE
       self->mPhysicalMemoryProperties = self->mPhysicalDevice.getMemoryProperties();
 
       // info for accessing one of the devices rendering queues:
-      auto queueCreateInfo = vk::DeviceQueueCreateInfo()
-                                  .setQueueFamilyIndex(self->mPresentQueueIdx)
-                                  .setQueueCount(1);
+      vk::DeviceQueueCreateInfo queueCreateInfo;
+      queueCreateInfo.setQueueFamilyIndex(self->mPresentQueueIdx);
+      queueCreateInfo.setQueueCount(1);
 
       float queuePriorities[] = { 1.0f };   // ask for highest priority for our queue. (range [0,1])
       queueCreateInfo.pQueuePriorities = queuePriorities;
 
       const char *deviceExtensions[] = { "VK_KHR_swapchain" };
 
-      auto deviceInfo = vk::DeviceCreateInfo()
-                             .setQueueCreateInfoCount(1)
-                             .setPQueueCreateInfos(&queueCreateInfo)
-                             .setEnabledLayerCount(1)
-                             .setPpEnabledLayerNames(enabledLayers)
-                             .setEnabledExtensionCount(1)
-                             .setPpEnabledExtensionNames(deviceExtensions);
+      vk::DeviceCreateInfo deviceInfo;
+      deviceInfo.setQueueCreateInfoCount(1);
+      deviceInfo.setPQueueCreateInfos(&queueCreateInfo);
+      deviceInfo.setEnabledLayerCount(1);
+      deviceInfo.setPpEnabledLayerNames(enabledLayers);
+      deviceInfo.setEnabledExtensionCount(1);
+      deviceInfo.setPpEnabledExtensionNames(deviceExtensions);
 
       auto features = vk::PhysicalDeviceFeatures().setShaderClipDistance(true);
       
@@ -365,37 +365,37 @@ namespace YTE
         }
       }
 
-      auto swapChainCreateInfo = vk::SwapchainCreateInfoKHR()
-                                      .setSurface(self->mSurface)
-                                      .setMinImageCount(desiredImageCount)
-                                      .setImageFormat(colorFormat)
-                                      .setImageColorSpace(colorSpace)
-                                      .setImageExtent(surfaceResolution)
-                                      .setImageArrayLayers(1)
-                                      .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment)
-                                      .setImageSharingMode(vk::SharingMode::eExclusive)   // TODO: Learn how to share queues.
-                                      .setPreTransform(preTransform)
-                                      .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque) //TODO: Pretty sure we want to do pre-multiplied.
-                                      .setPresentMode(presentationMode)
-                                      .setClipped(true); // If we want clipping outside the extents
-                                                         // (remember our device features?)
+      vk::SwapchainCreateInfoKHR swapChainCreateInfo;
+      swapChainCreateInfo.setSurface(self->mSurface);
+      swapChainCreateInfo.setMinImageCount(desiredImageCount);
+      swapChainCreateInfo.setImageFormat(colorFormat);
+      swapChainCreateInfo.setImageColorSpace(colorSpace);
+      swapChainCreateInfo.setImageExtent(surfaceResolution);
+      swapChainCreateInfo.setImageArrayLayers(1);
+      swapChainCreateInfo.setImageUsage(vk::ImageUsageFlagBits::eColorAttachment);
+      swapChainCreateInfo.setImageSharingMode(vk::SharingMode::eExclusive);   // TODO: Learn how to share queues.
+      swapChainCreateInfo.setPreTransform(preTransform);
+      swapChainCreateInfo.setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque); //TODO: Pretty sure we want to do pre-multiplied.
+      swapChainCreateInfo.setPresentMode(presentationMode);
+      swapChainCreateInfo.setClipped(true); // If we want clipping outside the extents
+                                            // (remember our device features?)
 
       self->mSwapChain = self->mLogicalDevice.createSwapchainKHR(swapChainCreateInfo);
       vulkan_assert(self->mSwapChain, "Failed to create swapchain.");
 
       self->mQueue = self->mLogicalDevice.getQueue(self->mPresentQueueIdx, 0);
 
-      auto commandPoolCreateInfo = vk::CommandPoolCreateInfo()
-                                        .setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer)
-                                        .setQueueFamilyIndex(self->mPresentQueueIdx);
+      vk::CommandPoolCreateInfo commandPoolCreateInfo;
+      commandPoolCreateInfo.setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
+      commandPoolCreateInfo.setQueueFamilyIndex(self->mPresentQueueIdx);
 
       self->mCommandPool = self->mLogicalDevice.createCommandPool(commandPoolCreateInfo);
       vulkan_assert(self->mCommandPool, "Failed to create command pool.");
 
-      auto commandBufferAllocationInfo = vk::CommandBufferAllocateInfo()
-                                              .setCommandPool(self->mCommandPool)
-                                              .setLevel(vk::CommandBufferLevel::ePrimary)
-                                              .setCommandBufferCount(1);
+      vk::CommandBufferAllocateInfo commandBufferAllocationInfo;
+      commandBufferAllocationInfo.setCommandPool(self->mCommandPool);
+      commandBufferAllocationInfo.setLevel(vk::CommandBufferLevel::ePrimary);
+      commandBufferAllocationInfo.setCommandBufferCount(1);
 
       self->mSetupCommandBuffer = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo)[0];
       vulkan_assert(self->mSetupCommandBuffer, "Failed to allocate setup command buffer.");
@@ -406,30 +406,30 @@ namespace YTE
       self->mDrawCommandBuffers = self->mLogicalDevice.allocateCommandBuffers(commandBufferAllocationInfo);
       vulkan_assert(self->mDrawCommandBuffers.size(), "Failed to allocate draw command buffer.");
 
-      auto presentImagesViewCreateInfo = vk::ImageViewCreateInfo()
-                                              .setViewType(vk::ImageViewType::e2D)
-                                              .setFormat(colorFormat)
-                                              .setFlags((vk::ImageViewCreateFlagBits)0)
-                                              .setComponents({ vk::ComponentSwizzle::eR,
-                                                               vk::ComponentSwizzle::eG,
-                                                               vk::ComponentSwizzle::eB,
-                                                               vk::ComponentSwizzle::eA });
+      vk::ImageViewCreateInfo presentImagesViewCreateInfo;
+      presentImagesViewCreateInfo.setViewType(vk::ImageViewType::e2D);
+      presentImagesViewCreateInfo.setFormat(colorFormat);
+      presentImagesViewCreateInfo.setFlags((vk::ImageViewCreateFlagBits)0);
+      presentImagesViewCreateInfo.setComponents({ vk::ComponentSwizzle::eR,
+                                                  vk::ComponentSwizzle::eG,
+                                                  vk::ComponentSwizzle::eB,
+                                                  vk::ComponentSwizzle::eA });
 
       presentImagesViewCreateInfo.subresourceRange.setAspectMask(vk::ImageAspectFlagBits::eColor);
       presentImagesViewCreateInfo.subresourceRange.setLevelCount(1);
       presentImagesViewCreateInfo.subresourceRange.setLayerCount(1);
 
-      auto imageCreateInfo = vk::ImageCreateInfo()
-        .setImageType(vk::ImageType::e2D)
-        .setFormat(vk::Format::eD16Unorm)
-        .setExtent({ self->mWidth, self->mHeight, 1 })
-        .setMipLevels(1)
-        .setArrayLayers(1)
-        .setSamples(vk::SampleCountFlagBits::e1)
-        .setTiling(vk::ImageTiling::eOptimal)
-        .setUsage(vk::ImageUsageFlagBits::eDepthStencilAttachment)
-        .setSharingMode(vk::SharingMode::eExclusive) // TODO: Change this when you learn more.
-        .setInitialLayout(vk::ImageLayout::eUndefined);
+      vk::ImageCreateInfo imageCreateInfo;
+      imageCreateInfo.setImageType(vk::ImageType::e2D);
+      imageCreateInfo.setFormat(vk::Format::eD16Unorm);
+      imageCreateInfo.setExtent({ self->mWidth, self->mHeight, 1 });
+      imageCreateInfo.setMipLevels(1);
+      imageCreateInfo.setArrayLayers(1);
+      imageCreateInfo.setSamples(vk::SampleCountFlagBits::e1);
+      imageCreateInfo.setTiling(vk::ImageTiling::eOptimal);
+      imageCreateInfo.setUsage(vk::ImageUsageFlagBits::eDepthStencilAttachment);
+      imageCreateInfo.setSharingMode(vk::SharingMode::eExclusive); // TODO: Change this when you learn more.
+      imageCreateInfo.setInitialLayout(vk::ImageLayout::eUndefined);
 
       self->mDepthImage = self->mLogicalDevice.createImage(imageCreateInfo);
 
@@ -483,13 +483,13 @@ namespace YTE
           // start recording out image layout change barrier on our setup command buffer:
           self->mSetupCommandBuffer.begin(&beginInfo);
       
-          auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
-                                              .setDstAccessMask(vk::AccessFlagBits::eMemoryRead)
-                                              .setOldLayout(vk::ImageLayout::eUndefined)
-                                              .setNewLayout(vk::ImageLayout::ePresentSrcKHR)
-                                              .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-                                              .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-                                              .setImage(self->mPresentImages[nextImageIdx]);
+          vk::ImageMemoryBarrier layoutTransitionBarrier;
+          layoutTransitionBarrier.setDstAccessMask(vk::AccessFlagBits::eMemoryRead);
+          layoutTransitionBarrier.setOldLayout(vk::ImageLayout::eUndefined);
+          layoutTransitionBarrier.setNewLayout(vk::ImageLayout::ePresentSrcKHR);
+          layoutTransitionBarrier.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+          layoutTransitionBarrier.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+          layoutTransitionBarrier.setImage(self->mPresentImages[nextImageIdx]);
       
           vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
           layoutTransitionBarrier.setSubresourceRange(resourceRange);
@@ -510,12 +510,12 @@ namespace YTE
           self->mSetupCommandBuffer.end();
       
           vk::PipelineStageFlags waitStageMash[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-          auto submitInfo = vk::SubmitInfo()
-                                 .setWaitSemaphoreCount(1)
-                                 .setPWaitSemaphores(&presentCompleteSemaphore)
-                                 .setPWaitDstStageMask(waitStageMash)
-                                 .setCommandBufferCount(1)
-                                 .setPCommandBuffers(&self->mSetupCommandBuffer);
+          vk::SubmitInfo submitInfo;
+          submitInfo.setWaitSemaphoreCount(1);
+          submitInfo.setPWaitSemaphores(&presentCompleteSemaphore);
+          submitInfo.setPWaitDstStageMask(waitStageMash);
+          submitInfo.setCommandBufferCount(1);
+          submitInfo.setPCommandBuffers(&self->mSetupCommandBuffer);
       
           self->mQueue.submit(submitInfo, submitFence);
           
@@ -552,8 +552,6 @@ namespace YTE
         vulkan_assert(self->mPresentImageViews[i], "Could not create ImageView.");
       }
 
-
-
       namespace fs = std::experimental::filesystem;
 
       TextureLoader loader(self->mPhysicalDevice, self->mLogicalDevice, self->mQueue, self->mCommandPool);
@@ -565,16 +563,15 @@ namespace YTE
         self->mTextures.emplace_back(loader.loadTexture(texturePath));
       }
 
-
       self->mSetupCommandBuffer.begin(beginInfo);
-      auto layoutTransitionBarrier = vk::ImageMemoryBarrier()
-                                          .setDstAccessMask(vk::AccessFlagBits::eDepthStencilAttachmentRead |
-                                                            vk::AccessFlagBits::eDepthStencilAttachmentWrite)
-                                          .setOldLayout(vk::ImageLayout::eUndefined)
-                                          .setNewLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal)
-                                          .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-                                          .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-                                          .setImage(self->mDepthImage);
+      vk::ImageMemoryBarrier layoutTransitionBarrier;
+      layoutTransitionBarrier.setDstAccessMask(vk::AccessFlagBits::eDepthStencilAttachmentRead |
+                                               vk::AccessFlagBits::eDepthStencilAttachmentWrite);
+      layoutTransitionBarrier.setOldLayout(vk::ImageLayout::eUndefined);
+      layoutTransitionBarrier.setNewLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
+      layoutTransitionBarrier.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      layoutTransitionBarrier.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      layoutTransitionBarrier.setImage(self->mDepthImage);
 
       auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1);
 
@@ -590,10 +587,10 @@ namespace YTE
       self->mSetupCommandBuffer.end();
 
       vk::PipelineStageFlags waitStageMask[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-      auto submitInfo = vk::SubmitInfo()
-                             .setPWaitDstStageMask(waitStageMask)
-                             .setCommandBufferCount(1)
-                             .setPCommandBuffers(&self->mSetupCommandBuffer);
+      vk::SubmitInfo submitInfo;
+      submitInfo.setPWaitDstStageMask(waitStageMask);
+      submitInfo.setCommandBufferCount(1);
+      submitInfo.setPCommandBuffers(&self->mSetupCommandBuffer);
 
       self->mQueue.submit(submitInfo, submitFence);
 
@@ -604,15 +601,15 @@ namespace YTE
       self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
 
       vk::ImageAspectFlags aspectMask = vk::ImageAspectFlagBits::eDepth;
-      auto imageViewCreateInfo = vk::ImageViewCreateInfo()
-                                      .setImage(self->mDepthImage)
-                                      .setViewType(vk::ImageViewType::e2D)
-                                      .setFormat(imageCreateInfo.format)
-                                      .setComponents({vk::ComponentSwizzle::eIdentity, 
-                                                      vk::ComponentSwizzle::eIdentity, 
-                                                      vk::ComponentSwizzle::eIdentity , 
-                                                      vk::ComponentSwizzle::eIdentity })
-                                      .setSubresourceRange(vk::ImageSubresourceRange(aspectMask, 0, 1, 0, 1));
+      vk::ImageViewCreateInfo imageViewCreateInfo;
+      imageViewCreateInfo.setImage(self->mDepthImage);
+      imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
+      imageViewCreateInfo.setFormat(imageCreateInfo.format);
+      imageViewCreateInfo.setComponents({ vk::ComponentSwizzle::eIdentity,
+                                          vk::ComponentSwizzle::eIdentity,
+                                          vk::ComponentSwizzle::eIdentity ,
+                                          vk::ComponentSwizzle::eIdentity });
+      imageViewCreateInfo.setSubresourceRange(vk::ImageSubresourceRange(aspectMask, 0, 1, 0, 1));
 
       self->mDepthImageView = self->mLogicalDevice.createImageView(imageViewCreateInfo);
 
@@ -638,13 +635,13 @@ namespace YTE
       passAttachments[1].initialLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
       passAttachments[1].finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 
-      auto colorAttachmentReference = vk::AttachmentReference()
-                                           .setAttachment(0) // First attachment is the color attachment.
-                                           .setLayout(vk::ImageLayout::eColorAttachmentOptimal);
+      vk::AttachmentReference colorAttachmentReference;
+      colorAttachmentReference.setAttachment(0); // First attachment is the color attachment.
+      colorAttachmentReference.setLayout(vk::ImageLayout::eColorAttachmentOptimal);
 
-      auto depthAttachmentReference = vk::AttachmentReference()
-                                           .setAttachment(1) // Second attachment is the depth attachment.
-                                           .setLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
+      vk::AttachmentReference depthAttachmentReference;
+      depthAttachmentReference.setAttachment(1); // Second attachment is the depth attachment.
+      depthAttachmentReference.setLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
       vk::SubpassDescription subpasses[2];
       subpasses[0].setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
@@ -660,13 +657,13 @@ namespace YTE
       subpassDependencies[0].setSrcSubpass(0);
       subpassDependencies[0].setDstSubpass(1);
 
-      auto renderPassCreateInfo = vk::RenderPassCreateInfo()
-                                       .setAttachmentCount(2)
-                                       .setPAttachments(passAttachments)
-                                       .setSubpassCount(2)
-                                       .setDependencyCount(1)
-                                       .setPDependencies(subpassDependencies)
-                                       .setPSubpasses(subpasses);
+      vk::RenderPassCreateInfo renderPassCreateInfo;
+      renderPassCreateInfo.setAttachmentCount(2);
+      renderPassCreateInfo.setPAttachments(passAttachments);
+      renderPassCreateInfo.setSubpassCount(2);
+      renderPassCreateInfo.setDependencyCount(1);
+      renderPassCreateInfo.setPDependencies(subpassDependencies);
+      renderPassCreateInfo.setPSubpasses(subpasses);
 
       self->mRenderPass = self->mLogicalDevice.createRenderPass(renderPassCreateInfo);
       vulkan_assert(self->mRenderPass, "Failed to create renderpass");
