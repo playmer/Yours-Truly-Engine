@@ -135,7 +135,6 @@ namespace YTE
       mHead.InsertAfter(aHook);
     }
 
-  private:
     Hook mHead;
   };
 
@@ -209,7 +208,7 @@ namespace YTE
     {
       auto delegate = aObject->MakeEventDelegate(aObject, aFunction);
 
-      mEventLists[aName].InsertFront(delegate->mHook);
+      delegate->mHook.InsertAfter(mEventLists[aName].mHead);
     }
 
     void DeregisterEvent(const std::string &aName)
@@ -221,6 +220,8 @@ namespace YTE
     EventDelegate* MakeEventDelegate(ObjectType *aObject, void (ObjectType::*aFunction)(EventType*))
     {
       mHooks.emplace_back(aObject, aFunction);
+      mHooks.back().mObject = this;
+      mHooks.back().mHook.mOwner = &mHooks.back();
       return &mHooks.back();
     }
 
@@ -230,7 +231,7 @@ namespace YTE
 
       if (it != mEventLists.end())
       {
-        for (auto eventDelegate : it->second)
+        for (auto &eventDelegate : it->second)
         {
           eventDelegate.Invoke(aEvent);
         }
