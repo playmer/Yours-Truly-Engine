@@ -76,6 +76,10 @@ namespace YTE
   GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine), mVulkanSuccess(0)
   {
     auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
+
+
+    static const std::string update = "LogicUpdate";
+    mEngine->RegisterEvent(update, this, &GraphicsSystem::Update);
   }
 
   GraphicsSystem::~GraphicsSystem()
@@ -191,7 +195,7 @@ namespace YTE
         instanceInfo.setEnabledExtensionCount((u32)requiredExtensions.size());
         instanceInfo.setPpEnabledExtensionNames(requiredExtensions.data());
 
-        auto result = vk::createInstance(&instanceInfo, NULL, &self->mInstance);
+        auto result = vk::createInstance(&instanceInfo, nullptr, &self->mInstance);
         checkVulkanResult(result, "Failed to create vulkan instance.");
       }
       else
@@ -1188,7 +1192,7 @@ namespace YTE
     mObjectsBufferSize = static_cast<u32>(mObjects.size());
   }
 
-  void GraphicsSystem::Update(float aDt)
+  void GraphicsSystem::Update(LogicUpdate *aUpdate)
   {
     if (mVulkanSuccess)
     {

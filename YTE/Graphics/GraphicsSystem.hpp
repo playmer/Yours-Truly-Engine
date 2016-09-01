@@ -36,7 +36,7 @@ namespace YTE
     u32 mTextureId = 0;
   };
 
-  class GraphicsSystem
+  class GraphicsSystem : public EventHandler
   {
     public:
     GraphicsSystem(Engine *aEngine);
@@ -46,7 +46,7 @@ namespace YTE
 
     void Initialize();
 
-    void Update(float aDt);
+    void Update(LogicUpdate *aUpdate);
     void VulkanRender();
 
     void SetupDrawing();

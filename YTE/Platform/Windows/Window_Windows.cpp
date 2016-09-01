@@ -105,7 +105,8 @@ namespace YTE
 
       case WM_PAINT:
       {
-        window->mEngine->mGraphicsSystem.Update(0.016f);
+        // TODO: Send FrameUpdate here.
+        // window->mEngine->mGraphicsSystem.Update(0.016f); 
         break;
       }
 

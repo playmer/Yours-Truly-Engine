@@ -12,13 +12,16 @@
 
 #include "YTE/Audio/Audio.hpp"
 
+#include "YTE/Core/EventHandler.hpp"
+
 #include "YTE/Graphics/GraphicsSystem.hpp"
 
 #include "YTE/Platform/Window.hpp"
 
 namespace YTE
 {
-  class Engine
+
+  class Engine : public EventHandler
   {
   public:
     Engine();

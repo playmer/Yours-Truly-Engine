@@ -26,8 +26,15 @@ namespace YTE
   void Engine::Update(float aDt)
   {
     ++mCurrentFrame;
-    mGraphicsSystem.Update(aDt);
-    mAudioManager.Update(aDt);
+    //mGraphicsSystem.Update(aDt);
+    //mAudioManager.Update(aDt);
+
+
+    static const std::string logicUpdate = "LogicUpdate";
+    LogicUpdate update;
+    update.mDt = aDt;
+
+    SendEvent(logicUpdate, &update);
 
     for (auto &window : mWindows)
     {

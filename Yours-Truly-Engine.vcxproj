@@ -1209,6 +1209,7 @@
     <ClInclude Include="YTE\Core\Component.hpp" />
     <ClInclude Include="YTE\Core\Composition.hpp" />
     <ClInclude Include="YTE\Core\Engine.hpp" />
+    <ClInclude Include="YTE\Core\EventHandler.hpp" />
     <ClInclude Include="YTE\Core\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Core\PrivateImplementation.hpp" />
     <ClInclude Include="YTE\Core\TargetDefinitions.hpp" />

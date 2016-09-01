@@ -3558,6 +3558,9 @@
     <ClInclude Include="Composition.hpp">
       <Filter>YTE\Core</Filter>
     </ClInclude>
+    <ClInclude Include="YTE\Core\EventHandler.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\glm\gtx\associated_min_max.inl">
