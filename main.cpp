@@ -20,7 +20,7 @@
 #include <gtc/matrix_transform.hpp>
 
 
-#include "YTE/Audio/Audio.hpp"
+#include "YTE/Audio/AudioSystem.hpp"
 
 
 YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = glm::vec3(-1, -1, -1))
@@ -63,7 +63,7 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
 
 
-  auto panelMusicIGuessWeCanCallItThat = engine.mAudioManager.PlayLoop("Panel", 1.0);
+  auto panelMusicIGuessWeCanCallItThat = engine.mAudioSystem.PlayLoop("Panel", 1.0);
 
   while (engine.mShouldUpdate)
   {
@@ -163,7 +163,7 @@ int main(int aArgumentNumber, char **Arguments)
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyOnlyPressedSpecifically(YTE::KeyCode::M))
     {
-      engine.mAudioManager.PlayOnce("Alarm");
+      engine.mAudioSystem.PlayOnce("Alarm");
     }
   }
 

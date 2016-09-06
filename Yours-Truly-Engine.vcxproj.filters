@@ -1114,6 +1114,9 @@
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\DataStructures\AudioSystem.cpp">
+      <Filter>YTE\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -3465,9 +3468,6 @@
     <ClInclude Include="YTE\Graphics\Texture.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="YTE\Audio\Audio.hpp">
-      <Filter>YTE\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\gorilla\ga.h">
       <Filter>Dependencies\gorilla</Filter>
     </ClInclude>
@@ -3552,14 +3552,14 @@
     <ClInclude Include="Dependencies\constexpr\cx_utils.h">
       <Filter>Dependencies\constexpr</Filter>
     </ClInclude>
-    <ClInclude Include="Component.hpp">
-      <Filter>YTE\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Composition.hpp">
-      <Filter>YTE\Core</Filter>
-    </ClInclude>
     <ClInclude Include="YTE\Core\EventHandler.hpp">
       <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\DataStructures\IntrusiveList.hpp">
+      <Filter>YTE\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Audio\AudioSystem.hpp">
+      <Filter>YTE\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

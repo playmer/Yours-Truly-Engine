@@ -408,6 +408,7 @@
     <ClCompile Include="YTE\Core\Component.cpp" />
     <ClCompile Include="YTE\Core\Composition.cpp" />
     <ClCompile Include="YTE\Core\Engine.cpp" />
+    <ClCompile Include="YTE\DataStructures\AudioSystem.cpp" />
     <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="YTE\Graphics\Mesh.cpp" />
     <ClCompile Include="YTE\Graphics\MeshLoader.cpp" />
@@ -419,8 +420,6 @@
     <ClCompile Include="YTE\Platform\Windows\Window_Windows.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.hpp" />
-    <ClInclude Include="Composition.hpp" />
     <ClInclude Include="Dependencies\assimp\code\3DSExporter.h" />
     <ClInclude Include="Dependencies\assimp\code\3DSHelper.h" />
     <ClInclude Include="Dependencies\assimp\code\3DSLoader.h" />
@@ -1205,7 +1204,7 @@
     <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h" />
     <ClInclude Include="Interace.hpp" />
-    <ClInclude Include="YTE\Audio\Audio.hpp" />
+    <ClInclude Include="YTE\Audio\AudioSystem.hpp" />
     <ClInclude Include="YTE\Core\Component.hpp" />
     <ClInclude Include="YTE\Core\Composition.hpp" />
     <ClInclude Include="YTE\Core\Engine.hpp" />
@@ -1214,6 +1213,7 @@
     <ClInclude Include="YTE\Core\PrivateImplementation.hpp" />
     <ClInclude Include="YTE\Core\TargetDefinitions.hpp" />
     <ClInclude Include="YTE\Core\Types.hpp" />
+    <ClInclude Include="YTE\DataStructures\IntrusiveList.hpp" />
     <ClInclude Include="YTE\DataStructures\UniqueHandle.hpp" />
     <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp" />
     <ClInclude Include="YTE\Graphics\Mesh.hpp" />
