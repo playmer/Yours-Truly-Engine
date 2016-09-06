@@ -12,33 +12,23 @@
 
 namespace YTE
 {
-  inline void vulkan_actual_assert(u64 flag, char *msg = "")
+  inline void vulkan_assert(u64 aFlag, char *aMessage = "")
   {
-    if (!flag)
-    {
-      printf("ASSERT: ");
-      printf("%s", msg);
-      printf("\n");
-
-      int *base = 0;
-      *base = 1;
-    }
+    bool check = aFlag ? true : false;
+    runtime_assert(check, aMessage);
   }
 
-  inline void vulkan_assert(u64 flag, char *msg = "")
+  inline void vulkan_assert(void *aFlag, char *aMessage = "")
   {
-    vulkan_actual_assert(flag, msg);
-  }
-
-  inline void vulkan_assert(void *flag, char *msg = "")
-  {
-    vulkan_actual_assert(reinterpret_cast<u64>(flag), msg);
+    bool check = aFlag ? false : true;
+    runtime_assert(check, aMessage);
   }
 
   template<typename Type>
-  inline void vulkan_assert(Type flag, char *msg = "")
+  inline void vulkan_assert(Type aFlag, char *aMessage = "")
   {
-    vulkan_actual_assert(static_cast<bool>(flag), msg);
+    bool check = static_cast<bool>(aFlag);
+    runtime_assert(check, aMessage);
   }
 
   inline void checkVulkanResult(vk::Result &aResult, char *aMessage)

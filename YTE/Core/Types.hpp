@@ -28,5 +28,17 @@ namespace YTE
   using u64 = uint64_t;
 
   using ComponentMap = std::unordered_map<std::string, std::unique_ptr<Component>>;
+
+
+  inline void runtime_assert(bool aValue, char *aMessage = "")
+  {
+    if (false == aValue)
+    {
+      printf("ASSERT: %s\n", aMessage);
+
+      int *base = 0;
+      *base = 1;
+    }
+  }
 }
 #endif

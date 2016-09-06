@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "YTE/Core/Types.hpp"
+
 #include "YTE/DataStructures/IntrusiveList.hpp"
 
 namespace YTE
@@ -79,7 +81,7 @@ namespace YTE
 
     void DeregisterEvent(const std::string &aName)
     {
-
+      runtime_assert(false, "This isn't implemented...");
     }
 
     template <typename ObjectType, typename EventType>
