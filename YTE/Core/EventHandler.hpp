@@ -9,51 +9,51 @@ namespace YTE
   class IntrusiveList
   {
   public:
+    ~IntrusiveList()
+    {
+      UnlinkAll();
+    }
+
+
     //template <unsigned int Offset>
     class Hook
     {
     public:
-      Hook()
-        : mHead(this), mPrevious(this), mNext(this), mOwner(nullptr)
+      inline Hook() : mPrevious(this), mNext(this), mOwner(nullptr)
       {
 
       }
 
-      Hook(TemplateType &aOwner)
-        : mHead(this), mPrevious(this), mNext(this), mOwner(&aOwner)
+      inline Hook(TemplateType &aOwner) : mPrevious(this), mNext(this), mOwner(&aOwner)
       {
 
       }
 
-      ~Hook()
+      inline ~Hook()
       {
-        Remove();
+        Unlink();
       }
 
-      void Remove()
+      inline void Unlink()
       {
         mPrevious->mNext = mNext;
         mNext->mPrevious = mPrevious;
 
-        mHead = this;
         mPrevious = this;
         mNext = this;
       }
 
-      void InsertAfter(Hook &aHook)
+      inline void InsertAfter(Hook &aHook)
       {
-        Remove();
+        Unlink();
 
         mPrevious = &aHook;
         mNext = aHook.mNext;
         aHook.mNext = this;
         
         mNext->mPrevious = this;
-
-        mHead = aHook.mHead;
       }
 
-      Hook *mHead;
       Hook *mPrevious;
       Hook *mNext;
       TemplateType *mOwner;
@@ -133,6 +133,21 @@ namespace YTE
     void InsertFront(Hook &aHook)
     {
       mHead.InsertAfter(aHook);
+    }
+
+    void UnlinkAll()
+    {
+      for (;;)
+      {
+        Hook *hook = mHead.mPrevious;
+
+        if (hook == &mHead)
+        {
+          break;
+        }
+
+        hook->Unlink();
+      }
     }
 
     Hook mHead;
