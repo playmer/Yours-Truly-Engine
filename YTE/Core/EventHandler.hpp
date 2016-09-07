@@ -46,10 +46,24 @@ namespace YTE
       Invoker mCallerFunction;
     };
 
+    template <typename Return, typename Arg = Return>
+    struct Binding {};
+
+    template <typename Return, typename Object, typename Event>
+    struct Binding<Return(Object::*)(Event*)>
+    {
+      using ReturnT = Return;
+      using ObjectT = Object;
+      using EventT = Event;
+    };
+
     template <typename FunctionType, FunctionType aFunction, typename EventType = Event, typename ObjectType = EventHandler>
     void RegisterEvent(const std::string &aName, ObjectType *aObject)
     {
-      auto delegate = aObject->MakeEventDelegate<FunctionType, aFunction, ObjectType, EventType>(aObject);
+      auto delegate = aObject->MakeEventDelegate<FunctionType,
+                                                 aFunction,
+                                                 Binding<FunctionType>::ObjectT, 
+                                                 Binding<FunctionType>::EventT>(aObject);
 
       mEventLists[aName].InsertFront(delegate->mHook);
     }

@@ -106,7 +106,7 @@ namespace YTE
 
 
     static const std::string update = "LogicUpdate";
-    mEngine->RegisterEvent<decltype(&AudioSystem::Update), &AudioSystem::Update, LogicUpdate>(update, this);
+    mEngine->RegisterEvent<decltype(&AudioSystem::Update), &AudioSystem::Update>(update, this);
   }
 
   AudioSystem::~AudioSystem()
