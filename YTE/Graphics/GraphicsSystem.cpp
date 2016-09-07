@@ -79,7 +79,7 @@ namespace YTE
 
 
     static const std::string update = "LogicUpdate";
-    mEngine->RegisterEvent(update, this, &GraphicsSystem::Update);
+    mEngine->RegisterEvent<decltype(&GraphicsSystem::Update), &GraphicsSystem::Update, LogicUpdate>(update, this);
   }
 
   GraphicsSystem::~GraphicsSystem()

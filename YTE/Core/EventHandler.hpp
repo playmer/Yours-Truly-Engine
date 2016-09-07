@@ -20,61 +20,36 @@ namespace YTE
     class EventDelegate
     {
     public:
-      template <typename ObjectType, typename FunctionType, typename EventType>
-      static void Caller(void *aObject, void *aFunction, Event *aEvent)
+      using Invoker = void(*)(void*, Event*);
+
+      template <typename ObjectType, typename FunctionType, FunctionType aFunction, typename EventType>
+      static void Caller(void *aObject, Event *aEvent)
       {
-        union FunctionMagic
-        {
-          FunctionType MemberFunction;
-          void *VoidMemberFunction;
-        };
-
-        FunctionMagic magic;
-        magic.VoidMemberFunction = aFunction;
-
         static_assert(std::is_base_of<Event, EventType>::value, "EventType Must be derived from YTE::Event");
-        (static_cast<ObjectType*>(aObject)->*magic.MemberFunction)(static_cast<EventType*>(aEvent));
+        (static_cast<ObjectType*>(aObject)->*aFunction)(static_cast<EventType*>(aEvent));
       }
 
-      template <typename ObjectType, typename EventType>
-      EventDelegate(ObjectType *aObject, void(ObjectType::*aFunction)(EventType*))
+      template <typename ObjectType = EventHandler>
+      EventDelegate(ObjectType *aObject, Invoker aInvoker)
         : mObject(static_cast<void*>(aObject))
       {
-        using FunctionType = void (ObjectType::*)(EventType*);
-
-        static_assert(sizeof(void*) <= sizeof(FunctionType), "Please don't use multiple inheritance.");
-
-        union FunctionMagic
-        {
-          FunctionType MemberFunction;
-          void *VoidMemberFunction;
-        };
-
-        FunctionMagic magic;
-        magic.MemberFunction = aFunction;
-
-        mFunction = magic.VoidMemberFunction;
-
-        mCallerFunction = Caller<ObjectType, void (ObjectType::*)(EventType*), EventType>;
+        mCallerFunction = aInvoker;
       }
 
       void Invoke(Event *aEvent)
       {
-        mCallerFunction(mObject, mFunction, aEvent);
+        mCallerFunction(mObject, aEvent);
       }
-
-      using Invoker = void (*)(void*, void*, Event*);
 
       IntrusiveList<EventDelegate>::Hook mHook;
       void *mObject;
-      void *mFunction;
       Invoker mCallerFunction;
     };
 
-    template <typename ObjectType, typename EventType>
-    void RegisterEvent(const std::string &aName, ObjectType *aObject, void (ObjectType::*aFunction)(EventType*))
+    template <typename FunctionType, FunctionType aFunction, typename EventType = Event, typename ObjectType = EventHandler>
+    void RegisterEvent(const std::string &aName, ObjectType *aObject)
     {
-      auto delegate = aObject->MakeEventDelegate(aObject, aFunction);
+      auto delegate = aObject->MakeEventDelegate<FunctionType, aFunction, ObjectType, EventType>(aObject);
 
       mEventLists[aName].InsertFront(delegate->mHook);
     }
@@ -84,10 +59,11 @@ namespace YTE
       runtime_assert(false, "This isn't implemented...");
     }
 
-    template <typename ObjectType, typename EventType>
-    EventDelegate* MakeEventDelegate(ObjectType *aObject, void (ObjectType::*aFunction)(EventType*))
+    template <typename FunctionType, FunctionType aFunction, typename ObjectType = EventHandler, typename EventType = Event>
+    EventDelegate* MakeEventDelegate(ObjectType *aObject)
     {
-      mHooks.emplace_back(aObject, aFunction);
+      EventDelegate::Invoker callerFunction = EventDelegate::Caller<ObjectType, FunctionType, aFunction, EventType>;
+      mHooks.emplace_back(aObject, callerFunction);
       mHooks.back().mObject = this;
       mHooks.back().mHook.mOwner = &mHooks.back();
       return &mHooks.back();
