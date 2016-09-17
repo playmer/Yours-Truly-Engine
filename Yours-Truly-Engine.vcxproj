@@ -418,6 +418,7 @@
     <ClCompile Include="YTE\Platform\Window.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Keyboard_Windows.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Window_Windows.cpp" />
+    <ClCompile Include="YTE\StandardLibrary\CompileTimeString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\assimp\code\3DSExporter.h" />
@@ -1234,6 +1235,7 @@
     <ClInclude Include="YTE\Reflection\Reflectable.hpp" />
     <ClInclude Include="YTE\Reflection\ReflectionSystem.hpp" />
     <ClInclude Include="YTE\Reflection\Type.hpp" />
+    <ClInclude Include="YTE\StandardLibrary\CompileTimeString.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\assimp\code\BlenderDNA.inl" />

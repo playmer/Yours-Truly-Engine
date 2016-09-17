@@ -277,6 +277,9 @@
     <Filter Include="Dependencies\constexpr">
       <UniqueIdentifier>{316b7e42-ebc3-4a91-bc49-8477b5896a34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="YTE\StandardLibrary">
+      <UniqueIdentifier>{91b3e075-c75a-402c-8b03-b49aa3ff74e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -1116,6 +1119,9 @@
     </ClCompile>
     <ClCompile Include="YTE\DataStructures\AudioSystem.cpp">
       <Filter>YTE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\StandardLibrary\CompileTimeString.cpp">
+      <Filter>YTE\StandardLibrary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3560,6 +3566,9 @@
     </ClInclude>
     <ClInclude Include="YTE\Audio\AudioSystem.hpp">
       <Filter>YTE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\StandardLibrary\CompileTimeString.hpp">
+      <Filter>YTE\StandardLibrary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

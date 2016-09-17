@@ -78,8 +78,12 @@ namespace YTE
     auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
 
 
+
+    #define YTERegisterEvent(EventType, ObjectInstance, MemberFunctionPtr) \
+      RegisterEvent<decltype(MemberFunctionPtr), MemberFunctionPtr>(EventType, ObjectInstance)
+
     static const std::string update = "LogicUpdate";
-    mEngine->RegisterEvent<decltype(&GraphicsSystem::Update), &GraphicsSystem::Update>(update, this);
+    mEngine->YTERegisterEvent(update, this, &GraphicsSystem::Update);
   }
 
   GraphicsSystem::~GraphicsSystem()

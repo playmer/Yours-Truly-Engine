@@ -32,7 +32,8 @@ namespace cx
     }
     constexpr str strlen(const str p, int maxdepth)
     {
-      return *p.s == 0 | maxdepth == 0 ? p :
+      //return *p.s == 0 | maxdepth == 0 ? p :
+      return ((*p.s == 0) | (maxdepth == 0)) ? p :
         strlen({ p.s+1, p.len+1 }, maxdepth-1);
     }
     constexpr str strlen_bychunk(const str p, int maxdepth)
@@ -47,7 +48,8 @@ namespace cx
   {
     return true ?
       detail_s::strlen_bychunk(detail_s::strlen({s, 0}, 256), 256).len :
-      throw err::strlen_runtime_error;
+      //throw err::strlen_runtime_error;
+      throw "err::strlen_runtime_error";
   }
 
   constexpr int strcmp(const char* a, const char* b)
