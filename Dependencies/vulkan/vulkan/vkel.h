@@ -227,6 +227,10 @@ extern "C" {
 #endif
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
+//TODO: Fix this
+#define DIRECTINPUT_VERSION 0x0800
+#define WIN32_LEAN_AND_MEAN 1
+#define VC_EXTRALEAN
 #include <windows.h>
 #endif
 

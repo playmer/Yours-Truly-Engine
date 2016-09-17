@@ -14,7 +14,6 @@
 
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
-#include "stb/stb_image.h"
 
 namespace YTE
 {
@@ -69,7 +68,7 @@ namespace YTE
     void createTextureImageView(Texture &aTexture);
     void createTextureSampler(Texture &aTexture);
 
-    void createImage(uint32_t aWidth, uint32_t aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
+    void createImage(u32 aWidth, u32 aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory);
 
     void copyImage(vk::Image srcImage, vk::Image dstImage, u32 width, u32 height);
     vk::CommandBuffer beginSingleTimeCommands();

@@ -62,8 +62,8 @@ namespace YTE
     {
       auto delegate = aObject->MakeEventDelegate<FunctionType,
                                                  aFunction,
-                                                 Binding<FunctionType>::ObjectT, 
-                                                 Binding<FunctionType>::EventT>(aObject);
+                                                 typename Binding<FunctionType>::ObjectT, 
+                                                 typename Binding<FunctionType>::EventT>(aObject);
 
       mEventLists[aName].InsertFront(delegate->mHook);
     }

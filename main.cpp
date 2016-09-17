@@ -35,11 +35,12 @@ YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = 
 
 int main(int aArgumentNumber, char **Arguments)
 {
-  //constexpr auto test2 = "test";
-  //constexpr YTE::CompileTimeString test{ test2 };
+  constexpr auto test2 = "test";
+  constexpr YTE::CompileTimeString test{ test2 };
+
 
   YTE::Engine engine;
-  
+
   // This is how to create SubWindows
   //YTE::Window subWindow1( &engine, "subWindow1", nullptr, nullptr, 246, 360, &engine.mWindow );
 

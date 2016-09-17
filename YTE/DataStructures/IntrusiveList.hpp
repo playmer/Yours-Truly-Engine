@@ -59,6 +59,9 @@ namespace YTE
       friend class const_iterator;
       friend class IntrusiveList<TemplateType>;
 
+      using pointer = TemplateType*;
+      using reference = TemplateType&;
+
       inline iterator(Hook *aHook = nullptr)
         : mCurrent(aHook)
       {

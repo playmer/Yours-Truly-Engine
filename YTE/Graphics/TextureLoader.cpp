@@ -1,4 +1,5 @@
 #include "YTE/Graphics/TextureLoader.hpp"
+//#include "stb/stb_image.h"
 
 // Create an image memory barrier for changing the layout of
 // an image and put it into an active command buffer
@@ -110,7 +111,7 @@ namespace YTE
     setImageLayout(cmdbuffer, image, aspectMask, oldImageLayout, newImageLayout, subresourceRange);
   }
 
-  void TextureLoader::createImage(uint32_t aWidth, uint32_t aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory)
+  void TextureLoader::createImage(u32 aWidth, u32 aHeight, vk::Format aFormat, vk::ImageTiling aTiling, vk::ImageUsageFlags aUsage, vk::MemoryPropertyFlags properties, vk::Image& aImage, vk::DeviceMemory &aImageMemory)
   {
     //Staging Image creation
     vk::ImageCreateInfo imageStagingInfo;
@@ -180,11 +181,13 @@ namespace YTE
 
     int texWidth, texHeight, texChannels;
 
-    stbi_uc* pixels = stbi_load(aTextureFile.c_str(), 
-                                &texWidth, 
-                                &texHeight, 
-                                &texChannels, 
-                                STBI_rgb_alpha);
+    //stbi_uc* pixels = stbi_load(aTextureFile.c_str(), 
+    //                            &texWidth, 
+    //                            &texHeight, 
+    //                            &texChannels, 
+    //                            STBI_rgb_alpha);
+
+    byte *pixels;
     vk::DeviceSize imageSize = texWidth * texHeight * 4;
 
     texture.mWidth = static_cast<u32>(texWidth);
@@ -208,7 +211,8 @@ namespace YTE
     memcpy(data, pixels, (size_t)imageSize);
     device.unmapMemory(stagingImageMemory);
 
-    stbi_image_free(pixels);
+    //stbi_image_free(pixels);
+    free(pixels);
 
     createImage(texWidth,
                 texHeight,
@@ -289,8 +293,8 @@ namespace YTE
     vk::ImageCopy region = {};
     region.srcSubresource = subResource;
     region.dstSubresource = subResource;
-    region.srcOffset = { 0, 0, 0 };
-    region.dstOffset = { 0, 0, 0 };
+    region.srcOffset.setX(0).setY(0).setZ(0);
+    region.dstOffset.setX(0).setY(0).setZ(0);
     region.extent.width = width;
     region.extent.height = height;
     region.extent.depth = 1;

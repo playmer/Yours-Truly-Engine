@@ -15,7 +15,7 @@
 
 namespace YTE
 {
-  using byte = unsigned char;
+  using byte = uint8_t;
 
   using i8 = int8_t;
   using i16 = int16_t;
@@ -30,7 +30,7 @@ namespace YTE
   using ComponentMap = std::unordered_map<std::string, std::unique_ptr<Component>>;
 
 
-  inline void runtime_assert(bool aValue, char *aMessage = "")
+  inline void runtime_assert(bool aValue, const char *aMessage = "")
   {
     if (false == aValue)
     {

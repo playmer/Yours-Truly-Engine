@@ -9,6 +9,7 @@
 #define WindowData_Windows_hpp
 #define DIRECTINPUT_VERSION 0x0800
 #define WIN32_LEAN_AND_MEAN 1
+#define VC_EXTRALEAN
 #include <Windows.h>
 #include <Winuser.h>
 

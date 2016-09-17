@@ -1,6 +1,10 @@
 #include <iostream>
 #include <filesystem>
 
+//TODO: Fix this
+#define DIRECTINPUT_VERSION 0x0800
+#define WIN32_LEAN_AND_MEAN 1
+#define VC_EXTRALEAN
 #include "Windows.h"
 
 #include "YTE/Core/Engine.hpp"
@@ -884,7 +888,7 @@ namespace YTE
       viewport.maxDepth = 1;
 
       vk::Rect2D scissors = {};
-      scissors.extent = { self->mWidth, self->mHeight };
+      scissors.extent.setWidth(self->mWidth).setHeight(self->mHeight);
 
       vk::PipelineViewportStateCreateInfo viewportState = {};
       viewportState.viewportCount = 1;
@@ -1047,7 +1051,8 @@ namespace YTE
 
       //color.float32[0] = 1.0f;
       //color.float32[2] = 0.0f;
-      clearValue[1].depthStencil = { 1.0f, 0 };
+      decltype(clearValue[1].depthStencil) stencil{ 1.0f, 0 };
+      clearValue[1].depthStencil = stencil;
 
       vk::RenderPassBeginInfo renderPassBeginInfo = {};
       renderPassBeginInfo.renderPass = self->mRenderPass;
