@@ -252,12 +252,12 @@ namespace YTE
 
           if (supportsPresent && (queueProperty.queueFlags & vk::QueueFlagBits::eGraphics))
           {
+            printf("Device #%d: %s\n", queueCount, properties.deviceName);
             self->mPhysicalDevice = physicalDevice;
             self->mPhysicalDeviceProperties = properties;
             self->mPresentQueueIdx = queueCount;
 
             ++queueCount;
-            break;
           }
 
           ++queueCount;
