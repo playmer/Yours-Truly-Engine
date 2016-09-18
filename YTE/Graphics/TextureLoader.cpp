@@ -1,5 +1,5 @@
 #include "YTE/Graphics/TextureLoader.hpp"
-//#include "stb/stb_image.h"
+#include "stb/stb_image.h"
 
 // Create an image memory barrier for changing the layout of
 // an image and put it into an active command buffer
@@ -181,13 +181,12 @@ namespace YTE
 
     int texWidth, texHeight, texChannels;
 
-    //stbi_uc* pixels = stbi_load(aTextureFile.c_str(), 
-    //                            &texWidth, 
-    //                            &texHeight, 
-    //                            &texChannels, 
-    //                            STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(aTextureFile.c_str(), 
+                                &texWidth, 
+                                &texHeight, 
+                                &texChannels, 
+                                STBI_rgb_alpha);
 
-    byte *pixels;
     vk::DeviceSize imageSize = texWidth * texHeight * 4;
 
     texture.mWidth = static_cast<u32>(texWidth);

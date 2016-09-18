@@ -21,7 +21,10 @@ namespace YTE
 
     };
 
-
+    constexpr const char* Data() { return mData; };
+    constexpr const char* data() { return mData; };
+    constexpr size_t Size() { return mSize; };
+    constexpr size_t size() { return mSize; };
 
     private:
     const char *mData;

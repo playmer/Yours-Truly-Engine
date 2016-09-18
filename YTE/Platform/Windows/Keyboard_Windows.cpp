@@ -6,8 +6,8 @@
 #include <malloc.h>
 
 #define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #include <Windows.h>
-#undef WIN32_LEAN_AND_MEAN
 
 #include "YTE/Platform/Keyboard.hpp"
 #include "YTE/Core/Types.hpp"

@@ -106,14 +106,14 @@
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="YTE\DataStructures\AudioSystem.cpp">
-      <Filter>YTE\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="YTE\StandardLibrary\CompileTimeString.cpp">
       <Filter>YTE\StandardLibrary</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\stb\stb_image.cpp">
       <Filter>Dependencies\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Audio\AudioSystem.cpp">
+      <Filter>YTE\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -654,9 +654,6 @@
     <ClInclude Include="YTE\Core\Composition.hpp">
       <Filter>YTE\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Interace.hpp">
-      <Filter>YTE\Core</Filter>
-    </ClInclude>
     <ClInclude Include="YTE\Reflection\ReflectionSystem.hpp">
       <Filter>YTE\Reflection</Filter>
     </ClInclude>
@@ -719,6 +716,9 @@
     </ClInclude>
     <ClInclude Include="YTE\StandardLibrary\CompileTimeString.hpp">
       <Filter>YTE\StandardLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\Interace.hpp">
+      <Filter>YTE\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
