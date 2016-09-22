@@ -437,7 +437,7 @@ namespace YTE
 
       vk::ImageCreateInfo imageCreateInfo;
       imageCreateInfo.setImageType(vk::ImageType::e2D);
-      imageCreateInfo.setFormat(vk::Format::eD16Unorm);
+      imageCreateInfo.setFormat(vk::Format::eD32SfloatS8Uint);
       imageCreateInfo.setExtent({ self->mWidth, self->mHeight, 1 });
       imageCreateInfo.setMipLevels(1);
       imageCreateInfo.setArrayLayers(1);
@@ -589,7 +589,7 @@ namespace YTE
       layoutTransitionBarrier.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
       layoutTransitionBarrier.setImage(self->mDepthImage);
 
-      auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1);
+      auto resourceRange = vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil, 0, 1, 0, 1);
 
       layoutTransitionBarrier.setSubresourceRange(resourceRange);
 
@@ -616,7 +616,7 @@ namespace YTE
       // NOTE: Instead of eReleaseResources should it be 0?
       self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
 
-      vk::ImageAspectFlags aspectMask = vk::ImageAspectFlagBits::eDepth;
+      vk::ImageAspectFlags aspectMask = vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
       vk::ImageViewCreateInfo imageViewCreateInfo;
       imageViewCreateInfo.setImage(self->mDepthImage);
       imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
