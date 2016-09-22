@@ -71,7 +71,7 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
 
 
-  auto panelMusicIGuessWeCanCallItThat = engine.mAudioSystem.PlayLoop("Panel", 1.0);
+  //auto panelMusicIGuessWeCanCallItThat = engine.mAudioSystem.PlayLoop("Panel", 1.0);
 
   while (engine.mShouldUpdate)
   {
@@ -171,7 +171,7 @@ int main(int aArgumentNumber, char **Arguments)
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyOnlyPressedSpecifically(YTE::KeyCode::M))
     {
-      engine.mAudioSystem.PlayOnce("Alarm");
+      //engine.mAudioSystem.PlayOnce("Alarm");
     }
   }
 

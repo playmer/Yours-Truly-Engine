@@ -239,11 +239,14 @@ namespace YTE
 
       auto physicalDevices = self->mInstance.enumeratePhysicalDevices();
 
+      u32 deviceCount = 0;
       for (auto &physicalDevice : physicalDevices)
       {
         auto properties = physicalDevice.getProperties();
 
         auto queueProperties = physicalDevice.getQueueFamilyProperties();
+
+        printf("Device #%d: %s\n", deviceCount, properties.deviceName);
 
         u32 queueCount = 0;
         for (auto &queueProperty : queueProperties)
@@ -252,15 +255,16 @@ namespace YTE
 
           if (supportsPresent && (queueProperty.queueFlags & vk::QueueFlagBits::eGraphics))
           {
-            printf("Device #%d: %s\n", queueCount, properties.deviceName);
             self->mPhysicalDevice = physicalDevice;
             self->mPhysicalDeviceProperties = properties;
             self->mPresentQueueIdx = queueCount;
 
             ++queueCount;
+            break;
           }
 
           ++queueCount;
+          ++deviceCount;
         }
 
 
@@ -637,7 +641,8 @@ namespace YTE
       passAttachments[0].initialLayout = vk::ImageLayout::eColorAttachmentOptimal;
       passAttachments[0].finalLayout = vk::ImageLayout::eColorAttachmentOptimal;
 
-      passAttachments[1].format = vk::Format::eD16Unorm;
+      //passAttachments[1].format = vk::Format::eD16Unorm;
+      passAttachments[1].format = vk::Format::eD32SfloatS8Uint;
       passAttachments[1].samples = vk::SampleCountFlagBits::e1;
       passAttachments[1].loadOp = vk::AttachmentLoadOp::eClear;
       //passAttachments[1].storeOp = vk::AttachmentStoreOp::eDontCare;
@@ -901,6 +906,7 @@ namespace YTE
       //rasterizationState.cullMode = vk::CullModeFlagBits::eBack; // TODO: Investigate
       rasterizationState.cullMode = vk::CullModeFlagBits::eNone;
       rasterizationState.frontFace = vk::FrontFace::eCounterClockwise;
+      //rasterizationState.frontFace = vk::FrontFace::eClockwise;
       rasterizationState.lineWidth = 1;
       rasterizationState.depthClampEnable = true;
       rasterizationState.depthBiasEnable = true;
