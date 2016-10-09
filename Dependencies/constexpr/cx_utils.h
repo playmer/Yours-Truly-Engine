@@ -48,8 +48,7 @@ namespace cx
   {
     return true ?
       detail_s::strlen_bychunk(detail_s::strlen({s, 0}, 256), 256).len :
-      //throw err::strlen_runtime_error;
-      throw "err::strlen_runtime_error";
+      throw err::strlen_runtime_error;
   }
 
   constexpr int strcmp(const char* a, const char* b)
