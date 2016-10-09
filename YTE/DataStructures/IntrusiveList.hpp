@@ -4,15 +4,24 @@
 
 namespace YTE
 {
-
   template <typename TemplateType>
   class IntrusiveList
   {
-  public:
+    public:
+
     class Hook
     {
-    public:
+      public:
+      // None of that for you.
+      //Hook(const Hook &aHook) = delete;
+      Hook& operator=(Hook &aHook) = delete;
+
       Hook() : mPrevious(this), mNext(this), mOwner(nullptr)
+      {
+
+      }
+
+      Hook(TemplateType *aOwner) : mPrevious(this), mNext(this), mOwner(aOwner)
       {
 
       }
@@ -23,15 +32,30 @@ namespace YTE
 
       }
 
+      Hook(Hook &&aHook, TemplateType *aOwner = nullptr)
+        : mPrevious(aHook.mPrevious), mNext(aHook.mNext), mOwner(aOwner)
+      {
+        runtime_assert(aOwner != nullptr, "We're moving a Hook node but not providing a new owner ptr.");
+        aHook.Unlink();
+
+        mPrevious->mNext = this;
+        mNext->mPrevious = this;
+      }
+
       ~Hook()
       {
-        Unlink();
+        RemoveFromList();
+      }
+
+      void RemoveFromList()
+      {
+        mNext->mPrevious = mPrevious;
+        mPrevious->mNext = mNext;
       }
 
       void Unlink()
       {
-        mPrevious->mNext = mNext;
-        mNext->mPrevious = mPrevious;
+        RemoveFromList();
 
         mPrevious = this;
         mNext = this;
@@ -55,7 +79,7 @@ namespace YTE
 
     class iterator : public std::iterator<std::bidirectional_iterator_tag, TemplateType>
     {
-    public:
+      public:
       friend class const_iterator;
       friend class IntrusiveList<TemplateType>;
 
@@ -113,7 +137,7 @@ namespace YTE
         return static_cast<TemplateType*>(mCurrent->mOwner);
       }
 
-    private:
+      private:
       Hook *mCurrent;
     };
 

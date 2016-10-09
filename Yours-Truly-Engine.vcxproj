@@ -338,6 +338,7 @@
     <ClInclude Include="YTE\Audio\AudioSystem.hpp" />
     <ClInclude Include="YTE\Core\Component.hpp" />
     <ClInclude Include="YTE\Core\Composition.hpp" />
+    <ClInclude Include="YTE\Core\Delegate.hpp" />
     <ClInclude Include="YTE\Core\Engine.hpp" />
     <ClInclude Include="YTE\Core\EventHandler.hpp" />
     <ClInclude Include="YTE\Core\ForwardDeclarations.hpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="YTE\Reflection\ReflectionSystem.hpp" />
     <ClInclude Include="YTE\Reflection\Type.hpp" />
     <ClInclude Include="YTE\StandardLibrary\CompileTimeString.hpp" />
+    <ClInclude Include="YTE\StandardLibrary\HashMap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\glm\detail\func_common.inl" />
