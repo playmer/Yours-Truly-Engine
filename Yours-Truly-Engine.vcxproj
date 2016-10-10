@@ -338,6 +338,7 @@
     <ClInclude Include="YTE\Audio\AudioSystem.hpp" />
     <ClInclude Include="YTE\Core\Component.hpp" />
     <ClInclude Include="YTE\Core\Composition.hpp" />
+    <ClInclude Include="YTE\Core\Delegate.hpp" />
     <ClInclude Include="YTE\Core\Engine.hpp" />
     <ClInclude Include="YTE\Core\EventHandler.hpp" />
     <ClInclude Include="YTE\Core\ForwardDeclarations.hpp" />

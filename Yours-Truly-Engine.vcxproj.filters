@@ -720,6 +720,9 @@
     <ClInclude Include="YTE\Core\Interace.hpp">
       <Filter>YTE\Core</Filter>
     </ClInclude>
+    <ClInclude Include="YTE\Core\Delegate.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\glm\gtx\associated_min_max.inl">
