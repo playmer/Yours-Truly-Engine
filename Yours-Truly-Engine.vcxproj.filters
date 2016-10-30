@@ -115,6 +115,9 @@
     <ClCompile Include="YTE\Audio\AudioSystem.cpp">
       <Filter>YTE\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\Core\EventHandler.cpp">
+      <Filter>YTE\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -722,6 +725,9 @@
     </ClInclude>
     <ClInclude Include="YTE\Core\Delegate.hpp">
       <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\StandardLibrary\BlockAllocator.hpp">
+      <Filter>YTE\DataStructures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

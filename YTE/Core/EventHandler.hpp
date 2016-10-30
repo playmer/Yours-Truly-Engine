@@ -1,5 +1,6 @@
 #pragma once
 
+#include <forward_list>
 #include <string>
 #include <unordered_map>
 
@@ -8,6 +9,7 @@
 
 #include "YTE/DataStructures/IntrusiveList.hpp"
 
+#include "YTE/StandardLibrary/BlockAllocator.hpp"
 #include "YTE/StandardLibrary/CompileTimeString.hpp"
 
 namespace YTE
@@ -43,7 +45,7 @@ namespace YTE
       template <typename ObjectType = EventHandler>
       EventDelegate(ObjectType *aObject, Invoker aInvoker)
         : mHook(this),
-        mDelegate(aObject, aInvoker)
+          mDelegate(aObject, aInvoker)
       {
       }
 
@@ -62,13 +64,17 @@ namespace YTE
       DelegateType mDelegate;
     };
 
+    using Deleter = typename BlockAllocator<EventDelegate>::Deleter;
+    using UniqueEvent = std::unique_ptr<EventDelegate, Deleter>;
+
     template <typename FunctionType, FunctionType aFunction, typename StringType = CompileTimeString, typename EventType = Event, typename ObjectType = EventHandler>
     void RegisterEvent(const StringType &aName, ObjectType *aObject)
     {
       auto delegate = aObject->template MakeEventDelegate<FunctionType,
         aFunction,
+        typename StringType,
         typename Binding<FunctionType>::ObjectType,
-        typename Binding<FunctionType>::EventType>(aObject);
+        typename Binding<FunctionType>::EventType>(aName, aObject);
 
       mEventLists[aName].InsertFront(delegate->mHook);
     }
@@ -85,13 +91,17 @@ namespace YTE
       (static_cast<ObjectType*>(aObject)->*aFunction)(static_cast<EventType*>(aEvent));
     }
 
-    template <typename FunctionType, FunctionType aFunction, typename ObjectType = EventHandler, typename EventType = Event>
-    EventDelegate* MakeEventDelegate(ObjectType *aObject)
+    template <typename FunctionType, FunctionType aFunction, typename StringType = CompileTimeString, typename ObjectType = EventHandler, typename EventType = Event>
+    EventDelegate* MakeEventDelegate(const StringType &aName, ObjectType *aObject)
     {
       static_assert(std::is_base_of<Event, EventType>::value, "EventType Must be derived from YTE::Event");
       Invoker callerFunction = Caller<ObjectType, FunctionType, aFunction, EventType>;
-      mHooks.emplace_back(aObject, callerFunction);
-      return &mHooks.back();
+      auto &allocator = mDelegateAllocators[aName];
+      auto ptr = allocator.allocate();
+
+      new(ptr) EventDelegate(aObject, callerFunction);
+      mHooks.emplace_back(std::move(UniqueEvent(ptr, allocator.GetDeleter())));
+      return mHooks.back().get();
     }
 
     template <typename StringType = CompileTimeString>
@@ -109,8 +119,10 @@ namespace YTE
     }
 
   protected:
+
     std::unordered_map<std::string, IntrusiveList<EventDelegate>> mEventLists;
-    std::vector<EventDelegate> mHooks;
+    std::vector<UniqueEvent> mHooks;
+    static std::unordered_map<std::string, BlockAllocator<EventDelegate>> mDelegateAllocators;
   };
 
 

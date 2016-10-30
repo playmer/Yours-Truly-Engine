@@ -154,6 +154,7 @@
     <ClCompile Include="YTE\Core\Component.cpp" />
     <ClCompile Include="YTE\Core\Composition.cpp" />
     <ClCompile Include="YTE\Core\Engine.cpp" />
+    <ClCompile Include="YTE\Core\EventHandler.cpp" />
     <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="YTE\Graphics\Mesh.cpp" />
     <ClCompile Include="YTE\Graphics\MeshLoader.cpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="YTE\Reflection\Reflectable.hpp" />
     <ClInclude Include="YTE\Reflection\ReflectionSystem.hpp" />
     <ClInclude Include="YTE\Reflection\Type.hpp" />
+    <ClInclude Include="YTE\StandardLibrary\BlockAllocator.hpp" />
     <ClInclude Include="YTE\StandardLibrary\CompileTimeString.hpp" />
   </ItemGroup>
   <ItemGroup>

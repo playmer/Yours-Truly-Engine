@@ -111,6 +111,7 @@ namespace YTE
 
   AudioSystem::~AudioSystem()
   {
+    mSounds.clear();
     gau_manager_destroy(mManager);
     gc_shutdown();
   }
