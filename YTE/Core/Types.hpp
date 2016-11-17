@@ -30,6 +30,21 @@ namespace YTE
   using ComponentMap = std::unordered_map<std::string, std::unique_ptr<Component>>;
 
 
+  // Helper to capture the destructor of a type.
+  template <typename T>
+  void GenericDestruct(void *aMemory)
+  {
+    (reinterpret_cast<T*>(aMemory))->~T();
+  }
+
+  // Helper to call the constructor of a type.
+  template <typename T>
+  void GenericDefaultConstruct(void *aMemory)
+  {
+    new (aMemory) T();
+  }
+
+
   inline void runtime_assert(bool aValue, const char *aMessage = "")
   {
     if (false == aValue)

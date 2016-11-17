@@ -4,6 +4,8 @@
 #include <array>
 #include <list>
 
+#include "YTE/Core/Types.hpp"
+
 namespace YTE
 {
   template <typename T, size_t S = 128>
@@ -33,6 +35,7 @@ namespace YTE
 
       void operator()(value_type *aToDelete)
       {
+        GenericDestruct<value_type>(aToDelete);
         mAllocator->deallocate(aToDelete);
       }
 

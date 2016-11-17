@@ -8,20 +8,6 @@
 
 namespace YTE
 {
-  // Helper to capture the destructor of a type.
-  template <typename T>
-  void GenericDestruct(void *aMemory)
-  {
-    (reinterpret_cast<T*>(aMemory))->~T();
-  }
-
-  // Helper to call the constructor of a type.
-  template <typename T>
-  void GenericDefaultConstruct(void *aMemory)
-  {
-    new (aMemory) T();
-  }
-
   template <int SizeInBytes>
   class PrivateImplementation
   {
