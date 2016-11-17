@@ -35,11 +35,9 @@ YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = 
 
 int main(int aArgumentNumber, char **Arguments)
 {
-  constexpr YTE::CompileTimeString test1{ "Test" };
-
-  constexpr YTE::CompileTimeString test2{ "Test" };
-
-  constexpr bool areTheySame = (test1 == test2);
+  //constexpr YTE::CompileTimeString test1{ "Test" };
+  //constexpr YTE::CompileTimeString test2{ "Test" };
+  //constexpr bool areTheySame = (test1 == test2);
 
   YTE::Engine engine;
 

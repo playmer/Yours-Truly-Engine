@@ -100,7 +100,7 @@ namespace YTE
 
       inline iterator& operator=(const iterator &aIterator)
       {
-        aIterator.mCurrent = mCurrent;
+        mCurrent = aIterator.mCurrent;
         return *this;
       }
 
@@ -129,12 +129,12 @@ namespace YTE
 
       inline reference operator*()
       {
-        return *static_cast<TemplateType*>(mCurrent->mOwner);
+        return *mCurrent->mOwner;
       }
 
       inline pointer operator->()
       {
-        return static_cast<TemplateType*>(mCurrent->mOwner);
+        return mCurrent->mOwner;
       }
 
     private:

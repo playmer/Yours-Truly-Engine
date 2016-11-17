@@ -40,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_clang_c2</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -164,7 +164,6 @@
     <ClCompile Include="YTE\Platform\Window.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Keyboard_Windows.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Window_Windows.cpp" />
-    <ClCompile Include="YTE\StandardLibrary\CompileTimeString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\constexpr\cx_algorithm.h" />

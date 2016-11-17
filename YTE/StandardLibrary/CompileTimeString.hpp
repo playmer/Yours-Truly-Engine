@@ -33,13 +33,7 @@ namespace YTE
 
     constexpr bool operator==(const CompileTimeString &aString) const
     {
-
-      //if (aString.mData == mData)
-      //{
-      //  toReturn = true;
-      //}
-
-      if (aString.mSize == mSize)
+      if (mHash == aString.mHash && aString.mSize == mSize)
       {
         auto left = mData;
         auto right = aString.mData;
