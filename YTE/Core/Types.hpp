@@ -36,7 +36,8 @@ namespace YTE
     {
       printf("ASSERT: %s\n", aMessage);
 
-      int *base = 0;
+      // Purposely ruining this programs life.
+      int *base = nullptr;
       *base = 1;
     }
   }
