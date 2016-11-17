@@ -70,6 +70,8 @@ namespace YTE
     template <typename FunctionType, FunctionType aFunction, typename StringType = CompileTimeString, typename EventType = Event, typename ObjectType = EventHandler>
     void RegisterEvent(const StringType &aName, ObjectType *aObject)
     {
+      static_assert(std::is_base_of<Event, EventType>::value, "EventType Must be derived from YTE::Event");
+      static_assert(std::is_base_of<EventHandler, ObjectType>::value, "ObjectType Must be derived from YTE::EventHandler");
       auto delegate = aObject->template MakeEventDelegate<FunctionType,
         aFunction,
         typename StringType,
