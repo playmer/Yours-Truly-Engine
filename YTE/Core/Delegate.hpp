@@ -12,7 +12,7 @@ class Delegate<Return(*)(Arguments...)>
 
 
   // None of this for you.
-  Delegate(const Delegate &aDelegate) = delete;
+  inline Delegate(const Delegate &aDelegate) = delete;
 
   template <typename ObjectType, typename FunctionType, FunctionType aFunction, typename EventType>
   static void Caller(void *aObject, Arguments... aArguments)
@@ -21,15 +21,15 @@ class Delegate<Return(*)(Arguments...)>
   }
 
   template <typename ObjectType>
-  Delegate(ObjectType *aObject, Invoker aInvoker)
+  inline Delegate(ObjectType *aObject, Invoker aInvoker)
     : mObject(static_cast<void*>(aObject)),
-    mCallerFunction(aInvoker)
+      mCallerFunction(aInvoker)
   {
   }
 
-  Delegate(Delegate &&aDelegate)
+  inline Delegate(Delegate &&aDelegate)
     : mObject(aDelegate.mObject),
-    mCallerFunction(aDelegate.mCallerFunction)
+      mCallerFunction(aDelegate.mCallerFunction)
   {
 
   }
@@ -38,6 +38,8 @@ class Delegate<Return(*)(Arguments...)>
   {
     mCallerFunction(mObject, aArguments...);
   }
+
+protected:
 
   void *mObject;
   Invoker mCallerFunction;

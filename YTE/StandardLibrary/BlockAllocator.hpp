@@ -101,12 +101,17 @@ namespace YTE
 
     private:
 
-      size_t mSize;
+      size_t mSize = 0;
       Node *mHead;
     };
 
     void AllocateIfNeeded()
     {
+      if (false == mFreeList.IsEmpty())
+      {
+        return;
+      }
+
       mData.emplace_front(array_type());
       
       for (auto &i : mData.front())
@@ -115,11 +120,9 @@ namespace YTE
 
         mFreeList.push_front(j);
       }
-
     }
 
     std::list<array_type> mData;
     FreeList mFreeList;
-    size_t mSize;
   };
 }

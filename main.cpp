@@ -55,15 +55,19 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 1, 0)));
   engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[0].mScale = { 1.0, 2.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[0].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
   engine.mGraphicsSystem.mObjects[1].mTranslation = { 1.0, -1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[1].mScale = { 2.0, 1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[1].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
   engine.mGraphicsSystem.mObjects[2].mTranslation = { -1.0, -1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[2].mScale = { 0.5, 1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[2].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, 1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[3].mScale = { 1.0, 0.5, 0.0 };
+  engine.mGraphicsSystem.mObjects[3].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects[3].mTextureId = 1;
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));

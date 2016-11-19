@@ -36,7 +36,7 @@ namespace YTE
     using DelegateType = Delegate<void(*)(Event*)>;
     using Invoker = DelegateType::Invoker;
 
-    class EventDelegate
+    class EventDelegate : public DelegateType
     {
     public:
       // None of this for you.
@@ -44,24 +44,17 @@ namespace YTE
 
       template <typename ObjectType = EventHandler>
       EventDelegate(ObjectType *aObject, Invoker aInvoker)
-        : mHook(this),
-          mDelegate(aObject, aInvoker)
+        : Delegate(aObject, aInvoker),
+          mHook(this)
       {
       }
 
       EventDelegate(EventDelegate &&aEventDelegate)
-        : mHook(std::move(aEventDelegate.mHook), this),
-          mDelegate(std::move(aEventDelegate.mDelegate))
+        : Delegate(std::move(*this)), mHook(std::move(aEventDelegate.mHook), this)
       {
-      }
-
-      inline void Invoke(Event *aEvent)
-      {
-        mDelegate.Invoke(aEvent);
       }
 
       IntrusiveList<EventDelegate>::Hook mHook;
-      DelegateType mDelegate;
     };
 
     using Deleter = typename BlockAllocator<EventDelegate>::Deleter;
@@ -85,7 +78,6 @@ namespace YTE
     {
       runtime_assert(false, "This isn't implemented...");
     }
-
 
     template <typename ObjectType, typename FunctionType, FunctionType aFunction, typename EventType>
     static void Caller(void *aObject, Event *aEvent)
