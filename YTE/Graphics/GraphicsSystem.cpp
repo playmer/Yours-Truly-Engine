@@ -631,7 +631,7 @@ namespace YTE
 
       vulkan_assert(self->mDepthImageView, "Failed to create image view.");
 
-      vk::AttachmentDescription passAttachments[2] = {};
+      std::array<vk::AttachmentDescription, 2> passAttachments = {};
       passAttachments[0].format = colorFormat;
       passAttachments[0].samples = vk::SampleCountFlagBits::e1;
       passAttachments[0].loadOp = vk::AttachmentLoadOp::eClear;
@@ -645,8 +645,7 @@ namespace YTE
       passAttachments[1].format = vk::Format::eD32SfloatS8Uint;
       passAttachments[1].samples = vk::SampleCountFlagBits::e1;
       passAttachments[1].loadOp = vk::AttachmentLoadOp::eClear;
-      //passAttachments[1].storeOp = vk::AttachmentStoreOp::eDontCare;
-      passAttachments[1].storeOp = vk::AttachmentStoreOp::eStore;
+      passAttachments[1].storeOp = vk::AttachmentStoreOp::eDontCare;
       passAttachments[1].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
       passAttachments[1].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
       passAttachments[1].initialLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
@@ -660,27 +659,29 @@ namespace YTE
       depthAttachmentReference.setAttachment(1); // Second attachment is the depth attachment.
       depthAttachmentReference.setLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
-      vk::SubpassDescription subpasses[2];
-      subpasses[0].setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
-      subpasses[0].setColorAttachmentCount(1);
-      subpasses[0].setPColorAttachments(&colorAttachmentReference);
+      vk::SubpassDescription subpass;
+      subpass.setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
+      subpass.setColorAttachmentCount(1);
+      subpass.setPColorAttachments(&colorAttachmentReference);
+      subpass.setPDepthStencilAttachment(&depthAttachmentReference);
 
-      subpasses[1].setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
-      subpasses[1].setPDepthStencilAttachment(&depthAttachmentReference);
-
-      vk::SubpassDependency subpassDependencies[1];
-      subpassDependencies[0].setSrcStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
-      subpassDependencies[0].setDstStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
-      subpassDependencies[0].setSrcSubpass(0);
-      subpassDependencies[0].setDstSubpass(1);
+      vk::SubpassDependency subpassDependency;
+      subpassDependency.setSrcStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
+      subpassDependency.setDstStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
+      //subpassDependency.setSrcAccessMask(vk::AccessFlagBits(0));
+      //subpassDependency.setDstAccessMask(vk::AccessFlagBits(0));
+      //subpassDependency.setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
+      //subpassDependency.setDstStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
+      subpassDependency.setSrcSubpass(0);
+      subpassDependency.setDstSubpass(0);
 
       vk::RenderPassCreateInfo renderPassCreateInfo;
-      renderPassCreateInfo.setAttachmentCount(2);
-      renderPassCreateInfo.setPAttachments(passAttachments);
-      renderPassCreateInfo.setSubpassCount(2);
+      renderPassCreateInfo.setAttachmentCount(passAttachments.size());
+      renderPassCreateInfo.setPAttachments(passAttachments.data());
+      renderPassCreateInfo.setSubpassCount(1);
       renderPassCreateInfo.setDependencyCount(1);
-      renderPassCreateInfo.setPDependencies(subpassDependencies);
-      renderPassCreateInfo.setPSubpasses(subpasses);
+      renderPassCreateInfo.setPDependencies(&subpassDependency);
+      renderPassCreateInfo.setPSubpasses(&subpass);
 
       self->mRenderPass = self->mLogicalDevice.createRenderPass(renderPassCreateInfo);
       vulkan_assert(self->mRenderPass, "Failed to create renderpass");
@@ -923,13 +924,15 @@ namespace YTE
       vk::PipelineDepthStencilStateCreateInfo depthState;
       depthState.depthTestEnable = true;
       depthState.depthWriteEnable = true;
-      depthState.stencilTestEnable = true;
       depthState.depthCompareOp = vk::CompareOp::eLessOrEqual;
+      depthState.setDepthBoundsTestEnable(false);
+      depthState.setStencilTestEnable(false);
       //depthState.front = noOPStencilState;
       //depthState.back = noOPStencilState;
-      depthState.front = stencilState;
+
       //depthState.back.compareOp = vk::CompareOp::eAlways;
-      depthState.back = stencilState;
+      //depthState.front = stencilState;
+      //depthState.back = stencilState;
 
       vk::PipelineColorBlendAttachmentState colorBlendAttachmentState;
       colorBlendAttachmentState.srcColorBlendFactor = vk::BlendFactor::eSrc1Color;
