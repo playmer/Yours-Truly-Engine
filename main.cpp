@@ -53,7 +53,7 @@ int main(int aArgumentNumber, char **Arguments)
   glm::vec3 rotate = glm::vec3();
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 1, 0)));
-  engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.0 };
+  engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.25 };
   engine.mGraphicsSystem.mObjects[0].mScale = { 1.0, 2.0, 0.0 };
   engine.mGraphicsSystem.mObjects[0].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
