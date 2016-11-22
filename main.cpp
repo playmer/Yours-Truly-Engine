@@ -16,7 +16,7 @@
 #include "YTE/Graphics/TextureLoader.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
 
-#include "glm.hpp"
+#include "glm/glm.hpp"
 #include <gtc/matrix_transform.hpp>
 
 #include "YTE/StandardLibrary/CompileTimeString.hpp"

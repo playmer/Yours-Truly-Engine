@@ -4,8 +4,8 @@
 #include <memory>
 #include <unordered_map>
 
-#include "ga.h"
-#include "gau.h"
+//#include "ga.h"
+//#include "gau.h"
 
 #include "YTE/Core/EventHandler.hpp"
 #include "YTE/Core/ForwardDeclarations.hpp"
@@ -15,19 +15,19 @@ namespace YTE
 {
   class AudioSystem : public EventHandler
   {
-    struct SoundHolder
-    {
-      void operator()(ga_Sound *aSound)
-      {
-        ga_sound_release(aSound);
-      }
-    };
+    //struct SoundHolder
+    //{
+    //  void operator()(ga_Sound *aSound)
+    //  {
+    //    ga_sound_release(aSound);
+    //  }
+    //};
 
   public:
 
     struct SoundHandle
     {
-      static void DeleteSound(ga_Handle* in_finishedHandle, void* in_context);
+      //static void DeleteSound(ga_Handle* in_finishedHandle, void* in_context);
 
       SoundHandle();
 
@@ -44,18 +44,18 @@ namespace YTE
       // [-1.0 -> 0.0 -> 1.0]
       void SetPan(float aPan);
 
-      operator bool()
-      {
-        return IsValid();
-      }
+      //operator bool()
+      //{
+      //  return IsValid();
+      //}
 
-      bool IsValid()
-      {
-        return nullptr != mHandle ? true : false;
-      }
+      //bool IsValid()
+      //{
+      //  return nullptr != mHandle ? true : false;
+      //}
     
-      ga_Handle *mHandle;
-      gau_SampleSourceLoop* mLoopSource;
+      //ga_Handle *mHandle;
+      //gau_SampleSourceLoop* mLoopSource;
       const char *mName;
     };
 
@@ -65,7 +65,7 @@ namespace YTE
 
     void Update(LogicUpdate *aUpdate)
     {
-      gau_manager_update(mManager);
+      //gau_manager_update(mManager);
     }
 
     std::unique_ptr<SoundHandle> PlayLoop(const std::string &aSoundName, float aVolume = 1.0f);
@@ -75,11 +75,11 @@ namespace YTE
     void PlayOnce(const std::string &aSoundName, float aVolume = 1.0f);
 
   private:
-    std::unordered_map<std::string, std::unique_ptr<ga_Sound, SoundHolder>> mSounds;
+    //std::unordered_map<std::string, std::unique_ptr<ga_Sound, SoundHolder>> mSounds;
     //std::vector<std::unique_ptr<SoundHandle>> mHandles;
-    gau_Manager *mManager;
-    ga_Mixer *mMixer;
-    ga_StreamManager *mStreamManager;
+    //gau_Manager *mManager;
+    //ga_Mixer *mMixer;
+    //ga_StreamManager *mStreamManager;
     Engine *mEngine;
   };
 }

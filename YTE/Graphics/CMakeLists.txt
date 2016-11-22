@@ -1,0 +1,7 @@
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} GraphicsSystem.cpp GraphicsSystem.hpp)
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} Mesh.cpp Mesh.hpp)
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} MeshLoader.cpp MeshLoader.hpp)
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} Texture.hpp)
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} TextureLoader.cpp TextureLoader.hpp)
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} Vertex.hpp)
+set(Yours_Truly_Engine_Source ${Yours_Truly_Engine_Source} VulkanContext.cpp VulkanContext.hpp)
