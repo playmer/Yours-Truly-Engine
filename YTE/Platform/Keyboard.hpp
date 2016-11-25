@@ -35,6 +35,7 @@ namespace YTE
     void Update();
     
     bool IsKeyPressed(KeyCode aKey);
+    bool IsKeyOnlyPressedSpecifically(KeyCode aKey);
 
     Key mKeys[256];
   };

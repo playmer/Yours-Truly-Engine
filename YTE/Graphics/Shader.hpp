@@ -8,29 +8,34 @@
 
 #include <stddef.h>
 
-#include <glbinding/gl/gl.h>
-#include <glbinding/Binding.h>
+#include "vulkan/vkel.h"
+#include "vulkan/vk_cpp.hpp"
 
-#include "YTE/DataStructures/UniqueHandle.hpp"
+#include "YTE/Core/Types.hpp"
+
+#include "YTE/Graphics/VulkanContext.hpp"
 
 namespace YTE
 {
-  using OpenGLHandle = YTE::UniqueHandle<gl::GLuint>;
+  enum class ShaderType
+  {
+    Vertex = (int)vk::ShaderStageFlagBits::eVertex,
+    Fragment = (int)vk::ShaderStageFlagBits::eFragment,
+    Geometry = (int)vk::ShaderStageFlagBits::eGeometry,
+    Compute = (int)vk::ShaderStageFlagBits::eCompute,
+    Unknown
+  };
 
+  class Shader
+  {
+  public:
+    Shader(const char *aFileName, ShaderType aType, VulkanContext *aContext);
 
-  void DeleteShader(gl::GLuint aShader);;
+    vk::PipelineShaderStageCreateInfo CreateShaderStage();
 
-
-  OpenGLHandle CreateShader(const char *aSource, gl::GLenum aType);
-
-
-
-  void DeleteShaderProgram(gl::GLuint aShaderProgram);;
-
-
-  OpenGLHandle CreateShaderProgram(std::vector<OpenGLHandle> &aShaders);
-
-
-  OpenGLHandle GraphicsInitialize();
+  private:
+    vk::ShaderModule mModule;
+    ShaderType mType;
+  };
 }
 #endif

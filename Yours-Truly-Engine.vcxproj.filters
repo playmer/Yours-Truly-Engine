@@ -16,158 +16,53 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{2c0f97df-cb4a-45a8-a857-acf81ed9da6d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependencies\glbinding">
-      <UniqueIdentifier>{229dcc30-c0c2-4950-95c1-a0baa202d5a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\source">
-      <UniqueIdentifier>{b0e674fc-34a5-4a74-8c5f-3662648cfbdc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\source\gl">
-      <UniqueIdentifier>{86198b05-b293-4b68-8671-70636a7c9db7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding">
-      <UniqueIdentifier>{c1c1fe01-9037-4471-9283-86967625f19e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl">
-      <UniqueIdentifier>{9df50b2c-8244-42dd-8e05-6ff381454da2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl10">
-      <UniqueIdentifier>{9a0c9166-79e6-4077-bdd5-3f22262b2ce2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl10ext">
-      <UniqueIdentifier>{054cbce2-b97b-4646-b17b-4110d544b15c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl11">
-      <UniqueIdentifier>{96312972-8b36-4ac8-8833-43c46ac4ca39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl11ext">
-      <UniqueIdentifier>{a95c601a-ac3b-4d07-ac80-805cc837f8d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl12">
-      <UniqueIdentifier>{e86df21f-3a1a-478e-96f8-ea1dcf9a8a33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl12ext">
-      <UniqueIdentifier>{36f8e219-eaef-49fb-9293-31840895de2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl13">
-      <UniqueIdentifier>{ed2943ac-05a1-4f36-b77f-7802e5431afd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl13ext">
-      <UniqueIdentifier>{c75c69c2-925f-4b68-9acc-f3703deb5858}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl14">
-      <UniqueIdentifier>{5d0c0157-89d5-4180-9679-e9625bccaecc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl14ext">
-      <UniqueIdentifier>{ede1e765-d204-4b87-a35d-0c561b9fbb68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl15">
-      <UniqueIdentifier>{8e330c9c-05bf-4d7b-b656-3cc421808e0f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl15ext">
-      <UniqueIdentifier>{8e57e132-ef82-4950-9e9a-ef9df2228b61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl20">
-      <UniqueIdentifier>{800cfde0-9223-481d-9e7e-fbb7a62b30a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl20ext">
-      <UniqueIdentifier>{74e6db70-a742-4bc1-946e-34574c4a38a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl21">
-      <UniqueIdentifier>{bcdc6db6-4fb5-45e0-819d-a1aa2270f0d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl21ext">
-      <UniqueIdentifier>{7642707f-4286-43dd-8e18-2489f24bffb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl30">
-      <UniqueIdentifier>{b268570a-aea7-4aff-8f6c-3b30c43c9990}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl30ext">
-      <UniqueIdentifier>{871b32ff-c1a6-4f25-98fd-a3035f973c69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl31">
-      <UniqueIdentifier>{286dd84c-6e3b-4ddf-8a5c-7f8b7d59af57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl31ext">
-      <UniqueIdentifier>{0a6f51e0-df95-4f2f-9924-ad2110f04efc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl32">
-      <UniqueIdentifier>{34a41699-7576-4f46-b47e-713dbbb5f8af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl32core">
-      <UniqueIdentifier>{bf39a9d5-1bbe-4aea-9783-aac3997a8591}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl32ext">
-      <UniqueIdentifier>{b625b79a-172f-4734-b4a2-4fa69e34425a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl33">
-      <UniqueIdentifier>{2ff49a5a-af65-4e4b-bd0e-3fd17a3588c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl33core">
-      <UniqueIdentifier>{a76a3e11-a703-46dc-9ca9-2f0bd8b7628e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl33ext">
-      <UniqueIdentifier>{f2474119-e42d-4949-a9ab-614f6eff87e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl40">
-      <UniqueIdentifier>{6630d85f-5a18-463b-b020-f895dd0566c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl40core">
-      <UniqueIdentifier>{567b3c77-1854-4354-a7db-91ee4b326a4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl40ext">
-      <UniqueIdentifier>{eaaf633f-f94b-41cb-9d52-e8e9f691c2ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl41">
-      <UniqueIdentifier>{86d90e9b-70fc-4757-b322-48a4bd7b4965}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl41core">
-      <UniqueIdentifier>{e4bf439f-6dac-484f-934a-a1836266c6df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl41ext">
-      <UniqueIdentifier>{75198721-5c43-4cb3-a2e9-4f620a3c7b1b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl42">
-      <UniqueIdentifier>{747eec83-daf9-4c74-92b9-8ad5038d1e4a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl42core">
-      <UniqueIdentifier>{ae559ecb-dc4b-4cf2-9f8d-8d673a4ea682}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl42ext">
-      <UniqueIdentifier>{fb0c9eff-d65e-49e1-a19d-322ee8bb5d33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl43core">
-      <UniqueIdentifier>{a89b0bfb-18a3-4cf5-83c9-300a7c3b412d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl43">
-      <UniqueIdentifier>{3a60ef1e-c99a-4ed7-85b2-85bc1b2fcf1a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl43ext">
-      <UniqueIdentifier>{1d14a0c9-830e-4dce-9bf6-f57532e3d8b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl44ext">
-      <UniqueIdentifier>{d0ddf37f-cf83-4253-9bd6-fad09d989fd5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl45ext">
-      <UniqueIdentifier>{0bd899af-43ef-48e4-b269-1d6906f2deba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl44core">
-      <UniqueIdentifier>{d49dbcd5-d247-4860-b099-ac113b5e526a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl45core">
-      <UniqueIdentifier>{c445dbaf-f3ef-4ffd-a94e-c18ec290c6ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl44">
-      <UniqueIdentifier>{8e29545f-a81b-484b-acd2-f628299f1e38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\glbinding\glbinding\gl45">
-      <UniqueIdentifier>{f33d4f49-080a-44b8-bf62-83af13ad6146}</UniqueIdentifier>
-    </Filter>
     <Filter Include="YTE\DataStructures">
       <UniqueIdentifier>{853b4ebc-28d3-4e3c-95c5-44e20c16a92a}</UniqueIdentifier>
     </Filter>
     <Filter Include="YTE\Graphics">
       <UniqueIdentifier>{c2944e9d-d8a7-4417-9230-6ceff878107a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\vulkan">
+      <UniqueIdentifier>{2c7b7735-4efd-4196-be92-e8a9cf753c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\glm">
+      <UniqueIdentifier>{ed75d060-e8b7-4764-9556-7844d80d1739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\glm\detail">
+      <UniqueIdentifier>{1ca4658a-74bf-4eca-8ba8-61bee0ed6c62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\glm\gtc">
+      <UniqueIdentifier>{112f8b09-5d45-43c9-bec9-032cbfa46ae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\glm\gtx">
+      <UniqueIdentifier>{4122e75b-c54f-4777-9d89-9a6476b7f762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\vulkan\vulkan">
+      <UniqueIdentifier>{8d12eea3-2e89-43f1-bc7b-00266477e0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\stb">
+      <UniqueIdentifier>{65370178-4607-48d1-997c-290e1fa7e31f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="YTE\Audio">
+      <UniqueIdentifier>{9a8d6a2c-bbf5-4242-aad8-d295bbd05ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\gorilla">
+      <UniqueIdentifier>{bed9b688-5afe-43b3-b769-5c021cd32505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\gorilla\common">
+      <UniqueIdentifier>{3ab8ac2b-74aa-4431-ad3d-f520e1360e01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\gorilla\devices">
+      <UniqueIdentifier>{fc6388cc-f372-4ef9-9e70-537fee801a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="YTE\Reflection">
+      <UniqueIdentifier>{071d419b-032e-44be-b113-f36f571edb78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\constexpr">
+      <UniqueIdentifier>{316b7e42-ebc3-4a91-bc49-8477b5896a34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="YTE\StandardLibrary">
+      <UniqueIdentifier>{91b3e075-c75a-402c-8b03-b49aa3ff74e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -184,266 +79,44 @@
     <ClCompile Include="YTE\Platform\Windows\Window_Windows.cpp">
       <Filter>YTE\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\AbstractFunction.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\AbstractValue.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_list.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_0.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_a.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_b.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_c.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_d.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_e.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_f.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_g.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_h.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_i.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_j.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_k.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_l.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_m.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_n.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_o.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_p.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_q.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_r.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_s.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_t.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_u.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_v.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_w.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_x.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_y.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_objects_z.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Binding_pch.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\CallbackMask.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\callbacks.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\ContextHandle.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\ContextInfo.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\FunctionCall.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\logging.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_BitfieldsByString.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_BooleansByString.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_EnumsByString.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_ExtensionsByFunctionString.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_ExtensionsByString.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_FunctionStringsByExtension.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_getStringByBitfield.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_ReqVersionsByExtension.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_StringsByBitfield.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_StringsByBoolean.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_StringsByEnum.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Meta_StringsByExtension.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\ProcAddress.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Value.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Version.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\Version_ValidVersions.cpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_0.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_a.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_b.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_c.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_d.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_e.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_f.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_g.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_h.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_i.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_j.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_k.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_l.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_m.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_n.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_o.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_p.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_q.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_r.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_s.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_t.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_u.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_v.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_w.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_x.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_y.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions_z.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\functions-patches.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\glbinding\source\gl\types.cpp">
-      <Filter>Dependencies\glbinding\source\gl</Filter>
-    </ClCompile>
     <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp">
-      <Filter>YTE\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="YTE\Graphics\Shader.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="YTE\Platform\Window.cpp">
       <Filter>YTE\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\vulkan\vulkan\vkel.c">
+      <Filter>Dependencies\vulkan\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\Mesh.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\MeshLoader.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\VulkanContext.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Core\Component.cpp">
+      <Filter>YTE\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Core\Composition.cpp">
+      <Filter>YTE\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\TextureLoader.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\stb\stb_image.cpp">
+      <Filter>Dependencies\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Audio\AudioSystem.cpp">
+      <Filter>YTE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Core\EventHandler.cpp">
+      <Filter>YTE\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="YTE\Graphics\Shader.cpp">
+      <Filter>YTE\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -486,1055 +159,910 @@
     <ClInclude Include="YTE\Platform\KeyCodes.hpp">
       <Filter>YTE\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\Binding_pch.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\callbacks_private.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\glbinding_features.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\glrevision.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\logging_private.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\Meta_Maps.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\RingBuffer.h">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\source\RingBuffer.hpp">
-      <Filter>Dependencies\glbinding\source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\AbstractFunction.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\AbstractValue.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Binding.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\CallbackMask.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\callbacks.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\ContextHandle.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\ContextInfo.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Function.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Function.hpp">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\FunctionCall.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\logging.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Meta.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\nogl.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\ProcAddress.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\SharedBitfield.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\SharedBitfield.hpp">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Value.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Value.hpp">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\Version.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\extension.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\functions-patches.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\include\gl\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl10ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl10ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl11ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl11ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl12ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl12ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl13ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl13ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl14ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl14ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl15ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl15ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl20ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl20ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl21ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl21ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl30ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl30ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl31ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl31ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl32ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl32ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl33ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl33ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl40ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl40ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl41ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl41ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl42ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl42ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl43ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl43ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl44ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl44ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45core\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45core</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\bitfield.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\boolean.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\enum.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\functions.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\gl.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\types.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\gl45ext\values.h">
-      <Filter>Dependencies\glbinding\glbinding\gl45ext</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_api.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\glbinding\glbinding\glbinding_features.h">
-      <Filter>Dependencies\glbinding\glbinding</Filter>
-    </ClInclude>
     <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="YTE\DataStructures\UniqueHandle.hpp">
       <Filter>YTE\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="YTE\Graphics\Shader.hpp">
-      <Filter>YTE\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="YTE\Platform\ForwardDeclarations.hpp">
       <Filter>YTE\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\glm\common.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\exponential.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\ext.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\fwd.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\geometric.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\glm.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\integer.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat2x2.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat2x3.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat2x4.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat3x2.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat3x3.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat3x4.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat4x2.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat4x3.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\mat4x4.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\matrix.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\packing.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\trigonometric.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\vec2.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\vec3.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\vec4.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\vector_relational.hpp">
+      <Filter>Dependencies\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\associated_min_max.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\bit.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\closest_point.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\color_space.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\color_space_YCoCg.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\common.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\compatibility.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\component_wise.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\dual_quaternion.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\euler_angles.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\extend.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\extented_min_max.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\fast_exponential.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\fast_square_root.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\fast_trigonometry.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\gradient_paint.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\handed_coordinate_space.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\hash.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\integer.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\intersect.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\io.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\log_base.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_cross_product.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_decompose.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_interpolation.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_major_storage.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_operation.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_query.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\matrix_transform_2d.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\mixed_product.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\norm.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\normal.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\normalize_dot.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\number_precision.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\optimum_pow.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\orthonormalize.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\perpendicular.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\polar_coordinates.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\projection.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\quaternion.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\range.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\raw_data.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\rotate_normalized_axis.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\rotate_vector.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\scalar_multiplication.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\scalar_relational.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\simd_mat4.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\simd_quat.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\simd_vec4.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\spline.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\std_based_type.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\string_cast.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\transform.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\transform2.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\type_aligned.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\vector_angle.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\vector_query.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtx\wrap.hpp">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\bitfield.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\color_space.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\constants.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\epsilon.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\integer.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\matrix_access.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\matrix_integer.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\matrix_inverse.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\matrix_transform.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\noise.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\packing.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\quaternion.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\random.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\reciprocal.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\round.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\type_precision.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\type_ptr.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\ulp.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\gtc\vec1.hpp">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_common.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_exponential.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_geometric.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_integer.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_matrix.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_packing.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_trigonometric.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\func_vector_relational.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_common.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_exponential.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_geometric.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_integer.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_matrix.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_trigonometric.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\intrinsic_vector_relational.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\precision.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\setup.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_float.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_gentype.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_half.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_int.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat2x2.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat2x3.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat2x4.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat3x2.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat3x3.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat3x4.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat4x2.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat4x3.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_mat4x4.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_vec.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_vec1.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_vec2.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_vec3.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\type_vec4.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\_features.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\_fixes.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\_noise.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\_swizzle.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\_swizzle_func.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\glm\detail\_vectorize.hpp">
+      <Filter>Dependencies\glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\vulkan\vulkan\vk_cpp.hpp">
+      <Filter>Dependencies\vulkan\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h">
+      <Filter>Dependencies\vulkan\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\vulkan\vulkan\vkel.h">
+      <Filter>Dependencies\vulkan\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h">
+      <Filter>Dependencies\vulkan\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\stb\stb_image.h">
+      <Filter>Dependencies\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Mesh.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Vertex.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\MeshLoader.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\TextureLoader.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\VulkanContext.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Texture.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\ga.h">
+      <Filter>Dependencies\gorilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\ga_internal.h">
+      <Filter>Dependencies\gorilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\gau.h">
+      <Filter>Dependencies\gorilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\common\gc_common.h">
+      <Filter>Dependencies\gorilla\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\common\gc_thread.h">
+      <Filter>Dependencies\gorilla\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\common\gc_types.h">
+      <Filter>Dependencies\gorilla\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\devices\ga_openal.h">
+      <Filter>Dependencies\gorilla\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\gorilla\devices\ga_xaudio2.h">
+      <Filter>Dependencies\gorilla\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\Component.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\Composition.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Reflection\ReflectionSystem.hpp">
+      <Filter>YTE\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Reflection\Type.hpp">
+      <Filter>YTE\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Reflection\Reflectable.hpp">
+      <Filter>YTE\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_algorithm.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_array.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_counter.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_fnv1.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_guid.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_math.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_md5.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_murmur3.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_numeric.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_pcg32.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_sha256.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_strenc.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_typeid.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\constexpr\cx_utils.h">
+      <Filter>Dependencies\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\EventHandler.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\DataStructures\IntrusiveList.hpp">
+      <Filter>YTE\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Audio\AudioSystem.hpp">
+      <Filter>YTE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\StandardLibrary\CompileTimeString.hpp">
+      <Filter>YTE\StandardLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\Interace.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Core\Delegate.hpp">
+      <Filter>YTE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\StandardLibrary\BlockAllocator.hpp">
+      <Filter>YTE\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Shader.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\ShaderDescriptions.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dependencies\glm\gtx\associated_min_max.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\bit.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\closest_point.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\color_space.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\color_space_YCoCg.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\common.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\compatibility.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\component_wise.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\dual_quaternion.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\euler_angles.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\extend.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\extented_min_max.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\fast_exponential.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\fast_square_root.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\fast_trigonometry.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\gradient_paint.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\handed_coordinate_space.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\hash.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\integer.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\intersect.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\io.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\log_base.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_cross_product.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_decompose.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_interpolation.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_major_storage.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_operation.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_query.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\matrix_transform_2d.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\mixed_product.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\norm.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\normal.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\normalize_dot.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\number_precision.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\optimum_pow.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\orthonormalize.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\perpendicular.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\polar_coordinates.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\projection.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\quaternion.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\raw_data.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\rotate_normalized_axis.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\rotate_vector.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\scalar_relational.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\simd_mat4.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\simd_quat.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\simd_vec4.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\spline.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\std_based_type.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\string_cast.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\transform.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\transform2.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\type_aligned.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\vector_angle.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\vector_query.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtx\wrap.inl">
+      <Filter>Dependencies\glm\gtx</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\bitfield.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\color_space.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\constants.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\epsilon.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\integer.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\matrix_access.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\matrix_inverse.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\matrix_transform.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\noise.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\packing.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\quaternion.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\random.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\reciprocal.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\round.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\type_precision.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\type_ptr.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\ulp.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\gtc\vec1.inl">
+      <Filter>Dependencies\glm\gtc</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_common.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_exponential.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_geometric.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_integer.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_matrix.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_packing.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_trigonometric.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\func_vector_relational.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_common.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_exponential.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_geometric.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_integer.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_matrix.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_trigonometric.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\intrinsic_vector_relational.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_gentype.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_half.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat2x2.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat2x3.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat2x4.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat3x2.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat3x3.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat3x4.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat4x2.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat4x3.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_mat4x4.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec1.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec2.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec3.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec4.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec4_avx.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec4_avx2.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
+    <None Include="Dependencies\glm\detail\type_vec4_sse2.inl">
+      <Filter>Dependencies\glm\detail</Filter>
+    </None>
   </ItemGroup>
 </Project>

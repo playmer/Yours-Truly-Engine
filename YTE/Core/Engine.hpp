@@ -10,13 +10,18 @@
 #include <memory>
 #include <vector>
 
+#include "YTE/Audio/AudioSystem.hpp"
+
+#include "YTE/Core/EventHandler.hpp"
+
 #include "YTE/Graphics/GraphicsSystem.hpp"
 
 #include "YTE/Platform/Window.hpp"
 
 namespace YTE
 {
-  class Engine
+
+  class Engine : public EventHandler
   {
   public:
     Engine();
@@ -24,11 +29,14 @@ namespace YTE
     void Update(float aDt);
 
     GraphicsSystem mGraphicsSystem;
+    AudioSystem mAudioSystem;
 
     std::vector<std::unique_ptr<Window>> mWindows;
     Window *mPrimaryWindow;
 
     bool mShouldUpdate;
+
+    u64 mCurrentFrame = 0;
   };
 }
 #endif

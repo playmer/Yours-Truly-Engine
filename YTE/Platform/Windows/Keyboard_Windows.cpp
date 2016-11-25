@@ -6,8 +6,8 @@
 #include <malloc.h>
 
 #define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #include <Windows.h>
-#undef WIN32_LEAN_AND_MEAN
 
 #include "YTE/Platform/Keyboard.hpp"
 #include "YTE/Core/Types.hpp"
@@ -31,8 +31,6 @@ namespace YTE
       else if (key->mPreviousState == KeyState::Pressed && down)
       {
         key->mCurrentState = KeyState::Down;
-
-        printf("KeyDown: %d\n", i);
       }
       else if ((key->mPreviousState == KeyState::Pressed || key->mPreviousState == KeyState::Down)
         && !down)
@@ -50,5 +48,11 @@ namespace YTE
   {
     auto keyState = mKeys[(int)aKey].mCurrentState;
     return KeyState::Down == keyState || KeyState::Pressed == keyState;
+  }
+
+  bool Keyboard::IsKeyOnlyPressedSpecifically(KeyCode aKey)
+  {
+    auto keyState = mKeys[(int)aKey].mCurrentState;
+    return KeyState::Pressed == keyState;
   }
 }

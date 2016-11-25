@@ -1,0 +1,22 @@
+BasedOnStyle: LLVM
+PointerAlignment: Right
+IndentWidth: 2
+UseTab: Never
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: true
+Standard: Cpp11
+BreakBeforeBraces: Allman
+BraceWrapping: 
+{
+    AfterClass: 'true'
+    AfterControlStatement: 'true'
+    AfterEnum : 'true'
+    AfterFunction : 'true'
+    AfterNamespace : 'true'
+    AfterStruct : 'true'
+    AfterUnion : 'true'
+    BeforeCatch : 'false'
+    BeforeElse : 'false'
+    IndentBraces : 'false'
+}

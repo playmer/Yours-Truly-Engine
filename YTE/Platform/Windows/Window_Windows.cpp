@@ -3,8 +3,11 @@
 //////////////////////////////////////////////
 #define DIRECTINPUT_VERSION 0x0800
 #define WIN32_LEAN_AND_MEAN 1
+#define VC_EXTRALEAN
 #include <Windows.h>
 #include <Winuser.h>
+
+
 
 #include "YTE/Core/Engine.hpp"
 
@@ -44,6 +47,70 @@ namespace YTE
         break;
       }
 
+      case WM_MOUSEWHEEL:
+      {
+        window->mMouse.mWheelDelta = GET_WHEEL_DELTA_WPARAM(aWParam) / (float)WHEEL_DELTA;
+        break;
+      }
+
+      case WM_LBUTTONUP:
+      {
+        // TODO: Change when we have events. Try to figure out how this should actually work.
+        window->mEngine->mGraphicsSystem.mMousePosition.x = LOWORD(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.y = HIWORD(aLParam);
+
+        window->mMouse.mLeftMouseDown = false;
+        break;
+      }
+
+      case WM_LBUTTONDOWN:
+      {
+        // TODO: Change when we have events. Try to figure out how this should actually work.
+        window->mEngine->mGraphicsSystem.mMousePosition.x = LOWORD(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.y = HIWORD(aLParam);
+
+        window->mMouse.mLeftMouseDown = true;
+        break;
+      }
+
+      case WM_MOUSEMOVE:
+      {
+        window->mMouse.mX = LOWORD(aLParam);
+        window->mMouse.mY = HIWORD(aLParam);
+        break;
+      }
+
+
+      // TODO: Add WM_TOUCH 
+
+      // TODO: Add these:
+      //       WM_LBUTTONDBLCLK
+      //       WM_RBUTTONDBLCLK
+      //       WM_MBUTTONDBLCLK
+
+      // A key has been pressed.
+      //case WM_KEYDOWN:
+      //case WM_SYSKEYDOWN: 
+      //{
+      //  window->mKeyboard.UpdateKey(aWParam, true);
+      //  break;
+      //}
+      //
+      //  // A key has been released.
+      //case WM_KEYUP:
+      //case WM_SYSKEYUP:
+      //{
+      //  window->mKeyboard.UpdateKey(aWParam, false);
+      //  break;
+      //}
+
+      case WM_PAINT:
+      {
+        // TODO: Send FrameUpdate here.
+        // window->mEngine->mGraphicsSystem.Update(0.016f); 
+        break;
+      }
+
       // Should probably make sure DefWindowProc doesn't get called here. Return?
       case WM_CLOSE:
       case WM_DESTROY:
@@ -66,12 +133,19 @@ namespace YTE
     return DefWindowProc(aWindowHandle, aMessage, aWParam, aLParam);
   }
 
+
+  void Window::SetWindowTitle(const std::string &aWindowText)
+  {
+    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+    SetWindowText(windowData->mWindowHandle, aWindowText.c_str());
+  }
+
   Window::Window(Engine *aEngine, const char *aWindowName,
                  const char *aWindowIcon, const char *aCursorIcon, int aWidth,
                  int aHeight, Window *aParentWindow)
     : mEngine(aEngine), mParentWindow(aParentWindow), mHeight(aHeight), mWidth(aWidth)
   {
-    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+    WindowData *windowData = mPlatformSpecificData.ConstructAndGet<WindowData>();
 
     WNDCLASS windowsData;
 
@@ -107,13 +181,14 @@ namespace YTE
     windowsData.cbWndExtra = 0;
 
     // This needs to be changed for multiple windows to work, I think.
-    windowsData.hInstance = GetModuleHandleA(nullptr);
+    windowData->mInstance = GetModuleHandleA(nullptr);
+    windowsData.hInstance = windowData->mInstance;
 
     windowsData.hIcon = LoadIconA(nullptr, aWindowIcon);
 
     windowsData.hCursor = LoadCursorA(nullptr, aCursorIcon);
 
-    windowsData.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    windowsData.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
     windowsData.lpszMenuName = aWindowName;
     windowsData.lpszClassName = "Yours-Truly-Engine_Game";
 
@@ -220,6 +295,10 @@ namespace YTE
 
   void Window::Update()
   {
+    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+
+    mMouse.mWheelDelta = 0.0f;
+
     MSG message;
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
     {
@@ -227,6 +306,8 @@ namespace YTE
       TranslateMessage(&message);
       DispatchMessage(&message);
     }
+
+    RedrawWindow(windowData->mWindowHandle, NULL, NULL, RDW_INTERNALPAINT);
 
     mKeyboard.Update();
   }

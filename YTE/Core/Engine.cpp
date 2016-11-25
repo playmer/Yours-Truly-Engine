@@ -7,7 +7,7 @@
 
 namespace YTE
 {
-  Engine::Engine() : mGraphicsSystem(this)
+  Engine::Engine() : mGraphicsSystem(this), mAudioSystem(this)
   {
     mShouldUpdate = true;
 
@@ -25,10 +25,17 @@ namespace YTE
 
   void Engine::Update(float aDt)
   {
-    mGraphicsSystem.Update(aDt);
+    ++mCurrentFrame;
+
+    static const std::string logicUpdate = "LogicUpdate";
+    LogicUpdate update;
+    update.mDt = aDt;
+
+    SendEvent(logicUpdate, &update);
 
     for (auto &window : mWindows)
     {
+      window->SetFrameRate(aDt);
       window->Update();
     }
   }
