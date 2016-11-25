@@ -1,6 +1,12 @@
 #include <iostream>
 #include <filesystem>
 
+#include "vulkan/vkel.h"
+#include "vulkan/vk_cpp.hpp"
+
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+
 //TODO: Fix this
 #define DIRECTINPUT_VERSION 0x0800
 #define WIN32_LEAN_AND_MEAN 1
@@ -10,17 +16,13 @@
 #include "YTE/Core/Engine.hpp"
 
 #include "YTE/Graphics/GraphicsSystem.hpp"
+#include "YTE/Graphics/Shader.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
+#include "YTE/Graphics/ShaderAttributeDescriptions.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
 
 #include "YTE/Platform/Window.hpp"
 #include "YTE/Platform/Windows/WindowData_Windows.hpp"
-
-#include "vulkan/vkel.h"
-#include "vulkan/vk_cpp.hpp"
-
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
 
 
 namespace YTE
@@ -749,58 +751,12 @@ namespace YTE
 
       self->SetupDescriptorSetLayout();
 
-      // Loading up Shaders.
-      uint32_t codeSize;
-      char *code = new char[10000];
-      HANDLE fileHandle = 0;
-
-      // load our vertex shader:
-      fileHandle = CreateFile("./Shaders/vert.spv", GENERIC_READ, 0, NULL,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-      if (fileHandle == INVALID_HANDLE_VALUE) 
-      {
-        OutputDebugStringA("Failed to open shader file.");
-        exit(1);
-      }
-
-      ReadFile((HANDLE)fileHandle, code, 10000, (LPDWORD)&codeSize, 0);
-      CloseHandle(fileHandle);
-
-      auto vertexShaderCreationInfo = vk::ShaderModuleCreateInfo()
-                                           .setCodeSize(codeSize)
-                                           .setPCode((uint32_t *)code);
-
-      auto vertexShaderModule = self->mLogicalDevice.createShaderModule(vertexShaderCreationInfo);
-      vulkan_assert(vertexShaderModule, "Failed to create vertex shader module.");
-
-      // load our fragment shader:
-      fileHandle = CreateFile("./Shaders/frag.spv", GENERIC_READ, 0, NULL,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-      if (fileHandle == INVALID_HANDLE_VALUE) 
-      {
-        OutputDebugStringA("Failed to open shader file.");
-        exit(1);
-      }
-      ReadFile((HANDLE)fileHandle, code, 10000, (LPDWORD)&codeSize, 0);
-      CloseHandle(fileHandle);
-
-      auto fragmentShaderCreationInfo = vk::ShaderModuleCreateInfo()
-                                            .setCodeSize(codeSize)
-                                            .setPCode((uint32_t *)code);
+      Shader vert{ "./Shaders/vert.spv", ShaderType::Vertex, self };
+      Shader frag{ "./Shaders/frag.spv", ShaderType::Fragment, self };
       
-      auto fragmentShaderModule = self->mLogicalDevice.createShaderModule(fragmentShaderCreationInfo);
-      vulkan_assert(fragmentShaderModule, "Failed to create fragment shader module.");
-
-      vk::PipelineShaderStageCreateInfo shaderStageCreateInfo[2];
-      shaderStageCreateInfo[0].stage = vk::ShaderStageFlagBits::eVertex;
-      shaderStageCreateInfo[0].module = vertexShaderModule;
-      shaderStageCreateInfo[0].pName = "main";        // shader entry point function name
-      shaderStageCreateInfo[0].pSpecializationInfo = NULL;
-
-      shaderStageCreateInfo[1].stage = vk::ShaderStageFlagBits::eFragment;
-      shaderStageCreateInfo[1].module = fragmentShaderModule;
-      shaderStageCreateInfo[1].pName = "main";        // shader entry point function name
-      shaderStageCreateInfo[1].pSpecializationInfo = NULL;
+      std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStageCreateInfo;
+      shaderStageCreateInfo[0] = vert.CreateShaderStage();
+      shaderStageCreateInfo[1] = frag.CreateShaderStage();
 
       std::array<vk::VertexInputBindingDescription, 2> vertexBindingDescription;
       vertexBindingDescription[0].stride = sizeof(Vertex);
@@ -811,78 +767,42 @@ namespace YTE
       vertexBindingDescription[1].inputRate = vk::VertexInputRate::eInstance;
       vertexBindingDescription[1].binding = 1;
       
-      u32 vertexOffset = 0;
-      
-      std::array<vk::VertexInputAttributeDescription, 8> vertexAttributeDescription;
+      ShaderAttributeDescriptions descriptions;
 
       //glm::vec4 mPosition;
-      vertexAttributeDescription[0].binding = 0;
-      vertexAttributeDescription[0].location = 0;
-      vertexAttributeDescription[0].format = vk::Format::eR32G32B32A32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescription[0].offset = vertexOffset;
-      vertexOffset += sizeof(glm::vec4);
-
+      descriptions.AddInput<glm::vec4>(vk::Format::eR32G32B32A32Sfloat);
 
       //glm::vec2 mUVCoordinates;
-      vertexAttributeDescription[1].binding = 0;
-      vertexAttributeDescription[1].location = 1;
-      vertexAttributeDescription[1].format = vk::Format::eR32G32Sfloat;
-      vertexAttributeDescription[1].offset = vertexOffset;
-      vertexOffset += sizeof(glm::vec2);
+      descriptions.AddInput<glm::vec2>(vk::Format::eR32G32Sfloat);
 
       //glm::vec2 mNormal;
-      vertexAttributeDescription[2].binding = 0;
-      vertexAttributeDescription[2].location = 2;
-      vertexAttributeDescription[2].format = vk::Format::eR32G32B32Sfloat; // TODO: Do we need the alpha?
-      vertexAttributeDescription[2].offset = vertexOffset;
-
-
+      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       ///////////////////////////////////////////////////////////
       // Instance Attributes
       ///////////////////////////////////////////////////////////
-      vertexOffset = 0;
+      descriptions.AddAdditionalVertexBuffer();
 
       //glm::vec3 mTranslation
-      vertexAttributeDescription[3].binding = 1;
-      vertexAttributeDescription[3].location = 3;
-      vertexAttributeDescription[3].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[3].offset = vertexOffset;
-      vertexOffset += sizeof(glm::vec3);
+      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
       
       //glm::vec3 mScale
-      vertexAttributeDescription[4].binding = 1;
-      vertexAttributeDescription[4].location = 4;
-      vertexAttributeDescription[4].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[4].offset = vertexOffset;
-      vertexOffset += sizeof(glm::vec3);
+      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       //glm::vec3 mRotation;
-      vertexAttributeDescription[5].binding = 1;
-      vertexAttributeDescription[5].location = 5;
-      vertexAttributeDescription[5].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[5].offset = vertexOffset;
-      vertexOffset += sizeof(glm::vec3);
+      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       //glm::vec3 mColor
-      vertexAttributeDescription[6].binding = 1;
-      vertexAttributeDescription[6].location = 6;
-      vertexAttributeDescription[6].format = vk::Format::eR32G32B32Sfloat;
-      vertexAttributeDescription[6].offset = vertexOffset;
-      vertexOffset += sizeof(glm::vec3);
+      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       //u32 mTextureId
-      vertexAttributeDescription[7].binding = 1;
-      vertexAttributeDescription[7].location = 7;
-      vertexAttributeDescription[7].format = vk::Format::eR32Uint;
-      vertexAttributeDescription[7].offset = vertexOffset;
-      vertexOffset += sizeof(u32);
+      descriptions.AddInput<u32>(vk::Format::eR32Uint);
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
       vertexInputStateCreateInfo.pVertexBindingDescriptions = vertexBindingDescription.data();
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(vertexAttributeDescription.size());
-      vertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexAttributeDescription.data();
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(descriptions.size());
+      vertexInputStateCreateInfo.pVertexAttributeDescriptions = descriptions.data();
 
       // vertex topology config:
       vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
@@ -962,8 +882,8 @@ namespace YTE
       dynamicStateCreateInfo.pDynamicStates = dynamicState;
 
       vk::GraphicsPipelineCreateInfo pipelineCreateInfo;
-      pipelineCreateInfo.stageCount = 2;
-      pipelineCreateInfo.pStages = shaderStageCreateInfo;
+      pipelineCreateInfo.stageCount = shaderStageCreateInfo.size();
+      pipelineCreateInfo.pStages = shaderStageCreateInfo.data();
       pipelineCreateInfo.pVertexInputState = &vertexInputStateCreateInfo;
       pipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
       pipelineCreateInfo.pViewportState = &viewportState;
@@ -975,17 +895,11 @@ namespace YTE
       pipelineCreateInfo.layout = self->mPipelineLayout;
       pipelineCreateInfo.renderPass = self->mRenderPass;
 
-
-
       self->SetupDescriptorPool();
       self->SetupDescriptorSet();
 
       self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
-
       vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
-
-
-
 
       mQuadIndicies = self->CreateFilledBuffer({ 0, 1, 2, 2, 3, 0 }, true);
 

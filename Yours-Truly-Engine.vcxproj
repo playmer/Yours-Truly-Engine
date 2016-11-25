@@ -158,6 +158,7 @@
     <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="YTE\Graphics\Mesh.cpp" />
     <ClCompile Include="YTE\Graphics\MeshLoader.cpp" />
+    <ClCompile Include="YTE\Graphics\Shader.cpp" />
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp" />
     <ClCompile Include="YTE\Graphics\VulkanContext.cpp" />
     <ClCompile Include="YTE\Platform\Keyboard.cpp" />
@@ -351,6 +352,8 @@
     <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp" />
     <ClInclude Include="YTE\Graphics\Mesh.hpp" />
     <ClInclude Include="YTE\Graphics\MeshLoader.hpp" />
+    <ClInclude Include="YTE\Graphics\Shader.hpp" />
+    <ClInclude Include="YTE\Graphics\ShaderAttributeDescriptions.hpp" />
     <ClInclude Include="YTE\Graphics\Texture.hpp" />
     <ClInclude Include="YTE\Graphics\TextureLoader.hpp" />
     <ClInclude Include="YTE\Graphics\Vertex.hpp" />
