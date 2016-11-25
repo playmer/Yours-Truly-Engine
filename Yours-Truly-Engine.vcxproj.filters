@@ -732,7 +732,7 @@
     <ClInclude Include="YTE\Graphics\Shader.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="YTE\Graphics\ShaderAttributeDescriptions.hpp">
+    <ClInclude Include="YTE\Graphics\ShaderDescriptions.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

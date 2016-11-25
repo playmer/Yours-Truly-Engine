@@ -18,7 +18,7 @@
 #include "YTE/Graphics/GraphicsSystem.hpp"
 #include "YTE/Graphics/Shader.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
-#include "YTE/Graphics/ShaderAttributeDescriptions.hpp"
+#include "YTE/Graphics/ShaderDescriptions.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
 
 #include "YTE/Platform/Window.hpp"
@@ -757,52 +757,44 @@ namespace YTE
       std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStageCreateInfo;
       shaderStageCreateInfo[0] = vert.CreateShaderStage();
       shaderStageCreateInfo[1] = frag.CreateShaderStage();
-
-      std::array<vk::VertexInputBindingDescription, 2> vertexBindingDescription;
-      vertexBindingDescription[0].stride = sizeof(Vertex);
-      vertexBindingDescription[0].inputRate = vk::VertexInputRate::eVertex;
-      vertexBindingDescription[0].binding = 0;
-
-      vertexBindingDescription[1].stride = sizeof(Object);
-      vertexBindingDescription[1].inputRate = vk::VertexInputRate::eInstance;
-      vertexBindingDescription[1].binding = 1;
       
-      ShaderAttributeDescriptions descriptions;
+      ShaderDescriptions descriptions;
+      descriptions.AddBinding<Vertex>(vk::VertexInputRate::eVertex);
 
       //glm::vec4 mPosition;
-      descriptions.AddInput<glm::vec4>(vk::Format::eR32G32B32A32Sfloat);
+      descriptions.AddAttribute<glm::vec4>(vk::Format::eR32G32B32A32Sfloat);
 
       //glm::vec2 mUVCoordinates;
-      descriptions.AddInput<glm::vec2>(vk::Format::eR32G32Sfloat);
+      descriptions.AddAttribute<glm::vec2>(vk::Format::eR32G32Sfloat);
 
       //glm::vec2 mNormal;
-      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       ///////////////////////////////////////////////////////////
       // Instance Attributes
       ///////////////////////////////////////////////////////////
-      descriptions.AddAdditionalVertexBuffer();
+      descriptions.AddBinding<Object>(vk::VertexInputRate::eInstance);
 
       //glm::vec3 mTranslation
-      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
       
       //glm::vec3 mScale
-      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       //glm::vec3 mRotation;
-      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       //glm::vec3 mColor
-      descriptions.AddInput<glm::vec3>(vk::Format::eR32G32B32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
       //u32 mTextureId
-      descriptions.AddInput<u32>(vk::Format::eR32Uint);
+      descriptions.AddAttribute<u32>(vk::Format::eR32Uint);
 
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
-      vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(vertexBindingDescription.size());
-      vertexInputStateCreateInfo.pVertexBindingDescriptions = vertexBindingDescription.data();
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(descriptions.size());
-      vertexInputStateCreateInfo.pVertexAttributeDescriptions = descriptions.data();
+      vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(descriptions.BindingSize());
+      vertexInputStateCreateInfo.pVertexBindingDescriptions = descriptions.BindingData();
+      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(descriptions.AttributeSize());
+      vertexInputStateCreateInfo.pVertexAttributeDescriptions = descriptions.AttributeData();
 
       // vertex topology config:
       vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
