@@ -19,9 +19,15 @@ namespace YTE
     ~PrivateImplementation()
     {
       // Destruct our data if it's already been constructed.
+      Destruct();
+    }
+
+    void Destruct()
+    {
       if (mDestructor != nullptr)
       {
         mDestructor(mMemory);
+        mDestructor = nullptr;
       }
     }
 

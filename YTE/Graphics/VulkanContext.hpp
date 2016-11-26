@@ -149,14 +149,65 @@ namespace YTE
 
   struct BufferMemory
   {
+    BufferMemory() {}
+
+
+    BufferMemory& operator=(BufferMemory &aBufferMemory) = delete;
+    BufferMemory(BufferMemory &aBufferMemory) = delete;
+
+    inline BufferMemory(BufferMemory &&aBufferMemory) 
+      : mMemory(aBufferMemory.mMemory), 
+        mBuffer(aBufferMemory.mBuffer), 
+        mLogicalDevice(aBufferMemory.mLogicalDevice)
+    {
+      aBufferMemory.mLogicalDevice = nullptr;
+    }
+
+    inline BufferMemory& operator=(BufferMemory &&aBufferMemory)
+    {
+      mMemory = aBufferMemory.mMemory;
+      mBuffer = aBufferMemory.mBuffer;
+      mLogicalDevice = aBufferMemory.mLogicalDevice;
+      aBufferMemory.mLogicalDevice = nullptr;
+
+      return *this;
+    }
+
+    inline explicit BufferMemory(vk::Device *aLogicalDevice) : mLogicalDevice(aLogicalDevice) {}
+    ~BufferMemory()
+    {
+      Destruct();
+    }
+
+    inline void Destruct()
+    {
+      if (nullptr == mLogicalDevice)
+      {
+        return;
+      }
+
+      mLogicalDevice->freeMemory(mMemory);
+      mLogicalDevice->destroyBuffer(mBuffer);
+      mLogicalDevice = nullptr;
+    }
+
     vk::DeviceMemory mMemory;
     vk::Buffer mBuffer;
+    vk::Device *mLogicalDevice = nullptr;
   };
 
   class VulkanContext
   {
-    public:
+  public:
+    VulkanContext()
+    {
+      mUniform.mLogicalDevice = &mLogicalDevice;
+    }
 
+    ~VulkanContext()
+    {
+      mUniform.Destruct();
+    }
 
     template<typename FlagType>
     u32 GetMemoryType(u32 aTypeBits, FlagType aProperties)
@@ -185,7 +236,7 @@ namespace YTE
     {
       vk::DeviceSize bufferSize = static_cast<u32>(sizeof(Type) * aSize);
 
-      BufferMemory toReturn;
+      BufferMemory toReturn(&mLogicalDevice);
 
       auto bufferMemory = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
@@ -199,11 +250,11 @@ namespace YTE
 
         CopyBuffer(bufferMemory.mBuffer, staging.mBuffer, bufferSize);
 
-        toReturn = staging;
+        toReturn = std::move(staging);
       }
       else
       {
-        toReturn = bufferMemory;
+        toReturn = std::move(bufferMemory);
       }
 
       return toReturn;
@@ -273,8 +324,7 @@ namespace YTE
 
     std::vector<vk::Framebuffer> mFrameBuffers;
     
-    vk::Buffer mUniformBuffer;
-    vk::DeviceMemory mUniformBufferMemory;
+    BufferMemory mUniform;
     vk::DescriptorBufferInfo mUniformBufferInfo;
 
     vk::Pipeline mPipeline;

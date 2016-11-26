@@ -65,9 +65,9 @@ namespace YTE
     private:
     Engine *mEngine;
 
+    // TODO: Remove these members:
     BufferMemory mQuadVerticies;
     BufferMemory mQuadIndicies;
-
     BufferMemory mObjectsBuffer;
 
     u32 mObjectsBufferSize = 0;

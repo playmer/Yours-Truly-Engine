@@ -37,7 +37,7 @@ namespace YTE
 
   BufferMemory VulkanContext::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties)
   {
-    BufferMemory toReturn;
+    BufferMemory toReturn(&mLogicalDevice);
 
     vk::BufferCreateInfo bufferInfo = {};
     bufferInfo.size = size;
@@ -80,9 +80,9 @@ namespace YTE
 
     // Map uniform buffer and update it
 
-    u8 *data = (u8*)mLogicalDevice.mapMemory(mUniformBufferMemory, 0, sizeof(UniformBufferObject));
+    u8 *data = (u8*)mLogicalDevice.mapMemory(mUniform.mMemory, 0, sizeof(UniformBufferObject));
     memcpy(data, &mUniformBufferData, sizeof(UniformBufferObject));
-    mLogicalDevice.unmapMemory(mUniformBufferMemory);
+    mLogicalDevice.unmapMemory(mUniform.mMemory);
   }
   
   void VulkanContext::SetupDescriptorSetLayout()

@@ -82,8 +82,11 @@ namespace YTE
   GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine), mVulkanSuccess(0)
   {
     auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
-
-
+    
+    // TODO: Remove these members:
+    mQuadVerticies.mLogicalDevice = &(self->mLogicalDevice);
+    mQuadIndicies.mLogicalDevice = &(self->mLogicalDevice);
+    mObjectsBuffer.mLogicalDevice = &(self->mLogicalDevice);
 
     #define YTERegisterEvent(EventType, ObjectInstance, MemberFunctionPtr) \
       RegisterEvent<decltype(MemberFunctionPtr), MemberFunctionPtr>(EventType, ObjectInstance)
@@ -96,6 +99,10 @@ namespace YTE
   {
     if (mVulkanSuccess)
     {
+      mQuadVerticies.Destruct();
+      mQuadIndicies.Destruct();
+      mObjectsBuffer.Destruct();
+      mPlatformSpecificData.Destruct();
       vkelUninit();
     }
   }
@@ -709,45 +716,26 @@ namespace YTE
         auto result = self->mLogicalDevice.createFramebuffer(&frameBufferCreateInfo, NULL, &self->mFrameBuffers[i]);
         checkVulkanResult(result, "Failed to create framebuffer.");
       }
+
       // Prepare and initialize a uniform buffer block containing shader uniforms
       // In Vulkan there are no more single uniforms like in GL
       // All shader uniforms are passed as uniform buffer blocks 
 
       // Vertex shader uniform buffer block
-      vk::BufferCreateInfo bufferInfo = {};
-      bufferInfo.size = sizeof(self->mUniformBufferData);
-      bufferInfo.usage = vk::BufferUsageFlagBits::eUniformBuffer;
 
-      vk::MemoryAllocateInfo allocInfo = {};
-
-      // Create a new buffer
-      self->mUniformBuffer = self->mLogicalDevice.createBuffer(bufferInfo);
-
-      // Get memory requirements including size, alignment and memory type 
-      auto memReqs = self->mLogicalDevice.getBufferMemoryRequirements(self->mUniformBuffer);
-
-      allocInfo.allocationSize = memReqs.size;
-
-      // Get the memory type index that supports host visibile memory access
-      // Most implementations offer multiple memory tpyes and selecting the 
+      // Most implementations offer multiple memory types and selecting the 
       // correct one to allocate memory from is important
       // We also want the buffer to be host coherent so we don't have to flush 
       // after every update. 
       // Note that this may affect performance so you might not want to do this 
       // in a real world application that updates buffers on a regular base
-      allocInfo.memoryTypeIndex = GetMemoryType(memReqs.memoryTypeBits, 
-                                                self->mPhysicalMemoryProperties, 
-                                                vk::MemoryPropertyFlagBits::eHostVisible | 
-                                                vk::MemoryPropertyFlagBits::eHostCoherent);
-
-      // Allocate memory for the uniform buffer
-      self->mUniformBufferMemory = self->mLogicalDevice.allocateMemory(allocInfo);
-
-      // Bind memory to buffer
-      self->mLogicalDevice.bindBufferMemory(self->mUniformBuffer, self->mUniformBufferMemory, 0);
+      self->mUniform = self->CreateBuffer(sizeof(UniformBufferObject), 
+                                          vk::BufferUsageFlagBits::eUniformBuffer, 
+                                          vk::MemoryPropertyFlagBits::eHostVisible |
+                                          vk::MemoryPropertyFlagBits::eHostCoherent);
 
       // Store information in the uniform's descriptor
-      self->mUniformBufferInfo.buffer = self->mUniformBuffer;
+      self->mUniformBufferInfo.buffer = self->mUniform.mBuffer;
       self->mUniformBufferInfo.offset = 0;
       self->mUniformBufferInfo.range = sizeof(UniformBufferObject);
 
