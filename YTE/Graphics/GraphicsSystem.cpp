@@ -735,7 +735,11 @@ namespace YTE
       // after every update. 
       // Note that this may affect performance so you might not want to do this 
       // in a real world application that updates buffers on a regular base
-      allocInfo.memoryTypeIndex = GetMemoryType(memReqs.memoryTypeBits, self->mPhysicalMemoryProperties, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+      allocInfo.memoryTypeIndex = GetMemoryType(memReqs.memoryTypeBits, 
+                                                self->mPhysicalMemoryProperties, 
+                                                vk::MemoryPropertyFlagBits::eHostVisible | 
+                                                vk::MemoryPropertyFlagBits::eHostCoherent);
+
       // Allocate memory for the uniform buffer
       self->mUniformBufferMemory = self->mLogicalDevice.allocateMemory(allocInfo);
 
