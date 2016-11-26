@@ -893,7 +893,7 @@ namespace YTE
       self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
       vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
 
-      mQuadIndicies = self->CreateFilledBuffer({ 0, 1, 2, 2, 3, 0 }, true);
+      mQuadIndicies = self->CreateFilledBuffer({ 0, 1, 2, 2, 3, 0 });
 
       YTE::Vertex mVertex1;
 
@@ -919,7 +919,7 @@ namespace YTE
       mVertex4.mUVCoordinates = { 0.0f, 1.0f };
       mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
 
-      mQuadVerticies = self->CreateFilledBuffer({ mVertex1, mVertex2, mVertex3, mVertex4 }, false);
+      mQuadVerticies = self->CreateFilledBuffer({ mVertex1, mVertex2, mVertex3, mVertex4 });
 
     } 
   }
