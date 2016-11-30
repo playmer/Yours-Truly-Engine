@@ -1,5 +1,6 @@
 #pragma once
 
+#include "YTE/Core/Delegate.hpp"
 #include "YTE/Core/Types.hpp"
 
 #include "YTE/Graphics/Texture.hpp"
@@ -194,6 +195,18 @@ namespace YTE
     vk::DeviceMemory mMemory;
     vk::Buffer mBuffer;
     vk::Device *mLogicalDevice = nullptr;
+  };
+
+  template <typename T>
+  class VulkanDeleter
+  {
+    VulkanDeleter()
+    {
+
+    }
+
+    Delegate<void(*)(T*)> mDeleter;
+    T mData;
   };
 
   class VulkanContext

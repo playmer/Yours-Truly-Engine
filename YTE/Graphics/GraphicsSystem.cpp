@@ -685,7 +685,7 @@ namespace YTE
       subpassDependency.setDstSubpass(0);
 
       vk::RenderPassCreateInfo renderPassCreateInfo;
-      renderPassCreateInfo.setAttachmentCount(passAttachments.size());
+      renderPassCreateInfo.setAttachmentCount(static_cast<u32>(passAttachments.size()));
       renderPassCreateInfo.setPAttachments(passAttachments.data());
       renderPassCreateInfo.setSubpassCount(1);
       renderPassCreateInfo.setDependencyCount(1);
@@ -866,7 +866,7 @@ namespace YTE
       dynamicStateCreateInfo.pDynamicStates = dynamicState;
 
       vk::GraphicsPipelineCreateInfo pipelineCreateInfo;
-      pipelineCreateInfo.stageCount = shaderStageCreateInfo.size();
+      pipelineCreateInfo.stageCount = static_cast<u32>(shaderStageCreateInfo.size());
       pipelineCreateInfo.pStages = shaderStageCreateInfo.data();
       pipelineCreateInfo.pVertexInputState = &vertexInputStateCreateInfo;
       pipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;

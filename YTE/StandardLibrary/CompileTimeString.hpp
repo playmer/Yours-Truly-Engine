@@ -17,7 +17,7 @@ namespace YTE
     };
 
     constexpr CompileTimeString(const char *aData) 
-      : mHash(cx::murmur3_32(aData, 67280421310721)),
+      : mHash(cx::murmur3_32(aData, 3363089)),
         mSize(cx::strlen(aData)),
         mData(aData)
     {
@@ -54,7 +54,7 @@ namespace YTE
 
     private:
     size_t mHash;
-    size_t mSize;
+    int mSize;
     const char *mData;
   };
 }
