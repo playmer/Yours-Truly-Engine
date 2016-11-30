@@ -12,8 +12,8 @@ layout (location = 3) in vec3 inInstanceTranslation;
 layout (location = 4) in vec3 inInstanceScale;
 layout (location = 5) in vec3 inInstanceRotation;
 layout (location = 6) in vec3 inInstanceColor;
-
 layout (location = 7) in uint inTextureId;
+layout (location = 8) in mat4 inInstanceTransformation;
 
 layout (binding = 0) uniform UBO 
 {
@@ -90,6 +90,7 @@ float radians(float degrees)
   return degrees * 0.01745329251994329576923690768489;
 }
 
+
 void main() 
 {
   outTextureId = inTextureId;
@@ -111,4 +112,10 @@ void main()
                 uniformBufferObject.mModelMatrix      * 
                 objectToWorld *
                 inPosition;
+                
+                
+  //gl_Position = uniformBufferObject.mProjectionMatrix * 
+  //              uniformBufferObject.mModelMatrix      * 
+  //              inInstanceTransformation *
+  //              inPosition;
 }

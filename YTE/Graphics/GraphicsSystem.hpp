@@ -29,11 +29,10 @@ namespace YTE
   {
     glm::vec3 mTranslation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 mScale = { 1.0f, 1.0f, 1.0f };
-    glm::vec3 mRotate = { 0.0f, 0.0f, 0.0f };
-
+    glm::vec3 mRotation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 mColor = { -1.0f, -1.0f, -1.0f };
-
     u32 mTextureId = 0;
+    glm::mat4 mTransform;
   };
 
   class GraphicsSystem : public EventHandler

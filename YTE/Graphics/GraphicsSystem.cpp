@@ -169,8 +169,10 @@ namespace YTE
 
       if (foundValidator)
       {
+        #if _DEBUG
         instanceInfo.setEnabledLayerCount(1);
         instanceInfo.setPpEnabledLayerNames(enabledLayers);
+        #endif
       }
       else
       {
@@ -782,6 +784,12 @@ namespace YTE
       //u32 mTextureId
       descriptions.AddAttribute<u32>(vk::Format::eR32Uint);
 
+      //glm::mat4 mTransform;
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
+      descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
+
       vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
       vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(descriptions.BindingSize());
       vertexInputStateCreateInfo.pVertexBindingDescriptions = descriptions.BindingData();
@@ -1030,6 +1038,18 @@ namespace YTE
     }
 
     auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
+
+    //for (auto &object : mObjects)
+    //{
+    //  glm::mat4 objectToWorld = glm::translate(glm::mat4(), object.mTranslation);
+    //  
+    //  objectToWorld = glm::rotate(objectToWorld, object.mRotation.x, glm::vec3(1.0, 0.0, 0.0));
+    //  objectToWorld = glm::rotate(objectToWorld, object.mRotation.y, glm::vec3(0.0, 1.0, 0.0));
+    //  objectToWorld = glm::rotate(objectToWorld, object.mRotation.z, glm::vec3(0.0, 0.0, 1.0));
+    //
+    //  objectToWorld = glm::scale(objectToWorld, object.mScale);
+    //  object.mTransform = objectToWorld;
+    //}
 
     auto objectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
     memcpy(objectsBufferPtr, mObjects.data(), bufferSize);

@@ -11,6 +11,8 @@
 
 #include <chrono>
 
+#include <random>
+
 #include "YTE/DataStructures/UniqueHandle.hpp"
 #include "YTE/Graphics/GraphicsSystem.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
@@ -31,6 +33,14 @@ YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = 
   YTE::Object object;
   object.mColor = aColor;
   return object;
+}
+
+glm::vec3 randomVector(float a, float b, std::default_random_engine &e1)
+  
+{
+  std::uniform_real_distribution<float> dist{ a, b };
+
+  return glm::vec3(dist(e1), dist(e1), dist(e1));
 }
 
 int main(int aArgumentNumber, char **Arguments)
@@ -55,22 +65,34 @@ int main(int aArgumentNumber, char **Arguments)
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 1, 0)));
   engine.mGraphicsSystem.mObjects[0].mTranslation = { 1.0, 1.0, 0.25 };
   engine.mGraphicsSystem.mObjects[0].mScale = { 1.0, 2.0, 0.0 };
-  engine.mGraphicsSystem.mObjects[0].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
+  engine.mGraphicsSystem.mObjects[0].mRotation = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(1, 0, 0)));
   engine.mGraphicsSystem.mObjects[1].mTranslation = { 1.0, -1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[1].mScale = { 2.0, 1.0, 0.0 };
-  engine.mGraphicsSystem.mObjects[1].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
+  engine.mGraphicsSystem.mObjects[1].mRotation = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, glm::vec3(0, 0, 1)));
   engine.mGraphicsSystem.mObjects[2].mTranslation = { -1.0, -1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[2].mScale = { 0.5, 1.0, 0.0 };
-  engine.mGraphicsSystem.mObjects[2].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
+  engine.mGraphicsSystem.mObjects[2].mRotation = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
   engine.mGraphicsSystem.mObjects[3].mTranslation = { -1.0, 1.0, 0.0 };
   engine.mGraphicsSystem.mObjects[3].mScale = { 1.0, 0.5, 0.0 };
-  engine.mGraphicsSystem.mObjects[3].mRotate = { 0.0, 0.0, glm::pi<float>() / 4.0f };
+  engine.mGraphicsSystem.mObjects[3].mRotation = { 0.0, 0.0, glm::pi<float>() / 4.0f };
   engine.mGraphicsSystem.mObjects[3].mTextureId = 1;
 
   engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem));
+
+  std::random_device r;
+  std::default_random_engine e1{ r() };
+
+  for (size_t i = 5; i < 2000; ++i)
+  {
+    engine.mGraphicsSystem.mObjects.push_back(MakeObject(&engine.mGraphicsSystem, randomVector(0.0f, 1.0f, e1)));
+    engine.mGraphicsSystem.mObjects[i].mTranslation = randomVector(-20.0f, 20.0f, e1);
+    engine.mGraphicsSystem.mObjects[i].mScale = randomVector(0.2f, 3.0f, e1);
+    engine.mGraphicsSystem.mObjects[i].mRotation = randomVector(0.0f, glm::pi<float>(), e1);
+    engine.mGraphicsSystem.mObjects[i].mTextureId = 1;
+  }
 
 
   //auto panelMusicIGuessWeCanCallItThat = engine.mAudioSystem.PlayLoop("Panel", 1.0);
@@ -169,7 +191,7 @@ int main(int aArgumentNumber, char **Arguments)
 
     engine.mGraphicsSystem.mObjects[4].mTranslation = translation;
     engine.mGraphicsSystem.mObjects[4].mScale = scale;
-    engine.mGraphicsSystem.mObjects[4].mRotate = rotate;
+    engine.mGraphicsSystem.mObjects[4].mRotation = rotate;
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyOnlyPressedSpecifically(YTE::KeyCode::M))
     {
