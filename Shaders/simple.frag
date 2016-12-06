@@ -3,7 +3,9 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (binding = 1) uniform sampler2D textureSampler[2];
+layout(constant_id = 0) const int NumberOfTextures = 1;
+
+layout (binding = 1) uniform sampler2D textureSampler[NumberOfTextures];
 
 layout (location = 0) in vec3 inColor;
 layout (location = 1) in vec2 inUVCoordinates;

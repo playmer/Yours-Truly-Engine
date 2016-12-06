@@ -8,9 +8,12 @@
 
 #include <stddef.h>
 
+#include "YTE/Core/EventHandler.hpp"
 #include "YTE/Core/ForwardDeclarations.hpp"
 #include "YTE/Core/Types.hpp"
 
+#include "YTE/Graphics/Instance.hpp"
+#include "YTE/Graphics/Model.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
 
 #include "YTE/Platform/ForwardDeclarations.hpp"
@@ -25,15 +28,8 @@
 
 namespace YTE
 {
-  struct Object
-  {
-    glm::vec3 mTranslation = { 0.0f, 0.0f, 0.0f };
-    glm::vec3 mScale = { 1.0f, 1.0f, 1.0f };
-    glm::vec3 mRotation = { 0.0f, 0.0f, 0.0f };
-    glm::vec3 mColor = { -1.0f, -1.0f, -1.0f };
-    u32 mTextureId = 0;
-    glm::mat4 mTransform;
-  };
+  class GraphicsSystem;
+
 
   class GraphicsSystem : public EventHandler
   {
@@ -50,26 +46,21 @@ namespace YTE
 
     void SetupDrawing();
 
-    void SetupObjectBuffer();
+    void SetupInstanceDataBuffer();
 
     Quad *mQuad;
 
     YTE::Quad mBaseQuad;
     glm::i16vec2 mMousePosition = { 0,0 };
 
-    std::vector<Object> mObjects;
+    std::vector<Mesh> mMeshes;
+    //std::vector<Mesh> mDescriptorSets;
 
     PrivateImplementation<4096> mPlatformSpecificData;
 
     private:
     Engine *mEngine;
 
-    // TODO: Remove these members:
-    BufferMemory mQuadVerticies;
-    BufferMemory mQuadIndicies;
-    BufferMemory mObjectsBuffer;
-
-    u32 mObjectsBufferSize = 0;
 
 	  i32 mVulkanSuccess;
   };

@@ -3,8 +3,8 @@
 //////////////////////////////////////////////
 #pragma once
 
-#ifndef YTE_Mesh_hpp
-#define YTE_Mesh_hpp
+#ifndef YTE_Graphics_Mesh_hpp
+#define YTE_Graphics_Mesh_hpp
 
 #include <vector>
 
@@ -13,6 +13,7 @@
 
 #include "YTE/Core/Types.hpp"
 #include "YTE/Graphics/Vertex.hpp"
+#include "YTE/Graphics/VulkanContext.hpp"
 
 namespace YTE
 {
@@ -28,17 +29,10 @@ namespace YTE
     VERTEX_LAYOUT_DUMMY_VEC4 = 0x7
   };
 
-  struct MeshBufferInfo
-  {
-    vk::Buffer mBuffer = VK_NULL_HANDLE;
-    vk::DeviceMemory mMemory = VK_NULL_HANDLE;
-    size_t size = 0;
-  };
-
   struct MeshBuffer
   {
-    MeshBufferInfo mVertices;
-    MeshBufferInfo mIndices;
+    BufferMemory mVertices;
+    BufferMemory mIndices;
     uint32_t mIndexCount;
     glm::vec3 mDim;
   };

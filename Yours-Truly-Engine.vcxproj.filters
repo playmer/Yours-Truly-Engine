@@ -118,6 +118,9 @@
     <ClCompile Include="YTE\Graphics\Shader.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\Graphics\Instance.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -733,6 +736,15 @@
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="YTE\Graphics\ShaderDescriptions.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Instance.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\ForwardDeclarations.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Model.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

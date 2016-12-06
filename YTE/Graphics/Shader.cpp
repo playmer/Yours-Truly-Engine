@@ -29,6 +29,7 @@ namespace YTE
   vk::PipelineShaderStageCreateInfo Shader::CreateShaderStage()
   {
     vk::PipelineShaderStageCreateInfo toReturn;
+
     toReturn.stage = (vk::ShaderStageFlagBits)mType;
     toReturn.module = mModule;
     toReturn.pName = "main";        // shader entry point function name

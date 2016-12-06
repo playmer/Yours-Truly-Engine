@@ -16,6 +16,7 @@
 #include "YTE/Core/Engine.hpp"
 
 #include "YTE/Graphics/GraphicsSystem.hpp"
+#include "YTE/Graphics/Model.hpp"
 #include "YTE/Graphics/Shader.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
 #include "YTE/Graphics/ShaderDescriptions.hpp"
@@ -23,7 +24,6 @@
 
 #include "YTE/Platform/Window.hpp"
 #include "YTE/Platform/Windows/WindowData_Windows.hpp"
-
 
 namespace YTE
 {
@@ -82,11 +82,6 @@ namespace YTE
   GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine), mVulkanSuccess(0)
   {
     auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
-    
-    // TODO: Remove these members:
-    mQuadVerticies.mLogicalDevice = &(self->mLogicalDevice);
-    mQuadIndicies.mLogicalDevice = &(self->mLogicalDevice);
-    mObjectsBuffer.mLogicalDevice = &(self->mLogicalDevice);
 
     #define YTERegisterEvent(EventType, ObjectInstance, MemberFunctionPtr) \
       RegisterEvent<decltype(MemberFunctionPtr), MemberFunctionPtr>(EventType, ObjectInstance)
@@ -99,9 +94,8 @@ namespace YTE
   {
     if (mVulkanSuccess)
     {
-      mQuadVerticies.Destruct();
-      mQuadIndicies.Destruct();
-      mObjectsBuffer.Destruct();
+      mMeshes.clear();
+
       mPlatformSpecificData.Destruct();
       vkelUninit();
     }
@@ -751,6 +745,19 @@ namespace YTE
       std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStageCreateInfo;
       shaderStageCreateInfo[0] = vert.CreateShaderStage();
       shaderStageCreateInfo[1] = frag.CreateShaderStage();
+
+      vk::SpecializationInfo info;
+      vk::SpecializationMapEntry entry;
+      entry.constantID = 0;
+      const uint32_t data = static_cast<u32>(self->mTextures.size());
+      entry.size = sizeof(u32);
+
+      info.pMapEntries = &entry;
+      info.mapEntryCount = 1;
+      info.pData = &data;
+      info.dataSize = sizeof(u32);
+
+      shaderStageCreateInfo[1].pSpecializationInfo = &info;
       
       ShaderDescriptions descriptions;
       descriptions.AddBinding<Vertex>(vk::VertexInputRate::eVertex);
@@ -767,7 +774,7 @@ namespace YTE
       ///////////////////////////////////////////////////////////
       // Instance Attributes
       ///////////////////////////////////////////////////////////
-      descriptions.AddBinding<Object>(vk::VertexInputRate::eInstance);
+      descriptions.AddBinding<InstanceData>(vk::VertexInputRate::eInstance);
 
       //glm::vec3 mTranslation
       descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
@@ -839,12 +846,6 @@ namespace YTE
       depthState.depthCompareOp = vk::CompareOp::eLessOrEqual;
       depthState.setDepthBoundsTestEnable(false);
       depthState.setStencilTestEnable(false);
-      //depthState.front = noOPStencilState;
-      //depthState.back = noOPStencilState;
-
-      //depthState.back.compareOp = vk::CompareOp::eAlways;
-      //depthState.front = stencilState;
-      //depthState.back = stencilState;
 
       vk::PipelineColorBlendAttachmentState colorBlendAttachmentState;
       colorBlendAttachmentState.srcColorBlendFactor = vk::BlendFactor::eSrc1Color;
@@ -893,8 +894,6 @@ namespace YTE
       self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
       vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
 
-      mQuadIndicies = self->CreateFilledBuffer({ 0, 1, 2, 2, 3, 0 });
-
       YTE::Vertex mVertex1;
 
       mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
@@ -919,8 +918,10 @@ namespace YTE
       mVertex4.mUVCoordinates = { 0.0f, 1.0f };
       mVertex4.mNormal = { 0.0f, 0.0f, 1.0 };
 
-      mQuadVerticies = self->CreateFilledBuffer({ mVertex1, mVertex2, mVertex3, mVertex4 });
+      auto verticies = { mVertex1, mVertex2, mVertex3, mVertex4 };
+      auto indicies = { 0u, 1u, 2u, 2u, 3u, 0u };
 
+      mMeshes.emplace_back(verticies, indicies, self);
     } 
   }
 
@@ -995,9 +996,9 @@ namespace YTE
       vk::DeviceSize offsets = {};
 
       commandBuffer.bindVertexBuffers(0, mQuadVerticies.mBuffer, offsets);
-      commandBuffer.bindVertexBuffers(1, mObjectsBuffer.mBuffer, offsets);
+      commandBuffer.bindVertexBuffers(1, mInstanceDataBuffer.mBuffer, offsets);
       commandBuffer.bindIndexBuffer(mQuadIndicies.mBuffer, 0, vk::IndexType::eUint32);
-      commandBuffer.drawIndexed(6, static_cast<u32>(mObjects.size()), 0, 0, 0);
+      commandBuffer.drawIndexed(6, static_cast<u32>(mInstanceDatas.size()), 0, 0, 0);
 
       commandBuffer.endRenderPass();
 
@@ -1030,14 +1031,14 @@ namespace YTE
   {
     auto self = mPlatformSpecificData.Get<VulkanContext>();
 
-    if (mObjectsBufferSize < mObjects.size())
+    if (mInstanceDataBufferSize < mInstances.size())
     {
-      SetupObjectBuffer();
+      SetupInstanceDataBuffer();
 
       SetupDrawing();
     }
 
-    auto bufferSize = static_cast<u32>(mObjects.size() * sizeof(Object));
+    auto bufferSize = static_cast<u32>(mInstanceDatas.size() * sizeof(InstanceData));
 
     //for (auto &object : mObjects)
     //{
@@ -1051,42 +1052,25 @@ namespace YTE
     //  object.mTransform = objectToWorld;
     //}
 
-    auto objectsBufferPtr = static_cast<Object*>(self->mLogicalDevice.mapMemory(mObjectsBuffer.mMemory, 0, bufferSize));
-    memcpy(objectsBufferPtr, mObjects.data(), bufferSize);
-    self->mLogicalDevice.unmapMemory(mObjectsBuffer.mMemory);
+    auto objectsBufferPtr = static_cast<InstanceData*>(self->mLogicalDevice.mapMemory(mInstanceDataBuffer.mMemory, 0, bufferSize));
+    memcpy(objectsBufferPtr, mInstanceDatas.data(), bufferSize);
+    self->mLogicalDevice.unmapMemory(mInstanceDataBuffer.mMemory);
 
-    const float zoomSpeed = 0.15f;
-    const float rotationSpeed = 1.25f;
-
-    // Update rotation
-    auto &mouse = mEngine->mPrimaryWindow->mMouse;
-    if (true == mouse.mLeftMouseDown)
-    {
-      self->mRotation.x += (mMousePosition.y - (float)mouse.mY) * rotationSpeed;
-      self->mRotation.y -= (mMousePosition.x - (float)mouse.mX) * rotationSpeed;
-
-      mMousePosition.x = mouse.mX;
-      mMousePosition.y = mouse.mY;
-    }
-
-    // Update zoom
-    auto zoom = self->mZoom;
-    self->mZoom += mEngine->mPrimaryWindow->mMouse.mWheelDelta * zoomSpeed;
-
-    if (zoom != self->mZoom || true == mouse.mLeftMouseDown)
-    {
-      self->UpdateUniformBuffers(true);
-    }
+    self->UpdateUniformBuffers(true);
     
     vk::SemaphoreCreateInfo semaphoreCreateInfo = vk::SemaphoreCreateInfo();
 
     auto presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
     auto renderingCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
 
-    auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &self->mCurrentDrawBuffer);
+    auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, 
+                                                           UINT64_MAX, 
+                                                           presentCompleteSemaphore, 
+                                                           VK_NULL_HANDLE, 
+                                                           &self->mCurrentDrawBuffer);
+
     checkVulkanResult(result, "Could not acquireNextImageKHR.");
-
-
+    
     // present:
     vk::Fence renderFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());
 
@@ -1118,14 +1102,19 @@ namespace YTE
     self->mLogicalDevice.destroySemaphore(renderingCompleteSemaphore);
   }
 
-  void GraphicsSystem::SetupObjectBuffer()
+  void GraphicsSystem::SetupInstanceDataBuffer()
   {
     auto self = mPlatformSpecificData.Get<VulkanContext>();
 
-    auto size = static_cast<u32>(mObjects.size() * sizeof(Object));
-    mObjectsBuffer = self->CreateBuffer(size, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+    // We need mInstances amount of InstanceDatas
+    auto bytesNeeded = static_cast<u32>(mInstances.size() * sizeof(InstanceData));
 
-    mObjectsBufferSize = static_cast<u32>(mObjects.size());
+    mInstanceDataBuffer = self->CreateBuffer(bytesNeeded, 
+                                             vk::BufferUsageFlagBits::eVertexBuffer, 
+                                             vk::MemoryPropertyFlagBits::eHostVisible | 
+                                             vk::MemoryPropertyFlagBits::eHostCoherent);
+
+    mInstanceDataBufferSize = static_cast<u32>(mInstances.size());
   }
 
   void GraphicsSystem::Update(LogicUpdate *aUpdate)

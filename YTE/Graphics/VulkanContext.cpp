@@ -110,6 +110,8 @@ namespace YTE
     layoutBinding[1].stageFlags = vk::ShaderStageFlagBits::eFragment;
     layoutBinding[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
 
+    vk::DescriptorType::eStorageBufferDynamic;
+
     vk::DescriptorSetLayoutCreateInfo descriptorLayout = {};
     descriptorLayout.pNext = nullptr;
     descriptorLayout.bindingCount = static_cast<u32>(layoutBinding.size());
@@ -139,8 +141,8 @@ namespace YTE
     typeCounts[1].type = vk::DescriptorType::eCombinedImageSampler;
     typeCounts[1].descriptorCount = static_cast<u32>(mTextures.size()); // TODO: Make sure the layers don't yell.
 
-                                       // Create the global descriptor pool
-                                       // All descriptors used in this example are allocated from this pool
+    // Create the global descriptor pool
+    // All descriptors used in this example are allocated from this pool
     vk::DescriptorPoolCreateInfo descriptorPoolInfo = {};
     descriptorPoolInfo.poolSizeCount = static_cast<u32>(typeCounts.size());
     descriptorPoolInfo.pPoolSizes = typeCounts.data();
