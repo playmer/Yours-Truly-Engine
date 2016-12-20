@@ -6,6 +6,7 @@
 #define VC_EXTRALEAN
 #include <Windows.h>
 #include <Winuser.h>
+#include <Windowsx.h>
 
 
 
@@ -56,8 +57,8 @@ namespace YTE
       case WM_LBUTTONUP:
       {
         // TODO: Change when we have events. Try to figure out how this should actually work.
-        window->mEngine->mGraphicsSystem.mMousePosition.x = LOWORD(aLParam);
-        window->mEngine->mGraphicsSystem.mMousePosition.y = HIWORD(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.x = GET_X_LPARAM(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.y = GET_Y_LPARAM(aLParam);
 
         window->mMouse.mLeftMouseDown = false;
         break;
@@ -66,8 +67,8 @@ namespace YTE
       case WM_LBUTTONDOWN:
       {
         // TODO: Change when we have events. Try to figure out how this should actually work.
-        window->mEngine->mGraphicsSystem.mMousePosition.x = LOWORD(aLParam);
-        window->mEngine->mGraphicsSystem.mMousePosition.y = HIWORD(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.x = GET_X_LPARAM(aLParam);
+        window->mEngine->mGraphicsSystem.mMousePosition.y = GET_Y_LPARAM(aLParam);
 
         window->mMouse.mLeftMouseDown = true;
         break;
@@ -75,8 +76,8 @@ namespace YTE
 
       case WM_MOUSEMOVE:
       {
-        window->mMouse.mX = LOWORD(aLParam);
-        window->mMouse.mY = HIWORD(aLParam);
+        window->mMouse.mX = GET_X_LPARAM(aLParam);
+        window->mMouse.mY = GET_Y_LPARAM(aLParam);
         break;
       }
 
