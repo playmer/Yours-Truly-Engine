@@ -237,54 +237,54 @@ namespace YTE
     UpdateWindow(windowData->mWindowHandle);
   }
 
-  void Window::CreateOpenGLContext()
-  {
-    PIXELFORMATDESCRIPTOR pfd =
-    {
-      sizeof(PIXELFORMATDESCRIPTOR),
-      1,
-      PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    //Flags
-      PFD_TYPE_RGBA,            //The kind of framebuffer. RGBA or palette.
-      32,                        //Colordepth of the framebuffer.
-      0, 0, 0, 0, 0, 0,
-      0,
-      0,
-      0,
-      0, 0, 0, 0,
-      24,                        //Number of bits for the depthbuffer
-      8,                        //Number of bits for the stencilbuffer
-      0,                        //Number of Aux buffers in the framebuffer.
-      PFD_MAIN_PLANE,
-      0,
-      0, 0, 0
-    };
-
-    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
-    windowData->mDeviceContext = GetDC(windowData->mWindowHandle);
-
-    int  letWindowsChooseThisPixelFormat;
-    letWindowsChooseThisPixelFormat = ChoosePixelFormat(windowData->mDeviceContext, &pfd);
-    SetPixelFormat(windowData->mDeviceContext, letWindowsChooseThisPixelFormat, &pfd);
-
-    windowData->mOpenGLContext = wglCreateContext(windowData->mDeviceContext);
-    windowData->mCreatedContext = true;
-  }
-
-  void Window::MakeOpenGLContextCurrent()
-  {
-    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
-    wglMakeCurrent(windowData->mDeviceContext, windowData->mOpenGLContext);
-  }
-
-  void Window::DestroyOpenGLContext()
-  {
-    WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
-
-    if (windowData->mCreatedContext)
-    {
-      wglDeleteContext(windowData->mOpenGLContext);
-    }
-  }
+  //void Window::CreateOpenGLContext()
+  //{
+  //  PIXELFORMATDESCRIPTOR pfd =
+  //  {
+  //    sizeof(PIXELFORMATDESCRIPTOR),
+  //    1,
+  //    PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    //Flags
+  //    PFD_TYPE_RGBA,            //The kind of framebuffer. RGBA or palette.
+  //    32,                        //Colordepth of the framebuffer.
+  //    0, 0, 0, 0, 0, 0,
+  //    0,
+  //    0,
+  //    0,
+  //    0, 0, 0, 0,
+  //    24,                        //Number of bits for the depthbuffer
+  //    8,                        //Number of bits for the stencilbuffer
+  //    0,                        //Number of Aux buffers in the framebuffer.
+  //    PFD_MAIN_PLANE,
+  //    0,
+  //    0, 0, 0
+  //  };
+  //
+  //  WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+  //  windowData->mDeviceContext = GetDC(windowData->mWindowHandle);
+  //
+  //  int  letWindowsChooseThisPixelFormat;
+  //  letWindowsChooseThisPixelFormat = ChoosePixelFormat(windowData->mDeviceContext, &pfd);
+  //  SetPixelFormat(windowData->mDeviceContext, letWindowsChooseThisPixelFormat, &pfd);
+  //
+  //  windowData->mOpenGLContext = wglCreateContext(windowData->mDeviceContext);
+  //  windowData->mCreatedContext = true;
+  //}
+  //
+  //void Window::MakeOpenGLContextCurrent()
+  //{
+  //  WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+  //  wglMakeCurrent(windowData->mDeviceContext, windowData->mOpenGLContext);
+  //}
+  //
+  //void Window::DestroyOpenGLContext()
+  //{
+  //  WindowData *windowData = mPlatformSpecificData.Get<WindowData>();
+  //
+  //  if (windowData->mCreatedContext)
+  //  {
+  //    wglDeleteContext(windowData->mOpenGLContext);
+  //  }
+  //}
 
   void Window::SwapBuffers()
   {

@@ -1,0 +1,18 @@
+Function(SourceGroupSetup currentDirectory currentSourceGroup recursed)
+  ListDirectories( subDirectories ${currentDirectory} )
+  ListFiles( subFiles ${currentDirectory} )
+
+  ForEach(subDirectory ${subDirectories}) 
+    If (currentSourceGroup STREQUAL " ")
+      SourceGroupSetup("${currentDirectory}/${subDirectory}" "${subDirectory}" TRUE)
+    Else()
+      SourceGroupSetup("${currentDirectory}/${subDirectory}" "${currentSourceGroup}\\${subDirectory}" TRUE)
+    EndIf()
+  EndForEach()
+
+  If (recursed)
+    Source_Group(${currentSourceGroup} FILES ${subFiles})
+  Else() 
+    Source_Group(" " FILES ${subFiles})
+  EndIf()
+EndFunction()

@@ -1,0 +1,1 @@
+#include "YTE/Graphics/Precompiled.hpp"

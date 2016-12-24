@@ -24,9 +24,6 @@
 #include "YTE/StandardLibrary/CompileTimeString.hpp"
 
 
-#include "YTE/Audio/AudioSystem.hpp"
-
-
 YTE::Object MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = glm::vec3(-1, -1, -1))
 {
   auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();

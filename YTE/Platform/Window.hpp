@@ -27,9 +27,9 @@ namespace YTE
 
     void Update();
 
-    void CreateOpenGLContext();
-    void MakeOpenGLContextCurrent();
-    void DestroyOpenGLContext();
+    //void CreateOpenGLContext();
+    //void MakeOpenGLContextCurrent();
+    //void DestroyOpenGLContext();
     void SwapBuffers();
 
     void SetFrameRate(float aDt);

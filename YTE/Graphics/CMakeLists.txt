@@ -1,0 +1,21 @@
+include(${Source_Root}/cmake/EngineSystemSetup.cmake)
+
+Get_Filename_Component(engineSystem ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+Message(STATUS ${engineSystem})
+EngineSystemSetup(${engineSystem})
+
+#AddFile(Yours_Truly_Engine_Source GraphicsSystem.cpp)
+#AddFile(Yours_Truly_Engine_Source GraphicsSystem.hpp)
+#AddFile(Yours_Truly_Engine_Source Mesh.cpp)
+#AddFile(Yours_Truly_Engine_Source Mesh.hpp)
+#AddFile(Yours_Truly_Engine_Source MeshLoader.cpp)
+#AddFile(Yours_Truly_Engine_Source MeshLoader.hpp)
+#AddFile(Yours_Truly_Engine_Source Shader.cpp)
+#AddFile(Yours_Truly_Engine_Source Shader.hpp)
+#AddFile(Yours_Truly_Engine_Source ShaderDescriptions.hpp)
+#AddFile(Yours_Truly_Engine_Source Texture.hpp)
+#AddFile(Yours_Truly_Engine_Source TextureLoader.cpp)
+#AddFile(Yours_Truly_Engine_Source TextureLoader.hpp)
+#AddFile(Yours_Truly_Engine_Source Vertex.hpp)
+#AddFile(Yours_Truly_Engine_Source VulkanContext.cpp)
+#AddFile(Yours_Truly_Engine_Source VulkanContext.hpp)#

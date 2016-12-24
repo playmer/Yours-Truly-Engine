@@ -9,7 +9,7 @@ namespace YTE
 {
   Window::~Window()
   {
-    DestroyOpenGLContext();
+    //DestroyOpenGLContext();
   }
 
 
