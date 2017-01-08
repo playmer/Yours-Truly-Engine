@@ -1,7 +1,7 @@
 #pragma once
 
-template <typename Return, typename Arg = Return>
-struct Delegate {};
+template <typename T>
+class Delegate {};
 
 template <typename Return, typename ...Arguments>
 class Delegate<Return(*)(Arguments...)>

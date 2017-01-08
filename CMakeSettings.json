@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Yours-Truly-Engine-Config",
+      "generator": "Visual Studio 15 2017",
+      "cmakeCommandArgs": "",
+      "buildRoot": "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
+      "buildCommandArgs": "-m:8 -v:minimal -p:PreferredToolArchitecture=x64",
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "C:/Users/Joshua T. Fisher/Documents/GitHub/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        }
+      ]
+    }
+ ]
+}
