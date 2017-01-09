@@ -2,7 +2,7 @@
 
 namespace YTE
 {
-  inline void Mesh::setupVertexInputState(std::vector<VertexLayout> layout)
+  void Mesh::SetupVertexInputState(std::vector<VertexLayout> layout)
   {
     mBindingDescription = { mVertexBufferBinding, vertexSize(layout), vk::VertexInputRate::eVertex };
 
@@ -13,15 +13,19 @@ namespace YTE
     for (auto& layoutDetail : layout)
     {
       // Format (layout)
-      vk::Format format = (layoutDetail == VertexLayout::VERTEX_LAYOUT_UV) ? vk::Format::eR32G32Sfloat : vk::Format::eR32G32B32Sfloat;
+      vk::Format format = (layoutDetail == VertexLayout::VERTEX_LAYOUT_UV) ? 
+                            vk::Format::eR32G32Sfloat : 
+                            vk::Format::eR32G32B32Sfloat;
 
       mAttributeDescriptions.push_back({ mVertexBufferBinding,
-                                       binding,
-                                       format,
-                                       offset });
+                                         binding,
+                                         format,
+                                         offset });
 
       // Offset
-      offset += (layoutDetail == VertexLayout::VERTEX_LAYOUT_UV) ? (2 * sizeof(float)) : (3 * sizeof(float));
+      offset += (layoutDetail == VertexLayout::VERTEX_LAYOUT_UV) ? 
+                                  (2 * sizeof(float)) : 
+                                  (3 * sizeof(float));
       binding++;
     }
 
@@ -32,7 +36,7 @@ namespace YTE
     mVertexInputState.pVertexAttributeDescriptions = mAttributeDescriptions.data();
   }
   
-  void Mesh::drawIndexed(vk::CommandBuffer aCommandBuffer)
+  void Mesh::DrawIndexed(vk::CommandBuffer aCommandBuffer)
   {
     VkDeviceSize offsets[1] = { 0 };
 
@@ -51,15 +55,13 @@ namespace YTE
     aCommandBuffer.drawIndexed(mBuffers.mIndexCount, 1, 0, 0, 0);
   }
 
-  void freeMeshBufferResources(vk::Device device, MeshBuffer * meshBuffer)
+  void Mesh::FreeResources()
   {
-    vkDestroyBuffer(device, meshBuffer->mVertices.mBuffer, nullptr);
-    vkFreeMemory(device, meshBuffer->mVertices.mMemory, nullptr);
+    mBuffers.mVertices.Destruct();
 
-    if (meshBuffer->mIndices.mBuffer)
+    if (mBuffers.mIndices.mBuffer)
     {
-      device.destroyBuffer(meshBuffer->mIndices.mBuffer);
-      device.freeMemory(meshBuffer->mIndices.mMemory);
+      mBuffers.mIndices.Destruct();
     }
   }
 
@@ -75,12 +77,12 @@ namespace YTE
         // UV only has two components
         case VertexLayout::VERTEX_LAYOUT_UV:
         {
-          vSize += 2 * sizeof(float);
+          vSize += sizeof(glm::vec2);
           break;
         }
         default:
         {
-          vSize += 3 * sizeof(float);
+          vSize += sizeof(glm::vec3);
         }
       }
     }

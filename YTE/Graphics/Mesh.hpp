@@ -58,9 +58,9 @@ namespace YTE
     vk::VertexInputBindingDescription mBindingDescription;
     std::vector<vk::VertexInputAttributeDescription> mAttributeDescriptions;
 
-    void setupVertexInputState(std::vector<VertexLayout> layout);
-
-    void drawIndexed(vk::CommandBuffer aCommandBuffer);
+    void SetupVertexInputState(std::vector<VertexLayout> layout);
+    void DrawIndexed(vk::CommandBuffer aCommandBuffer);
+    void FreeResources();
   };
 }
 
