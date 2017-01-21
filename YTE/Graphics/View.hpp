@@ -3,6 +3,7 @@
 #include "YTE/Core/Types.hpp"
 
 #include "YTE/Graphics/ForwardDeclarations.hpp"
+#include "YTE/Graphics/VulkanPrimitives.hpp"
 
 namespace YTE
 {

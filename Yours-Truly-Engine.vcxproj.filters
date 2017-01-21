@@ -124,6 +124,7 @@
     <ClCompile Include="YTE\Graphics\Material.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\Graphics\View.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -751,6 +752,12 @@
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="YTE\Graphics\Material.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\View.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\VulkanPrimitives.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

@@ -90,10 +90,13 @@ namespace YTE
     allocInfo.descriptorPool = mDescriptorPool;
 
     std::vector<vk::DescriptorSetLayout> layouts;
+    
 
-    for (auto &material : mMaterials)
+    for (size_t i = 0; i < mMaterials.size(); ++i)
     {
+      auto &material = mMaterials[i];
       layouts.emplace_back(material.mDescriptorSetLayout);
+      material.mDescriptorSetOffset = static_cast<u32>(i);
     }
 
     allocInfo.descriptorSetCount = static_cast<u32>(layouts.size());

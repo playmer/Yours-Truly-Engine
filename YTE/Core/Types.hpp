@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <string>
 #include <unordered_map>
 
 #include "YTE/Core/ForwardDeclarations.hpp"

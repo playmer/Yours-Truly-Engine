@@ -18,8 +18,8 @@ namespace YTE
 
 
     void SetupDescriptorSetLayout();
-    void SetupDescriptorSet();
-    void UpdateDescriptorSet(Texture &aTexture);
+
+    void BindPipeline(vk::CommandBuffer &aCommandBuffer);
 
     VulkanContext *mVulkanContext;
     ShaderDescriptions mDescription;
@@ -28,6 +28,7 @@ namespace YTE
 
 
     vk::DescriptorSetLayout mDescriptorSetLayout;
+    u32 mDescriptorSetOffset = 0;
 
     vk::PipelineLayout mPipelineLayout;
     vk::Pipeline mPipeline;

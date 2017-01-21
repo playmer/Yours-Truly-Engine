@@ -114,16 +114,16 @@ int main(int aArgumentNumber, char **Arguments)
     auto &mouse = engine.mPrimaryWindow->mMouse;
     if (true == mouse.mLeftMouseDown)
     {
-      context->mRotation.x += (engine.mGraphicsSystem.mMousePosition.y - (float)mouse.mY) * rotationSpeed;
-      context->mRotation.y -= (engine.mGraphicsSystem.mMousePosition.x - (float)mouse.mX) * rotationSpeed;
+      context->mView.mRotation.x += (engine.mGraphicsSystem.mMousePosition.y - (float)mouse.mY) * rotationSpeed;
+      context->mView.mRotation.y -= (engine.mGraphicsSystem.mMousePosition.x - (float)mouse.mX) * rotationSpeed;
 
       engine.mGraphicsSystem.mMousePosition.x = mouse.mX;
       engine.mGraphicsSystem.mMousePosition.y = mouse.mY;
     }
 
     // Update zoom
-    auto zoom = context->mZoom;
-    context->mZoom += engine.mPrimaryWindow->mMouse.mWheelDelta * zoomSpeed;
+    auto zoom = context->mView.mRotation.z;
+    context->mView.mRotation.z += engine.mPrimaryWindow->mMouse.mWheelDelta * zoomSpeed;
 
     if (engine.mPrimaryWindow->mKeyboard.IsKeyPressed(YTE::KeyCode::Escape))
     { 

@@ -170,4 +170,18 @@ namespace YTE
 
     mPipelineLayout = mVulkanContext->mLogicalDevice.createPipelineLayout(pipelineLayoutCreateInfo);
   }
+
+
+  void Material::BindPipeline(vk::CommandBuffer &aCommandBuffer)
+  {
+    // Bind descriptor sets describing shader binding points
+    aCommandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, 
+                                      mPipelineLayout, 
+                                      0, 
+                                      mVulkanContext->mDescriptorSets[mDescriptorSetOffset], 
+                                      nullptr);
+
+    // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
+    aCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, mPipeline);
+  }
 }

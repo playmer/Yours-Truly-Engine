@@ -846,11 +846,10 @@ namespace YTE
 
       commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
-      // Bind descriptor sets describing shader binding points
-      commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, self->mPipelineLayout, 0, self->mDescriptorSets, nullptr);
-
-      // bind the graphics pipeline to the command buffer. Any vkDraw command afterwards is affected by this pipeline!
-      commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, self->mPipeline);
+      for (auto &material : self->mMaterials)
+      {
+        material.BindPipeline(commandBuffer);
+      }
 
       // take care of dynamic state:
       commandBuffer.setViewport(0, viewport);
