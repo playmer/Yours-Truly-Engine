@@ -157,6 +157,7 @@
     <ClCompile Include="YTE\Core\EventHandler.cpp" />
     <ClCompile Include="YTE\Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="YTE\Graphics\Instance.cpp" />
+    <ClCompile Include="YTE\Graphics\Material.cpp" />
     <ClCompile Include="YTE\Graphics\Mesh.cpp" />
     <ClCompile Include="YTE\Graphics\MeshLoader.cpp" />
     <ClCompile Include="YTE\Graphics\Shader.cpp" />
@@ -353,6 +354,7 @@
     <ClInclude Include="YTE\Graphics\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Graphics\GraphicsSystem.hpp" />
     <ClInclude Include="YTE\Graphics\Instance.hpp" />
+    <ClInclude Include="YTE\Graphics\Material.hpp" />
     <ClInclude Include="YTE\Graphics\Mesh.hpp" />
     <ClInclude Include="YTE\Graphics\MeshLoader.hpp" />
     <ClInclude Include="YTE\Graphics\Model.hpp" />

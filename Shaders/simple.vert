@@ -19,7 +19,7 @@ layout (binding = 0) uniform UBO
 {
   mat4 mProjectionMatrix;
   mat4 mModelMatrix;
-  vec4 mViewPosition;
+  vec3 mViewPosition;
   float mLevelOfDetailBias;
 } uniformBufferObject;
 

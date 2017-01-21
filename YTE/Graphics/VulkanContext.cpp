@@ -59,77 +59,6 @@ namespace YTE
     return toReturn;
   }
   
-  void VulkanContext::UpdateUniformBuffers(bool aRecalculation)
-  {
-    if (aRecalculation)
-    {
-      // Update matrices
-      mUniformBufferData.mProjectionMatrix = glm::perspective(glm::radians(60.0f), (float)mWidth / (float)mHeight, 0.1f, 256.0f);
-
-      auto viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, mZoom));
-
-      auto test = glm::scale(glm::mat4(), glm::vec3());
-
-      mUniformBufferData.mModelMatrix = viewMatrix * glm::translate(glm::mat4(), mCameraPosition);
-      mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-      mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-      mUniformBufferData.mModelMatrix = glm::rotate(mUniformBufferData.mModelMatrix, glm::radians(mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-      mUniformBufferData.mViewPosition = glm::vec4(0.0f, 0.0f, -mZoom, 0.0f);
-    }
-
-    // Map uniform buffer and update it
-
-    u8 *data = (u8*)mLogicalDevice.mapMemory(mUniform.mMemory, 0, sizeof(UniformBufferObject));
-    memcpy(data, &mUniformBufferData, sizeof(UniformBufferObject));
-    mLogicalDevice.unmapMemory(mUniform.mMemory);
-  }
-  
-  void VulkanContext::SetupDescriptorSetLayout()
-  {
-    // Setup layout of descriptors used in this example
-    // Basically connects the different shader stages to descriptors
-    // for binding uniform buffers, image samplers, etc.
-    // So every shader binding should map to one descriptor set layout
-    // binding
-
-    // Binding 0 : Uniform buffer (Vertex shader)
-
-    //std::vector<vk::DescriptorSetLayoutBinding> layoutBinding;
-    //layoutBinding.resize(mTextures.size() + 1);
-
-    std::array<vk::DescriptorSetLayoutBinding, 2> layoutBinding;
-
-    layoutBinding[0].descriptorCount = 1;
-    layoutBinding[0].binding = 0;
-    layoutBinding[0].stageFlags = vk::ShaderStageFlagBits::eVertex;
-    layoutBinding[0].descriptorType = vk::DescriptorType::eUniformBuffer;
-
-    layoutBinding[1].descriptorCount = static_cast<u32>(mTextures.size());
-    layoutBinding[1].binding = 1;
-    layoutBinding[1].stageFlags = vk::ShaderStageFlagBits::eFragment;
-    layoutBinding[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
-
-    vk::DescriptorType::eStorageBufferDynamic;
-
-    vk::DescriptorSetLayoutCreateInfo descriptorLayout = {};
-    descriptorLayout.pNext = nullptr;
-    descriptorLayout.bindingCount = static_cast<u32>(layoutBinding.size());
-    descriptorLayout.pBindings = layoutBinding.data();
-
-    mDescriptorSetLayout = mLogicalDevice.createDescriptorSetLayout(descriptorLayout);
-
-    // Create the pipeline layout that is used to generate the rendering pipelines that
-    // are based on this descriptor set layout
-    // In a more complex scenario you would have different pipeline layouts for different
-    // descriptor set layouts that could be reused
-    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
-    pipelineLayoutCreateInfo.setLayoutCount = 1;
-    pipelineLayoutCreateInfo.pSetLayouts = &mDescriptorSetLayout;
-
-    mPipelineLayout = mLogicalDevice.createPipelineLayout(pipelineLayoutCreateInfo);
-  }
-  
   void VulkanContext::SetupDescriptorPool()
   {
     // We need to tell the API the number of max. requested descriptors per type
@@ -141,8 +70,6 @@ namespace YTE
     typeCounts[1].type = vk::DescriptorType::eCombinedImageSampler;
     typeCounts[1].descriptorCount = static_cast<u32>(mTextures.size()); // TODO: Make sure the layers don't yell.
 
-    // Create the global descriptor pool
-    // All descriptors used in this example are allocated from this pool
     vk::DescriptorPoolCreateInfo descriptorPoolInfo = {};
     descriptorPoolInfo.poolSizeCount = static_cast<u32>(typeCounts.size());
     descriptorPoolInfo.pPoolSizes = typeCounts.data();
@@ -153,7 +80,7 @@ namespace YTE
 
     mDescriptorPool = mLogicalDevice.createDescriptorPool(descriptorPoolInfo);
   }
-  
+
   void VulkanContext::SetupDescriptorSet()
   {
     mWriteDescriptorSet.resize(2); // Need at least 1 for the uniform buffer.
@@ -161,12 +88,19 @@ namespace YTE
     // Allocate a new descriptor set from the global descriptor pool
     vk::DescriptorSetAllocateInfo allocInfo = {};
     allocInfo.descriptorPool = mDescriptorPool;
-    allocInfo.descriptorSetCount = 1;
-    allocInfo.pSetLayouts = &mDescriptorSetLayout;
+
+    std::vector<vk::DescriptorSetLayout> layouts;
+
+    for (auto &material : mMaterials)
+    {
+      layouts.emplace_back(material.mDescriptorSetLayout);
+    }
+
+    allocInfo.descriptorSetCount = static_cast<u32>(layouts.size());
+    allocInfo.pSetLayouts = layouts.data();
+
 
     mDescriptorSets = mLogicalDevice.allocateDescriptorSets(allocInfo);
-
-
 
     // Update the descriptor set determining the shader binding points
     // For every binding point used in a shader there needs to be one
@@ -175,9 +109,8 @@ namespace YTE
     mWriteDescriptorSet[0].dstSet = mDescriptorSets[0];
     mWriteDescriptorSet[0].descriptorCount = 1;
     mWriteDescriptorSet[0].descriptorType = vk::DescriptorType::eUniformBuffer;
-    mWriteDescriptorSet[0].pBufferInfo = &mUniformBufferInfo;
+    mWriteDescriptorSet[0].pBufferInfo = &mView.mUniformBufferInfo;
     mWriteDescriptorSet[0].dstBinding = 0;
-
 
     std::vector<vk::DescriptorImageInfo> imageInfos;
     imageInfos.reserve(mTextures.size());
@@ -196,6 +129,7 @@ namespace YTE
 
     mLogicalDevice.updateDescriptorSets(mWriteDescriptorSet, VK_NULL_HANDLE);
   }
+
 
   void VulkanContext::UpdateDescriptorSet(Texture &aTexture)
   {

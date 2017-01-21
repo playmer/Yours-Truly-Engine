@@ -30,7 +30,8 @@ namespace YTE
     void AddAttribute(vk::Format aFormat)
     {
       runtime_assert(mBindings.size() != 0, 
-                     "Haven't added a Vertex binding yet, so we can't add attribute inputs.");
+                     "Haven't added a Vertex binding yet, "
+                     "so we can't add attribute inputs.");
 
       vk::VertexInputAttributeDescription toAdd;
       toAdd.binding = mBinding - 1;
@@ -58,11 +59,23 @@ namespace YTE
       mVertexOffset = 0;
     }
 
-    vk::VertexInputBindingDescription* BindingData() { return mBindings.data(); }
-    size_t BindingSize() { return mBindings.size(); }
+    vk::VertexInputBindingDescription* BindingData() 
+    { 
+      return mBindings.data(); 
+    }
+    size_t BindingSize() 
+    { 
+      return mBindings.size(); 
+    }
 
-    vk::VertexInputAttributeDescription* AttributeData() { return mAttributes.data(); }
-    size_t AttributeSize() { return mAttributes.size(); }
+    vk::VertexInputAttributeDescription* AttributeData()
+    { 
+      return mAttributes.data(); 
+    }
+    size_t AttributeSize() 
+    { 
+      return mAttributes.size(); 
+    }
 
   private:
     std::vector<vk::VertexInputBindingDescription> mBindings;

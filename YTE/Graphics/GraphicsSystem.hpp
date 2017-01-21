@@ -8,20 +8,22 @@
 
 #include <stddef.h>
 
+#include <functional>
+
 #include "YTE/Core/EventHandler.hpp"
 #include "YTE/Core/ForwardDeclarations.hpp"
 #include "YTE/Core/Types.hpp"
 
 #include "YTE/Graphics/Instance.hpp"
+#include "YTE/Graphics/Material.hpp"
 #include "YTE/Graphics/Model.hpp"
+#include "YTE/Graphics/View.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
 
 #include "YTE/Platform/ForwardDeclarations.hpp"
 
 #include "YTE/Core/PrivateImplementation.hpp"
 
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
 
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
@@ -54,6 +56,7 @@ namespace YTE
     glm::i16vec2 mMousePosition = { 0,0 };
 
     std::vector<Mesh> mMeshes;
+    std::vector<Material> mMaterials;
     //std::vector<Mesh> mDescriptorSets;
 
     PrivateImplementation<4096> mPlatformSpecificData;
@@ -64,6 +67,6 @@ namespace YTE
 
 	  i32 mVulkanSuccess;
   };
-
 }
+
 #endif

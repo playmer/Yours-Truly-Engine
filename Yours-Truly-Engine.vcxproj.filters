@@ -121,6 +121,9 @@
     <ClCompile Include="YTE\Graphics\Instance.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\Graphics\Material.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
@@ -745,6 +748,9 @@
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="YTE\Graphics\Model.hpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="YTE\Graphics\Material.hpp">
       <Filter>YTE\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

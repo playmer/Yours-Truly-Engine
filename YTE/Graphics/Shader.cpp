@@ -5,13 +5,13 @@
 
 namespace YTE
 {
-  Shader::Shader(const char *aFileName, ShaderType aType, VulkanContext *aContext)
+  Shader::Shader(std::string &aFileName, ShaderType aType, VulkanContext *aContext)
     : mType(aType)
   {
-    std::FILE *fp = std::fopen(aFileName, "rb");
+    std::FILE *fp = std::fopen(aFileName.c_str(), "rb");
     std::fseek(fp, 0, SEEK_END); // seek to end of file
-    auto size = std::ftell(fp); // get current file pointer
-    std::fseek(fp, 0, SEEK_SET); // seek back to beginning of file
+    auto size = std::ftell(fp);  // get current file pointer
+    std::rewind(fp);             // seek back to beginning of file
 
     auto file = (byte*)std::malloc(size);
     std::fread(file, sizeof(byte), size, fp);

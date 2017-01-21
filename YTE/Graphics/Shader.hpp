@@ -13,7 +13,8 @@
 
 #include "YTE/Core/Types.hpp"
 
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/ForwardDeclarations.hpp"
+
 
 namespace YTE
 {
@@ -29,7 +30,7 @@ namespace YTE
   class Shader
   {
   public:
-    Shader(const char *aFileName, ShaderType aType, VulkanContext *aContext);
+    Shader(std::string &aFileName, ShaderType aType, VulkanContext *aContext);
 
     vk::PipelineShaderStageCreateInfo CreateShaderStage();
 

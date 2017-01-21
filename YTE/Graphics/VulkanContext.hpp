@@ -4,6 +4,8 @@
 #include "YTE/Core/Types.hpp"
 
 #include "YTE/Graphics/Texture.hpp"
+#include "YTE/Graphics/Material.hpp"
+#include "YTE/Graphics/View.hpp"
 
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
@@ -140,14 +142,6 @@ namespace YTE
     Vertex mVertex4;
   };
 
-  struct UniformBufferObject
-  {
-    glm::mat4 mProjectionMatrix;
-    glm::mat4 mModelMatrix;
-    glm::vec4 mViewPosition;
-    float mLevelOfDetailBias = 1.0f;
-  };
-
   struct BufferMemory
   {
     BufferMemory() {}
@@ -174,7 +168,9 @@ namespace YTE
       return *this;
     }
 
-    inline explicit BufferMemory(vk::Device *aLogicalDevice) : mLogicalDevice(aLogicalDevice) {}
+    inline explicit BufferMemory(vk::Device *aLogicalDevice) 
+      : mLogicalDevice(aLogicalDevice) {}
+
     ~BufferMemory()
     {
       Destruct();
@@ -213,13 +209,12 @@ namespace YTE
   {
   public:
     VulkanContext()
+      : mView(this)
     {
-      mUniform.mLogicalDevice = &mLogicalDevice;
     }
 
     ~VulkanContext()
     {
-      mUniform.Destruct();
     }
 
     template<typename FlagType>
@@ -229,7 +224,9 @@ namespace YTE
       {
         if ((aTypeBits & 1) == 1)
         {
-          if ((mPhysicalMemoryProperties.memoryTypes[i].propertyFlags & aProperties) == aProperties)
+          auto flags = mPhysicalMemoryProperties.memoryTypes[i].propertyFlags;
+
+          if ((flags & aProperties) == aProperties)
           {
             return i;
           }
@@ -241,17 +238,24 @@ namespace YTE
       return 0;
     }
 
-    BufferMemory CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties);
+    BufferMemory CreateBuffer(vk::DeviceSize size, 
+                              vk::BufferUsageFlags usage, 
+                              vk::MemoryPropertyFlags properties);
     void CopyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size);
 
     template <typename Type>
-    BufferMemory CreateFilledBuffer(const Type *aData, u64 aSize, bool aUseStaging = true)
+    BufferMemory CreateFilledBuffer(const Type *aData, 
+                                    u64 aSize, 
+                                    bool aUseStaging = true)
     {
       vk::DeviceSize bufferSize = static_cast<u32>(sizeof(Type) * aSize);
 
       BufferMemory toReturn(&mLogicalDevice);
 
-      auto bufferMemory = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+      auto bufferMemory = CreateBuffer(bufferSize,
+                                       vk::BufferUsageFlagBits::eTransferSrc, 
+                                       vk::MemoryPropertyFlagBits::eHostVisible | 
+                                       vk::MemoryPropertyFlagBits::eHostCoherent);
 
       void *data = mLogicalDevice.mapMemory(bufferMemory.mMemory, 0, bufferSize);
       memcpy(data, aData, (size_t)bufferSize);
@@ -259,7 +263,10 @@ namespace YTE
 
       if (aUseStaging)
       {
-        auto staging = CreateBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+        auto staging = CreateBuffer(bufferSize, 
+                                    vk::BufferUsageFlagBits::eTransferDst | 
+                                    vk::BufferUsageFlagBits::eVertexBuffer, 
+                                    vk::MemoryPropertyFlagBits::eDeviceLocal);
 
         CopyBuffer(bufferMemory.mBuffer, staging.mBuffer, bufferSize);
 
@@ -274,13 +281,15 @@ namespace YTE
     }
 
     template <typename Type>
-    BufferMemory CreateFilledBuffer(std::initializer_list<Type> aData, bool aUseStaging = true)
+    BufferMemory CreateFilledBuffer(std::initializer_list<Type> aData, 
+                                    bool aUseStaging = true)
     {
       return CreateFilledBuffer(aData.begin(), aData.size(), aUseStaging);
     }
 
     template <typename Type>
-    BufferMemory CreateFilledBuffer(std::vector<Type> aData, bool aUseStaging = true)
+    BufferMemory CreateFilledBuffer(std::vector<Type> aData, 
+                                    bool aUseStaging = true)
     {
       return CreateFilledBuffer(aData.data(), aData.size(), aUseStaging);
     }
@@ -296,17 +305,6 @@ namespace YTE
     void SetupDescriptorSet();
 
     void UpdateDescriptorSet(Texture &aTexture);
-    void UpdateUniformBuffers(bool aRecalculation);
-
-
-    u32 mWidth = 0;
-    u32 mHeight = 0;
-    float mZoom = -2.5f;
-
-    UniformBufferObject mUniformBufferData;
-
-    glm::vec3 mRotation = glm::vec3();
-    glm::vec3 mCameraPosition = glm::vec3();
 
     vk::Instance mInstance;
     vk::SurfaceKHR mSurface;
@@ -337,18 +335,16 @@ namespace YTE
 
     std::vector<vk::Framebuffer> mFrameBuffers;
     
-    BufferMemory mUniform;
-    vk::DescriptorBufferInfo mUniformBufferInfo;
-
-    vk::Pipeline mPipeline;
-    vk::PipelineLayout mPipelineLayout;
 
     std::vector<vk::DescriptorSet> mDescriptorSets;
-    vk::DescriptorSetLayout mDescriptorSetLayout;
     vk::DescriptorPool mDescriptorPool;
 
+    std::vector<Texture> mTextures;
+
+
+    std::vector<Material> mMaterials;
     std::vector<vk::WriteDescriptorSet> mWriteDescriptorSet;
 
-    std::vector<Texture> mTextures;
+    View mView;
   };
 }

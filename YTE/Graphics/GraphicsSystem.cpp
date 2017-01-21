@@ -1,5 +1,6 @@
 #include <iostream>
 #include <filesystem>
+#include <string>
 
 #include "vulkan/vkel.h"
 #include "vulkan/vk_cpp.hpp"
@@ -79,7 +80,8 @@ namespace YTE
     return VK_FALSE;
   }
 
-  GraphicsSystem::GraphicsSystem(Engine *aEngine) : mEngine(aEngine), mVulkanSuccess(0)
+  GraphicsSystem::GraphicsSystem(Engine *aEngine) 
+    : mEngine(aEngine), mVulkanSuccess(0)
   {
     auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
 
@@ -237,8 +239,8 @@ namespace YTE
       surfaceCreateInfo.setHinstance(windowData->mInstance);
       surfaceCreateInfo.setHwnd(windowData->mWindowHandle);
 
-      self->mHeight = window->mHeight;
-      self->mWidth = window->mWidth;
+      self->mView.mHeight = window->mHeight;
+      self->mView.mWidth = window->mWidth;
 
       self->mSurface = self->mInstance.createWin32SurfaceKHR(surfaceCreateInfo);
 
@@ -349,13 +351,13 @@ namespace YTE
 
       if (surfaceResolution.width == -1) 
       {
-        surfaceResolution.width = self->mWidth;
-        surfaceResolution.height = self->mHeight;
+        surfaceResolution.width = self->mView.mWidth;
+        surfaceResolution.height = self->mView.mHeight;
       }
       else 
       {
-        self->mWidth = surfaceResolution.width;
-        self->mHeight = surfaceResolution.height;
+        self->mView.mWidth = surfaceResolution.width;
+        self->mView.mHeight = surfaceResolution.height;
       }
 
       vk::SurfaceTransformFlagBitsKHR preTransform = surfaceCapabilities.currentTransform;
@@ -443,7 +445,7 @@ namespace YTE
       vk::ImageCreateInfo imageCreateInfo;
       imageCreateInfo.setImageType(vk::ImageType::e2D);
       imageCreateInfo.setFormat(vk::Format::eD32SfloatS8Uint);
-      imageCreateInfo.setExtent({ self->mWidth, self->mHeight, 1 });
+      imageCreateInfo.setExtent({ self->mView.mWidth, self->mView.mHeight, 1 });
       imageCreateInfo.setMipLevels(1);
       imageCreateInfo.setArrayLayers(1);
       imageCreateInfo.setSamples(vk::SampleCountFlagBits::e1);
@@ -699,8 +701,8 @@ namespace YTE
       frameBufferCreateInfo.renderPass = self->mRenderPass;
       frameBufferCreateInfo.attachmentCount = 2;  // must be equal to the attachment count on render pass
       frameBufferCreateInfo.pAttachments = frameBufferAttachments;
-      frameBufferCreateInfo.width = self->mWidth;
-      frameBufferCreateInfo.height = self->mHeight;
+      frameBufferCreateInfo.width = self->mView.mWidth;
+      frameBufferCreateInfo.height = self->mView.mHeight;
       frameBufferCreateInfo.layers = 1;
 
       // create a framebuffer per swap chain imageView:
@@ -713,52 +715,9 @@ namespace YTE
         checkVulkanResult(result, "Failed to create framebuffer.");
       }
 
-      // Prepare and initialize a uniform buffer block containing shader uniforms
-      // In Vulkan there are no more single uniforms like in GL
-      // All shader uniforms are passed as uniform buffer blocks 
-
-      // Vertex shader uniform buffer block
-
-      // Most implementations offer multiple memory types and selecting the 
-      // correct one to allocate memory from is important
-      // We also want the buffer to be host coherent so we don't have to flush 
-      // after every update. 
-      // Note that this may affect performance so you might not want to do this 
-      // in a real world application that updates buffers on a regular base
-      self->mUniform = self->CreateBuffer(sizeof(UniformBufferObject), 
-                                          vk::BufferUsageFlagBits::eUniformBuffer, 
-                                          vk::MemoryPropertyFlagBits::eHostVisible |
-                                          vk::MemoryPropertyFlagBits::eHostCoherent);
-
-      // Store information in the uniform's descriptor
-      self->mUniformBufferInfo.buffer = self->mUniform.mBuffer;
-      self->mUniformBufferInfo.offset = 0;
-      self->mUniformBufferInfo.range = sizeof(UniformBufferObject);
-
-      self->UpdateUniformBuffers(true);
-
       self->SetupDescriptorSetLayout();
 
-      Shader vert{ "./Shaders/vert.spv", ShaderType::Vertex, self };
-      Shader frag{ "./Shaders/frag.spv", ShaderType::Fragment, self };
-      
-      std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStageCreateInfo;
-      shaderStageCreateInfo[0] = vert.CreateShaderStage();
-      shaderStageCreateInfo[1] = frag.CreateShaderStage();
 
-      vk::SpecializationInfo info;
-      vk::SpecializationMapEntry entry;
-      entry.constantID = 0;
-      const uint32_t data = static_cast<u32>(self->mTextures.size());
-      entry.size = sizeof(u32);
-
-      info.pMapEntries = &entry;
-      info.mapEntryCount = 1;
-      info.pData = &data;
-      info.dataSize = sizeof(u32);
-
-      shaderStageCreateInfo[1].pSpecializationInfo = &info;
-      
       ShaderDescriptions descriptions;
       descriptions.AddBinding<Vertex>(vk::VertexInputRate::eVertex);
 
@@ -778,7 +737,7 @@ namespace YTE
 
       //glm::vec3 mTranslation
       descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
-      
+
       //glm::vec3 mScale
       descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32Sfloat);
 
@@ -797,103 +756,8 @@ namespace YTE
       descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
       descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
 
-      vk::PipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
-      vertexInputStateCreateInfo.vertexBindingDescriptionCount = static_cast<u32>(descriptions.BindingSize());
-      vertexInputStateCreateInfo.pVertexBindingDescriptions = descriptions.BindingData();
-      vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<u32>(descriptions.AttributeSize());
-      vertexInputStateCreateInfo.pVertexAttributeDescriptions = descriptions.AttributeData();
-
-      // vertex topology config:
-      vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo;
-      inputAssemblyStateCreateInfo.topology = vk::PrimitiveTopology::eTriangleList;
+      mMaterials.emplace_back(self, descriptions, "./Shaders/vert.spv"s, "./Shaders/frag.spv"s);
       
-      vk::Viewport viewport = {};
-      viewport.width = static_cast<float>(self->mWidth);
-      viewport.height = static_cast<float>(self->mHeight);
-      viewport.maxDepth = 1;
-
-      vk::Rect2D scissors = {};
-      scissors.extent.setWidth(self->mWidth).setHeight(self->mHeight);
-
-      vk::PipelineViewportStateCreateInfo viewportState = {};
-      viewportState.viewportCount = 1;
-      viewportState.pViewports = &viewport;
-      viewportState.scissorCount = 1;
-      viewportState.pScissors = &scissors;
-
-      vk::PipelineRasterizationStateCreateInfo rasterizationState;
-      rasterizationState.polygonMode = vk::PolygonMode::eFill;
-      //rasterizationState.cullMode = vk::CullModeFlagBits::eBack; // TODO: Investigate
-      rasterizationState.cullMode = vk::CullModeFlagBits::eNone;
-      rasterizationState.frontFace = vk::FrontFace::eCounterClockwise;
-      //rasterizationState.frontFace = vk::FrontFace::eClockwise;
-      rasterizationState.lineWidth = 1;
-      rasterizationState.depthClampEnable = true;
-      rasterizationState.depthBiasEnable = true;
-
-      vk::PipelineMultisampleStateCreateInfo multisampleState = {};
-      multisampleState.rasterizationSamples = vk::SampleCountFlagBits::e1;
-
-      vk::StencilOpState stencilState = {};
-      stencilState.failOp = vk::StencilOp::eReplace;
-      stencilState.passOp = vk::StencilOp::eKeep;
-      stencilState.depthFailOp = vk::StencilOp::eReplace;
-      stencilState.compareOp = vk::CompareOp::eLessOrEqual;
-
-      vk::PipelineDepthStencilStateCreateInfo depthState;
-      depthState.depthTestEnable = true;
-      depthState.depthWriteEnable = true;
-      depthState.depthCompareOp = vk::CompareOp::eLessOrEqual;
-      depthState.setDepthBoundsTestEnable(false);
-      depthState.setStencilTestEnable(false);
-
-      vk::PipelineColorBlendAttachmentState colorBlendAttachmentState;
-      colorBlendAttachmentState.srcColorBlendFactor = vk::BlendFactor::eSrc1Color;
-      colorBlendAttachmentState.dstColorBlendFactor = vk::BlendFactor::eOneMinusDstColor;
-      colorBlendAttachmentState.colorBlendOp = vk::BlendOp::eAdd;
-      colorBlendAttachmentState.srcAlphaBlendFactor = vk::BlendFactor::eZero;
-      colorBlendAttachmentState.dstAlphaBlendFactor = vk::BlendFactor::eZero;
-      colorBlendAttachmentState.alphaBlendOp = vk::BlendOp::eAdd;
-      colorBlendAttachmentState.colorWriteMask = vk::ColorComponentFlagBits::eR | 
-                                                 vk::ColorComponentFlagBits::eG |
-                                                 vk::ColorComponentFlagBits::eB |
-                                                 vk::ColorComponentFlagBits::eA;
-
-      vk::PipelineColorBlendStateCreateInfo colorBlendState;
-      colorBlendState.logicOpEnable = VK_FALSE;
-      colorBlendState.logicOp = vk::LogicOp::eClear;
-      colorBlendState.attachmentCount = 1;
-      colorBlendState.pAttachments = &colorBlendAttachmentState;
-      colorBlendState.blendConstants[0] = 0.0;
-      colorBlendState.blendConstants[1] = 0.0;
-      colorBlendState.blendConstants[2] = 0.0;
-      colorBlendState.blendConstants[3] = 0.0;
-
-      vk::DynamicState dynamicState[2] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
-      vk::PipelineDynamicStateCreateInfo dynamicStateCreateInfo ;
-      dynamicStateCreateInfo.dynamicStateCount = 2;
-      dynamicStateCreateInfo.pDynamicStates = dynamicState;
-
-      vk::GraphicsPipelineCreateInfo pipelineCreateInfo;
-      pipelineCreateInfo.stageCount = static_cast<u32>(shaderStageCreateInfo.size());
-      pipelineCreateInfo.pStages = shaderStageCreateInfo.data();
-      pipelineCreateInfo.pVertexInputState = &vertexInputStateCreateInfo;
-      pipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
-      pipelineCreateInfo.pViewportState = &viewportState;
-      pipelineCreateInfo.pRasterizationState = &rasterizationState;
-      pipelineCreateInfo.pMultisampleState = &multisampleState;
-      pipelineCreateInfo.pDepthStencilState = &depthState;
-      pipelineCreateInfo.pColorBlendState = &colorBlendState;
-      pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
-      pipelineCreateInfo.layout = self->mPipelineLayout;
-      pipelineCreateInfo.renderPass = self->mRenderPass;
-
-      self->SetupDescriptorPool();
-      self->SetupDescriptorSet();
-
-      self->mPipeline = self->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
-      vulkan_assert(self->mPipeline, "Failed to create graphics pipeline.");
-
       YTE::Vertex mVertex1;
 
       mVertex1.mPosition = { -0.5f, -0.5f, 0.0f, 1.0f };
@@ -952,11 +816,11 @@ namespace YTE
       layoutTransitionBarrier.subresourceRange = resourceRange;
 
       commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
-        vk::PipelineStageFlagBits::eTopOfPipe,
-        vk::DependencyFlags(),
-        nullptr,
-        nullptr,
-        layoutTransitionBarrier);
+                                    vk::PipelineStageFlagBits::eTopOfPipe,
+                                    vk::DependencyFlags(),
+                                    nullptr,
+                                    nullptr,
+                                    layoutTransitionBarrier);
 
       // activate render pass:
       vk::ClearValue clearValue[2];
@@ -973,12 +837,12 @@ namespace YTE
       vk::RenderPassBeginInfo renderPassBeginInfo = {};
       renderPassBeginInfo.renderPass = self->mRenderPass;
       renderPassBeginInfo.framebuffer = self->mFrameBuffers[i];
-      renderPassBeginInfo.renderArea = { 0, 0, self->mWidth, self->mHeight };
+      renderPassBeginInfo.renderArea = { 0, 0, self->mView.mWidth, self->mView.mHeight };
       renderPassBeginInfo.clearValueCount = 2;
       renderPassBeginInfo.pClearValues = clearValue;
 
-      vk::Viewport viewport{ 0, 0, static_cast<float>(self->mWidth), static_cast<float>(self->mHeight), 0, 1 };
-      vk::Rect2D scissor{ { 0, 0 },{ self->mWidth, self->mHeight } };
+      vk::Viewport viewport{ 0, 0, static_cast<float>(self->mView.mWidth), static_cast<float>(self->mView.mHeight), 0, 1 };
+      vk::Rect2D scissor{ { 0, 0 },{ self->mView.mWidth, self->mView.mHeight } };
 
       commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
