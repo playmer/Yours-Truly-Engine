@@ -98,7 +98,7 @@ namespace YTE
     {
       mMeshes.clear();
 
-      mPlatformSpecificData.Destruct();
+      mPlatformSpecificData.Release();
       vkelUninit();
     }
   }
@@ -715,8 +715,10 @@ namespace YTE
         checkVulkanResult(result, "Failed to create framebuffer.");
       }
 
-      self->SetupDescriptorSetLayout();
-
+      for (auto &materal : mMaterials)
+      {
+        materal.SetupDescriptorSetLayout();
+      }
 
       ShaderDescriptions descriptions;
       descriptions.AddBinding<Vertex>(vk::VertexInputRate::eVertex);
@@ -858,10 +860,10 @@ namespace YTE
       // render the triangle:
       vk::DeviceSize offsets = {};
 
-      commandBuffer.bindVertexBuffers(0, mQuadVerticies.mBuffer, offsets);
-      commandBuffer.bindVertexBuffers(1, mInstanceDataBuffer.mBuffer, offsets);
-      commandBuffer.bindIndexBuffer(mQuadIndicies.mBuffer, 0, vk::IndexType::eUint32);
-      commandBuffer.drawIndexed(6, static_cast<u32>(mInstanceDatas.size()), 0, 0, 0);
+      //commandBuffer.bindVertexBuffers(0, mQuadVerticies.mBuffer, offsets);
+      //commandBuffer.bindVertexBuffers(1, mInstanceDataBuffer.mBuffer, offsets);
+      //commandBuffer.bindIndexBuffer(mQuadIndicies.mBuffer, 0, vk::IndexType::eUint32);
+      //commandBuffer.drawIndexed(6, static_cast<u32>(mInstanceDatas.size()), 0, 0, 0);
 
       commandBuffer.endRenderPass();
 
@@ -894,14 +896,14 @@ namespace YTE
   {
     auto self = mPlatformSpecificData.Get<VulkanContext>();
 
-    if (mInstanceDataBufferSize < mInstances.size())
-    {
-      SetupInstanceDataBuffer();
-
-      SetupDrawing();
-    }
-
-    auto bufferSize = static_cast<u32>(mInstanceDatas.size() * sizeof(InstanceData));
+    //if (mInstanceDataBufferSize < mInstances.size())
+    //{
+    //  SetupInstanceDataBuffer();
+    //
+    //  SetupDrawing();
+    //}
+    //
+    //auto bufferSize = static_cast<u32>(mInstanceDatas.size() * sizeof(InstanceData));
 
     //for (auto &object : mObjects)
     //{
@@ -915,11 +917,11 @@ namespace YTE
     //  object.mTransform = objectToWorld;
     //}
 
-    auto objectsBufferPtr = static_cast<InstanceData*>(self->mLogicalDevice.mapMemory(mInstanceDataBuffer.mMemory, 0, bufferSize));
-    memcpy(objectsBufferPtr, mInstanceDatas.data(), bufferSize);
-    self->mLogicalDevice.unmapMemory(mInstanceDataBuffer.mMemory);
-
-    self->UpdateUniformBuffers(true);
+    //auto objectsBufferPtr = static_cast<InstanceData*>(self->mLogicalDevice.mapMemory(mInstanceDataBuffer.mMemory, 0, bufferSize));
+    //memcpy(objectsBufferPtr, mInstanceDatas.data(), bufferSize);
+    //self->mLogicalDevice.unmapMemory(mInstanceDataBuffer.mMemory);
+    //
+    //self->UpdateUniformBuffers(true);
     
     vk::SemaphoreCreateInfo semaphoreCreateInfo = vk::SemaphoreCreateInfo();
 
@@ -967,17 +969,17 @@ namespace YTE
 
   void GraphicsSystem::SetupInstanceDataBuffer()
   {
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
-
-    // We need mInstances amount of InstanceDatas
-    auto bytesNeeded = static_cast<u32>(mInstances.size() * sizeof(InstanceData));
-
-    mInstanceDataBuffer = self->CreateBuffer(bytesNeeded, 
-                                             vk::BufferUsageFlagBits::eVertexBuffer, 
-                                             vk::MemoryPropertyFlagBits::eHostVisible | 
-                                             vk::MemoryPropertyFlagBits::eHostCoherent);
-
-    mInstanceDataBufferSize = static_cast<u32>(mInstances.size());
+    //auto self = mPlatformSpecificData.Get<VulkanContext>();
+    //
+    //// We need mInstances amount of InstanceDatas
+    //auto bytesNeeded = static_cast<u32>(mInstances.size() * sizeof(InstanceData));
+    //
+    //mInstanceDataBuffer = self->CreateBuffer(bytesNeeded, 
+    //                                         vk::BufferUsageFlagBits::eVertexBuffer, 
+    //                                         vk::MemoryPropertyFlagBits::eHostVisible | 
+    //                                         vk::MemoryPropertyFlagBits::eHostCoherent);
+    //
+    //mInstanceDataBufferSize = static_cast<u32>(mInstances.size());
   }
 
   void GraphicsSystem::Update(LogicUpdate *aUpdate)

@@ -7,7 +7,7 @@ namespace YTE
   {
     if (true == aChanged && false == mChanged)
     {
-      mGraphicsSystem->mChangedInstances.emplace_back(this - mGraphicsSystem->mInstances.data());
+      //mGraphicsSystem->mChangedInstances.emplace_back(this - mGraphicsSystem->mInstances.data());
     }
 
     mChanged = aChanged;

@@ -124,7 +124,9 @@
     <ClCompile Include="YTE\Graphics\Material.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="YTE\Graphics\View.cpp" />
+    <ClCompile Include="YTE\Graphics\View.cpp">
+      <Filter>YTE\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">

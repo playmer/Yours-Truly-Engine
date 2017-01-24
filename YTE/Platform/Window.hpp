@@ -37,7 +37,7 @@ namespace YTE
 
     Keyboard mKeyboard;
     Mouse mMouse;
-    PrivateImplementation<64> mPlatformSpecificData;
+    PrivateImplementationLocal<64> mPlatformSpecificData;
     Engine *mEngine;
     Window *mParentWindow;
     u16 mHeight;

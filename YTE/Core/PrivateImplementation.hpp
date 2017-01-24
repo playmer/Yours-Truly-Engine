@@ -6,47 +6,50 @@
 #ifndef PrivateImplementation_hpp
 #define PrivateImplementation_hpp
 
+#include <memory>
+
+#include "YTE/Core/Types.hpp"
+
 namespace YTE
 {
+  // Allows the private implementation of an object allocated within a size
+  // given as a template parameter. This allows the storage of the object to
+  // reside on the stack or within another struct/class.
   template <int SizeInBytes>
-  class PrivateImplementation
+  class PrivateImplementationLocal
   {
   public:
-    using Destructor = void(*)(void*);
+    using Destructor = void(*)(byte*);
 
-    PrivateImplementation() : mDestructor(nullptr) {}
+    PrivateImplementationLocal() : mDestructor(GenericDoNothing) {}
 
-    ~PrivateImplementation()
+    ~PrivateImplementationLocal()
     {
       // Destruct our data if it's already been constructed.
-      Destruct();
+      Release();
     }
 
-    void Destruct()
+    void Release()
     {
-      if (mDestructor != nullptr)
-      {
-        mDestructor(mMemory);
-        mDestructor = nullptr;
-      }
+      mDestructor(mMemory);
+      mDestructor = GenericDoNothing;
     }
 
-    template <typename T>
-    T* ConstructAndGet()
+    template <typename T, typename... Arguments>
+    T* ConstructAndGet(Arguments &&...aArguments)
     {
-      static_assert(sizeof(T) < SizeInBytes, "Constructed Type must be smaller than our size.");
+      static_assert(sizeof(T) < SizeInBytes, 
+                    "Constructed Type must be smaller than our size.");
 
-      // Destruct our data if it's already been constructed.
-      if (mDestructor != nullptr)
-      {
-        mDestructor(mMemory);
-      }
+      // Destruct any undestructed object.
+      mDestructor(mMemory);
 
       // Capture the destructor of the new type.
       mDestructor = GenericDestruct<T>;
 
-      GenericDefaultConstruct<T>(mMemory);
-
+      // Create a T in our local memory by forwarding any provided arguments.
+      new (mMemory) T(std::forward<Arguments &&>(aArguments)...);
+      
       return reinterpret_cast<T*>(mMemory);
     }
 
@@ -58,8 +61,52 @@ namespace YTE
 
   private:
 
-    char mMemory[SizeInBytes];
+    byte mMemory[SizeInBytes];
     Destructor mDestructor;
+  };
+
+  // Allows the private implementation of an object allocated on the heap.
+  class PrivateImplementationDynamic
+  {
+  public:
+    using Destructor = void(*)(byte*);
+    using Storage = std::unique_ptr<byte[], Destructor>;
+
+    PrivateImplementationDynamic() : mMemory(nullptr, GenericDoNothing) {}
+
+    ~PrivateImplementationDynamic()
+    {
+    }
+
+    void Release()
+    {
+      mMemory.release();
+      mMemory = Storage(nullptr, GenericDoNothing);
+    }
+
+    template <typename T, typename... Arguments>
+    T* ConstructAndGet(Arguments &&...aArguments)
+    {
+      // Destruct our data if it's already been constructed.
+      mMemory.release();
+
+      // Create a new T by forwarding any provided constructor arguments and
+      // store the destructor.
+      T *tPtr = new T(std::forward<Arguments &&>(aArguments)...);
+
+      mMemory = Storage(reinterpret_cast<byte*>(tPtr), GenericDestruct<T>);
+
+      return reinterpret_cast<T*>(mMemory.get());
+    }
+
+    template <typename T>
+    T* Get()
+    {
+      return reinterpret_cast<T*>(mMemory.get());
+    }
+
+  private:
+    Storage mMemory;
   };
 }
 #endif

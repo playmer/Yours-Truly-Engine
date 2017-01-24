@@ -3,11 +3,17 @@
 
 namespace YTE
 {
-  inline View::View(VulkanContext * aContext)
+  View::View(VulkanContext * aContext)
     : mContext(aContext)
   {
 
   }
+
+  View::~View()
+  {
+    mUniform.Destruct();
+  }
+
   void View::Initialize()
   {
     mUniform.mLogicalDevice = &mContext->mLogicalDevice;
@@ -35,11 +41,6 @@ namespace YTE
     mUniformBufferInfo.range = sizeof(UniformBufferObject);
 
     UpdateUniformBuffers(true);
-  }
-
-  inline View::~View()
-  {
-    mUniform.Destruct();
   }
 
   inline void View::UpdateUniformBuffers(bool aRecalculation)

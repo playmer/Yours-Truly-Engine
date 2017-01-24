@@ -39,18 +39,22 @@ namespace YTE
 
   // Helper to capture the destructor of a type.
   template <typename T>
-  void GenericDestruct(void *aMemory)
+  void GenericDestruct(byte *aMemory)
   {
     (reinterpret_cast<T*>(aMemory))->~T();
   }
 
   // Helper to call the constructor of a type.
   template <typename T>
-  void GenericDefaultConstruct(void *aMemory)
+  void GenericDefaultConstruct(byte *aMemory)
   {
     new (aMemory) T();
   }
 
+  // Helper to call the constructor of a type.
+  inline void GenericDoNothing(byte *aMemory)
+  {
+  }
 
   inline void runtime_assert(bool aValue, const char *aMessage = "")
   {
@@ -65,7 +69,7 @@ namespace YTE
   }
 
 
-  glm::mat4 Rotate(glm::mat4 &aMatrix, glm::vec3 aRotation)
+  inline glm::mat4 Rotate(glm::mat4 &aMatrix, glm::vec3 aRotation)
   {
     float xCos = cos(aRotation.x);
     float xSin = sin(aRotation.x);

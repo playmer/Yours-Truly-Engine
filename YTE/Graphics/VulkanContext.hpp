@@ -135,7 +135,7 @@ namespace YTE
       return CreateFilledBuffer(aData.data(), aData.size(), aUseStaging);
     }
 
-    void SetupDescriptorSetLayout();
+    //void SetupDescriptorSetLayout();
     void SetupDescriptorPool();
     void SetupDescriptorSet();
 

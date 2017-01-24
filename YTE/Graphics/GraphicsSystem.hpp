@@ -59,7 +59,7 @@ namespace YTE
     std::vector<Material> mMaterials;
     //std::vector<Mesh> mDescriptorSets;
 
-    PrivateImplementation<4096> mPlatformSpecificData;
+    PrivateImplementationDynamic mPlatformSpecificData;
 
     private:
     Engine *mEngine;
