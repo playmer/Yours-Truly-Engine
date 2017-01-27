@@ -5,11 +5,11 @@
 
 namespace YTE
 {
-  void AudioSystem::SoundHandle::DeleteSound(ga_Handle * in_finishedHandle, void * in_context)
+  void AudioSystem::SoundHandle::DeleteSound(SoundHandle * in_finishedHandle, void * in_context)
   {
     SoundHandle *handle = static_cast<SoundHandle*>(in_context);
     
-    ga_handle_destroy(handle->mHandle);
+    //SoundHandle_destroy(handle->mHandle);
     handle->mHandle = nullptr;
   }
 
@@ -23,7 +23,7 @@ namespace YTE
   {
     if (nullptr != mHandle)
     {
-      ga_handle_play(mHandle);
+      //SoundHandle_play(mHandle);
     }
     else
     {
@@ -35,7 +35,7 @@ namespace YTE
   {
     if (nullptr != mHandle)
     {
-      ga_handle_stop(mHandle);
+      //SoundHandle_stop(mHandle);
     }
     else
     {
@@ -49,7 +49,7 @@ namespace YTE
   {
     if (nullptr != mHandle)
     {
-      ga_handle_setParamf(mHandle, GA_HANDLE_PARAM_GAIN, aVolume);
+      //SoundHandle_setParamf(mHandle, SoundHandle_PARAM_GAIN, aVolume);
     }
     else
     {
@@ -63,7 +63,7 @@ namespace YTE
   {
     if (nullptr != mHandle)
     {
-      ga_handle_setParamf(mHandle, GA_HANDLE_PARAM_PITCH, aPitch);
+      //SoundHandle_setParamf(mHandle, SoundHandle_PARAM_PITCH, aPitch);
     }
     else
     {
@@ -77,7 +77,7 @@ namespace YTE
   {
     if (nullptr != mHandle)
     {
-      ga_handle_setParamf(mHandle, GA_HANDLE_PARAM_PAN, aPan);
+      //SoundHandle_setParamf(mHandle, SoundHandle_PARAM_PAN, aPan);
     }
     else
     {
@@ -87,8 +87,8 @@ namespace YTE
 
   AudioSystem::AudioSystem(Engine *aEngine) : mEngine(aEngine)
   {
-    gc_initialize(0);
-    mManager = gau_manager_create();
+    //gc_initialize(0);
+    //mManager = gau_manager_create();
 
     namespace fs = std::experimental::filesystem;
 
@@ -97,12 +97,12 @@ namespace YTE
       std::string soundPath = file.path().string();
       std::string soundFilename = file.path().stem().string();
 
-      mSounds.emplace(soundFilename, std::unique_ptr<ga_Sound, SoundHolder>(gau_load_sound_file(soundPath.c_str(), "wav"), SoundHolder()));
+      //mSounds.emplace(soundFilename, std::unique_ptr<Sound, SoundHolder>(gau_load_sound_file(soundPath.c_str(), "wav"), SoundHolder()));
     }
 
 
-    mMixer = gau_manager_mixer(mManager);
-    mStreamManager = gau_manager_streamManager(mManager);
+    //mMixer = gau_manager_mixer(mManager);
+    //mStreamManager = gau_manager_streamManager(mManager);
 
 
     static const std::string update = "LogicUpdate";
@@ -112,8 +112,8 @@ namespace YTE
   AudioSystem::~AudioSystem()
   {
     mSounds.clear();
-    gau_manager_destroy(mManager);
-    gc_shutdown();
+    //gau_manager_destroy(mManager);
+    //gc_shutdown();
   }
 
   std::unique_ptr<AudioSystem::SoundHandle> AudioSystem::PlayLoop(const std::string & aSoundName, float aVolume)
@@ -126,9 +126,8 @@ namespace YTE
     {
       auto sound = it->second.get();
 
-      handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), &handle->mLoopSource);
-
-      gau_sample_source_loop_set(handle->mLoopSource, -1, 0);
+      //handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), &handle->mLoopSource);
+      //gau_sample_source_loop_set(handle->mLoopSource, -1, 0);
 
       handle->mName = it->first.c_str();
       handle->SetVolume(aVolume);
@@ -153,7 +152,7 @@ namespace YTE
     {
       auto sound = it->second.get();
 
-      handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), nullptr);
+      //handle->mHandle = gau_create_handle_sound(mMixer, sound, &SoundHandle::DeleteSound, handle.get(), nullptr);
 
       handle->mName = it->first.c_str();
       handle->SetVolume(aVolume);
@@ -177,7 +176,7 @@ namespace YTE
 
       SoundHandle handle;
 
-      handle.mHandle = gau_create_handle_sound(mMixer, sound, gau_on_finish_destroy, nullptr, nullptr);
+      //handle.mHandle = gau_create_handle_sound(mMixer, sound, gau_on_finish_destroy, nullptr, nullptr);
 
       handle.mName = it->first.c_str();
       handle.SetVolume(aVolume);

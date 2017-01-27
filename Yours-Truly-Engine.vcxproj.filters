@@ -46,15 +46,6 @@
     <Filter Include="YTE\Audio">
       <UniqueIdentifier>{9a8d6a2c-bbf5-4242-aad8-d295bbd05ee6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependencies\gorilla">
-      <UniqueIdentifier>{bed9b688-5afe-43b3-b769-5c021cd32505}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\gorilla\common">
-      <UniqueIdentifier>{3ab8ac2b-74aa-4431-ad3d-f520e1360e01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dependencies\gorilla\devices">
-      <UniqueIdentifier>{fc6388cc-f372-4ef9-9e70-537fee801a73}</UniqueIdentifier>
-    </Filter>
     <Filter Include="YTE\Reflection">
       <UniqueIdentifier>{071d419b-032e-44be-b113-f36f571edb78}</UniqueIdentifier>
     </Filter>
@@ -635,30 +626,6 @@
     </ClInclude>
     <ClInclude Include="YTE\Graphics\Texture.hpp">
       <Filter>YTE\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\ga.h">
-      <Filter>Dependencies\gorilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\ga_internal.h">
-      <Filter>Dependencies\gorilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\gau.h">
-      <Filter>Dependencies\gorilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\common\gc_common.h">
-      <Filter>Dependencies\gorilla\common</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\common\gc_thread.h">
-      <Filter>Dependencies\gorilla\common</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\common\gc_types.h">
-      <Filter>Dependencies\gorilla\common</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\devices\ga_openal.h">
-      <Filter>Dependencies\gorilla\devices</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\gorilla\devices\ga_xaudio2.h">
-      <Filter>Dependencies\gorilla\devices</Filter>
     </ClInclude>
     <ClInclude Include="YTE\Core\Component.hpp">
       <Filter>YTE\Core</Filter>
