@@ -10,10 +10,9 @@
 
 #include <vector>
 
-#include "vulkan/vkel.h"
-#include "vulkan/vk_cpp.hpp"
-
 #include "YTE/Core/Types.hpp"
+
+#include "YTE/Graphics/VulkanPrimitives.hpp"
 
 namespace YTE
 {

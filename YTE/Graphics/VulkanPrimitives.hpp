@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 
 #include "YTE/Core/Delegate.hpp"
 #include "YTE/Core/Types.hpp"
@@ -7,7 +8,7 @@
 #include "YTE/Graphics/ForwardDeclarations.hpp"
 
 #include "vulkan/vkel.h"
-#include "vulkan/vk_cpp.hpp"
+#include "vulkan/vulkan.hpp"
 
 
 namespace YTE
@@ -159,6 +160,120 @@ struct BufferMemory
   vk::DeviceMemory mMemory;
   vk::Buffer mBuffer;
   vk::Device *mLogicalDevice = nullptr;
+};
+
+class QueueFamilyIndices
+{
+public:
+
+  static QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice aDevice)
+  {
+    QueueFamilyIndices indices;
+
+    auto queueFamilyProperties = aDevice.getQueueFamilyProperties();
+
+    int i = 0;
+    for (const auto& queueFamily : queueFamilyProperties) 
+    {
+      if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) 
+      {
+        indices.mGraphicsFamily = i;
+      }
+
+      if (indices.IsComplete()) 
+      {
+        break;
+      }
+
+      i++;
+    }
+    
+    return indices;
+  }
+
+  bool IsComplete()
+  {
+    return mGraphicsFamily >= 0;
+  }
+
+  bool IsDeviceSuitable(vk::PhysicalDevice aDevice, vk::SurfaceKHR aSurface);
+
+  bool CheckDeviceExtensionSupport(vk::PhysicalDevice aDevice)
+  {
+    auto availableExtensions = aDevice.enumerateDeviceExtensionProperties();
+    
+    std::set<std::string> requiredExtensions(sDeviceExtensions.begin(), 
+                                             sDeviceExtensions.end());
+
+    for (const auto& extension : availableExtensions)
+    {
+      requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+  }
+
+  static void AddRequiredExtension(const char *aExtension)
+  {
+    for (auto extension : sDeviceExtensions)
+    {
+      // Already enabled this extension.
+      if (StringComparison::Equal == StringCompare(extension, aExtension))
+      {
+        return;
+      }
+    }
+
+    sDeviceExtensions.emplace_back(aExtension);
+  }
+
+
+  static void ClearRequiredExtension()
+  {
+    sDeviceExtensions.clear();
+  }
+
+private:
+  static std::vector<const char*> sDeviceExtensions;
+
+  i32 mGraphicsFamily = -1;
+};
+
+
+class SwapChainSupportDetails
+{
+public:
+  static SwapChainSupportDetails QuerySwapChainSupport(vk::PhysicalDevice aDevice,
+                                                       vk::SurfaceKHR aSurface)
+  {
+    SwapChainSupportDetails details;
+
+    details.mCapabilities = aDevice.getSurfaceCapabilitiesKHR(aSurface);
+    details.mFormats = aDevice.getSurfaceFormatsKHR(aSurface);
+    details.mPresentModes = aDevice.getSurfacePresentModesKHR(aSurface);
+
+    return details;
+  }
+
+  vk::SurfaceCapabilitiesKHR& Capabilities()
+  {
+    return mCapabilities;
+  }
+
+  std::vector<vk::SurfaceFormatKHR>& Formats()
+  {
+    return mFormats;
+  }
+
+  std::vector<vk::PresentModeKHR>& PresentModes()
+  {
+    return mPresentModes;
+  }
+
+private:
+  vk::SurfaceCapabilitiesKHR mCapabilities;
+  std::vector<vk::SurfaceFormatKHR> mFormats;
+  std::vector<vk::PresentModeKHR> mPresentModes;
 };
 
 template <typename T>

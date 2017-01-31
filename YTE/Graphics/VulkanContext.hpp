@@ -46,10 +46,12 @@ namespace YTE
     VulkanContext()
       : mView(this)
     {
+      QueueFamilyIndices::AddRequiredExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     }
 
     ~VulkanContext()
     {
+      QueueFamilyIndices::ClearRequiredExtensions();
     }
 
     template<typename FlagType>

@@ -20,6 +20,8 @@ layout (binding = 0) uniform UBO
   mat4 mProjectionMatrix;
   mat4 mModelMatrix;
   vec3 mViewPosition;
+  double mDeltaTime;
+  double mTimeRunning;
   float mLevelOfDetailBias;
 } uniformBufferObject;
 

@@ -31,9 +31,9 @@ namespace YTE
     // Note that this may affect performance so you might not want to do this 
     // in a real world application that updates buffers on a regular base
     mUniform = mContext->CreateBuffer(sizeof(UniformBufferObject),
-      vk::BufferUsageFlagBits::eUniformBuffer,
-      vk::MemoryPropertyFlagBits::eHostVisible |
-      vk::MemoryPropertyFlagBits::eHostCoherent);
+                                      vk::BufferUsageFlagBits::eUniformBuffer,
+                                      vk::MemoryPropertyFlagBits::eHostVisible |
+                                      vk::MemoryPropertyFlagBits::eHostCoherent);
 
     // Store information in the uniform's descriptor
     mUniformBufferInfo.buffer = mUniform.mBuffer;

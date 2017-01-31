@@ -12,6 +12,7 @@
 
 #include "YTE/Core/EventHandler.hpp"
 #include "YTE/Core/ForwardDeclarations.hpp"
+#include "YTE/Core/PrivateImplementation.hpp"
 #include "YTE/Core/Types.hpp"
 
 #include "YTE/Graphics/Instance.hpp"
@@ -19,14 +20,9 @@
 #include "YTE/Graphics/Model.hpp"
 #include "YTE/Graphics/View.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanPrimitives.hpp"
 
 #include "YTE/Platform/ForwardDeclarations.hpp"
-
-#include "YTE/Core/PrivateImplementation.hpp"
-
-
-#include "vulkan/vkel.h"
-#include "vulkan/vk_cpp.hpp"
 
 namespace YTE
 {

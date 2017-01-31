@@ -109,5 +109,43 @@ namespace YTE
 
     return result;
   }
+
+
+  enum class StringComparison
+  {
+    String1Null,     // (We check this first)
+    LesserInString1, // The first character that does not match has a lower value in ptr1 than in ptr2
+    Equal,
+    GreaterInString1,// The first character that does not match has a greater value in ptr1 than in ptr2
+    String2Null,     // (We check this Second)
+  };
+
+  inline StringComparison StringCompare(const char *aLeft, const char *aRight)
+  {
+    if (nullptr == aLeft)
+    {
+      return StringComparison::String1Null;
+    }
+
+    if (nullptr == aRight)
+    {
+      return StringComparison::String2Null;
+    }
+
+    auto comparison = std::strcmp(aLeft, aRight);
+
+    if (0 == comparison)
+    {
+      return StringComparison::Equal;
+    }
+    else if (comparison < 0)
+    {
+      return StringComparison::LesserInString1;
+    }
+    else // if (comparison < 0) This is by definition of the domain, no need to check
+    {
+      return StringComparison::GreaterInString1;
+    }
+  }
 }
 #endif

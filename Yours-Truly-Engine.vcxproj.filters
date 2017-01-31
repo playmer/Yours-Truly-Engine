@@ -594,9 +594,6 @@
     <ClInclude Include="Dependencies\glm\detail\_vectorize.hpp">
       <Filter>Dependencies\glm\detail</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\vulkan\vulkan\vk_cpp.hpp">
-      <Filter>Dependencies\vulkan\vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h">
       <Filter>Dependencies\vulkan\vulkan</Filter>
     </ClInclude>
@@ -728,6 +725,9 @@
     </ClInclude>
     <ClInclude Include="YTE\Graphics\VulkanPrimitives.hpp">
       <Filter>YTE\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.hpp">
+      <Filter>Dependencies\vulkan\vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

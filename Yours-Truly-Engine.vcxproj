@@ -334,9 +334,9 @@
     <ClInclude Include="Dependencies\glm\vector_relational.hpp" />
     <ClInclude Include="Dependencies\stb\stb_image.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vkel.h" />
-    <ClInclude Include="Dependencies\vulkan\vulkan\vk_cpp.hpp" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vk_platform.h" />
     <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.h" />
+    <ClInclude Include="Dependencies\vulkan\vulkan\vulkan.hpp" />
     <ClInclude Include="YTE\Audio\AudioSystem.hpp" />
     <ClInclude Include="YTE\Core\Component.hpp" />
     <ClInclude Include="YTE\Core\Composition.hpp" />

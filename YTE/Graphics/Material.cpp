@@ -109,6 +109,8 @@ namespace YTE
     dynamicStateCreateInfo.dynamicStateCount = 2;
     dynamicStateCreateInfo.pDynamicStates = dynamicState;
 
+    SetupDescriptorSetLayout();
+
     vk::GraphicsPipelineCreateInfo pipelineCreateInfo;
     pipelineCreateInfo.stageCount = static_cast<u32>(shaderStageCreateInfo.size());
     pipelineCreateInfo.pStages = shaderStageCreateInfo.data();
@@ -122,9 +124,6 @@ namespace YTE
     pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
     pipelineCreateInfo.layout = mPipelineLayout;
     pipelineCreateInfo.renderPass = aVulkanContext->mRenderPass;
-
-    aVulkanContext->SetupDescriptorPool();
-    aVulkanContext->SetupDescriptorSet();
 
     mPipeline = aVulkanContext->mLogicalDevice.createGraphicsPipelines(VK_NULL_HANDLE, pipelineCreateInfo)[0];
     vulkan_assert(mPipeline, "Failed to create graphics pipeline.");

@@ -12,6 +12,8 @@ namespace YTE
     glm::mat4 mProjectionMatrix;
     glm::mat4 mModelMatrix;
     glm::vec3 mViewPosition;
+    double mDeltaTime;
+    double mTimeRunning;
     float mLevelOfDetailBias = 1.0f;
   };
 

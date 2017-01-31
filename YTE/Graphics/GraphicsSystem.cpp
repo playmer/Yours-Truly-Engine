@@ -2,9 +2,6 @@
 #include <filesystem>
 #include <string>
 
-#include "vulkan/vkel.h"
-#include "vulkan/vk_cpp.hpp"
-
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
@@ -22,51 +19,13 @@
 #include "YTE/Graphics/TextureLoader.hpp"
 #include "YTE/Graphics/ShaderDescriptions.hpp"
 #include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanPrimitives.hpp"
 
 #include "YTE/Platform/Window.hpp"
 #include "YTE/Platform/Windows/WindowData_Windows.hpp"
 
 namespace YTE
 {
-  enum class StringComparison
-  {
-    String1Null,     // (We check this first)
-    LesserInString1, // The first character that does not match has a lower value in ptr1 than in ptr2
-    Equal,
-    GreaterInString1,// The first character that does not match has a greater value in ptr1 than in ptr2
-    String2Null,     // (We check this Second)
-  };
-
-  inline StringComparison StringCompare(const char *aLeft, const char *aRight)
-  {
-    if (nullptr == aLeft)
-    {
-      return StringComparison::String1Null;
-    }
-
-    if (nullptr == aRight)
-    {
-      return StringComparison::String2Null;
-    }
-
-    auto comparison = std::strcmp(aLeft, aRight);
-
-    if (0 == comparison)
-    {
-      return StringComparison::Equal;
-    }
-    else if (comparison < 0)
-    {
-      return StringComparison::LesserInString1;
-    }
-    else // if (comparison < 0) This is by definition of the domain, no need to check
-    {
-      return StringComparison::GreaterInString1;
-    }
-  }
-
-
-
   VKAPI_ATTR VkBool32 VKAPI_CALL DebugReportCallback(VkDebugReportFlagsEXT aFlags,
                                                      VkDebugReportObjectTypeEXT aObjectType, 
                                                      uint64_t aObject, 
@@ -135,8 +94,8 @@ namespace YTE
       auto self = mPlatformSpecificData.Get<VulkanContext>();
 
       vk::ApplicationInfo appInfo;
-      appInfo.setPApplicationName("First Test");
-      appInfo.setEngineVersion(1);
+      appInfo.setPApplicationName("YTE Engine");
+      appInfo.setEngineVersion(VK_MAKE_VERSION(0, 0, 1));
       appInfo.setApiVersion(VK_MAKE_VERSION(1, 0, 0));
 
       auto instanceInfo = vk::InstanceCreateInfo()
@@ -155,10 +114,6 @@ namespace YTE
         {
           foundValidator = true;
         }
-      }
-
-      if (foundValidator)
-      {
       }
 
       const char *enabledLayers[] = { validationLayer };
@@ -229,7 +184,7 @@ namespace YTE
         callbackCreateInfo.setPfnCallback(&DebugReportCallback);
 
         auto debugReport = self->mInstance.createDebugReportCallbackEXT(callbackCreateInfo);
-        vulkan_assert(static_cast<bool>(debugReport), "Failed to create degub report callback.");
+        vulkan_assert(static_cast<bool>(debugReport), "Failed to create debug report callback.");
       }
 
       // TODO: Abstract this for multiple windows.
@@ -402,7 +357,7 @@ namespace YTE
       swapChainCreateInfo.setPresentMode(presentationMode);
       swapChainCreateInfo.setClipped(true); // If we want clipping outside the extents
                                             // (remember our device features?)
-
+      
       self->mSwapChain = self->mLogicalDevice.createSwapchainKHR(swapChainCreateInfo);
       vulkan_assert(self->mSwapChain, "Failed to create swapchain.");
 
@@ -461,107 +416,123 @@ namespace YTE
       auto memoryRequirements = self->mLogicalDevice.getImageMemoryRequirements(self->mDepthImage);
       auto imageAllocationInfo = vk::MemoryAllocateInfo().setAllocationSize(memoryRequirements.size);
 
-      // memoryTypeBits is a bitfield where if bit i is set, it means that 
-      // the VkMemoryType i of the VkPhysicalDeviceMemoryProperties structure 
-      // satisfies the memory requirements:
-      u32 memoryTypeBits = memoryRequirements.memoryTypeBits;
-      vk::MemoryPropertyFlags desiredMemoryFlags = vk::MemoryPropertyFlagBits::eDeviceLocal;
-      for (u32 i = 0; i < 32; ++i)
-      {
-        vk::MemoryType memoryType = self->mPhysicalMemoryProperties.memoryTypes[i];
-        if (memoryTypeBits & 1)
-        {
-          if ((memoryType.propertyFlags & desiredMemoryFlags) == desiredMemoryFlags)
-          {
-            imageAllocationInfo.memoryTypeIndex = i;
-            break;
-          }
-        }
-        memoryTypeBits = memoryTypeBits >> 1;
-      }
+      imageAllocationInfo.memoryTypeIndex = self->GetMemoryType(memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
       auto imageMemory = self->mLogicalDevice.allocateMemory(imageAllocationInfo);
       self->mLogicalDevice.bindImageMemory(self->mDepthImage, imageMemory, 0);
 
       auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-
       auto submitFence = self->mLogicalDevice.createFence(vk::FenceCreateInfo());
-
-      std::vector<bool> transitioned;
-      transitioned.resize(self->mPresentImages.size(), false);
-
-      // This sets the image layout on the images.
-      u32 doneCount = 0;
-      while (doneCount != self->mPresentImages.size())
-      {
-        vk::SemaphoreCreateInfo semaphoreCreateInfo;
-        vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
       
-        u32 nextImageIdx;
-        auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
-        checkVulkanResult(result, "Could not acquireNextImageKHR.");
-      
-        if (!transitioned.at(nextImageIdx))
-        {
-          // start recording out image layout change barrier on our setup command buffer:
-          self->mSetupCommandBuffer.begin(&beginInfo);
-      
-          vk::ImageMemoryBarrier layoutTransitionBarrier;
-          layoutTransitionBarrier.setDstAccessMask(vk::AccessFlagBits::eMemoryRead);
-          layoutTransitionBarrier.setOldLayout(vk::ImageLayout::eUndefined);
-          layoutTransitionBarrier.setNewLayout(vk::ImageLayout::ePresentSrcKHR);
-          layoutTransitionBarrier.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
-          layoutTransitionBarrier.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
-          layoutTransitionBarrier.setImage(self->mPresentImages[nextImageIdx]);
-      
-          vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
-          layoutTransitionBarrier.setSubresourceRange(resourceRange);
-          vk::ClearColorValue clear;
-          clear.setFloat32( { 0.0f, 0.0f, 0.0f, 1.0f });
-          self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
-                                                    vk::ImageLayout::eTransferDstOptimal,
-                                                    clear,
-                                                    resourceRange);
-      
-          self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
-                                                    vk::PipelineStageFlagBits::eTopOfPipe, 
-                                                    vk::DependencyFlags(),
-                                                    nullptr, 
-                                                    nullptr,
-                                                    layoutTransitionBarrier);
-      
-          self->mSetupCommandBuffer.end();
-      
-          vk::PipelineStageFlags waitStageMash[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-          vk::SubmitInfo submitInfo;
-          submitInfo.setWaitSemaphoreCount(1);
-          submitInfo.setPWaitSemaphores(&presentCompleteSemaphore);
-          submitInfo.setPWaitDstStageMask(waitStageMash);
-          submitInfo.setCommandBufferCount(1);
-          submitInfo.setPCommandBuffers(&self->mSetupCommandBuffer);
-      
-          self->mQueue.submit(submitInfo, submitFence);
-          
-          self->mLogicalDevice.waitForFences(submitFence, true, UINT64_MAX);
-          self->mLogicalDevice.resetFences(submitFence);
-      
-          self->mLogicalDevice.destroySemaphore(presentCompleteSemaphore);
-      
-          // NOTE: Instead of eReleaseResources should it be 0?
-          self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
-      
-          transitioned[nextImageIdx] = true;
-          ++doneCount;
-        }
-
-        // TODO: Fix the issue where we present without writing to the images.
-        auto presentInfo = vk::PresentInfoKHR()
-                                .setSwapchainCount(1)
-                                .setPSwapchains(&self->mSwapChain)
-                                .setPImageIndices(&nextImageIdx);
-        
-        self->mQueue.presentKHR(presentInfo);
-      }
+      //std::vector<bool> transitioned;
+      //transitioned.resize(self->mPresentImages.size(), false);
+      //
+      //// This sets the image layout on the images.
+      //u32 doneCount = 0;
+      //while (doneCount != self->mPresentImages.size())
+      //{
+      //  vk::SemaphoreCreateInfo semaphoreCreateInfo;
+      //  vk::Semaphore presentCompleteSemaphore = self->mLogicalDevice.createSemaphore(semaphoreCreateInfo);
+      //
+      //  u32 nextImageIdx;
+      //  auto result = self->mLogicalDevice.acquireNextImageKHR(self->mSwapChain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &nextImageIdx);
+      //  checkVulkanResult(result, "Could not acquireNextImageKHR.");
+      //
+      //  if (!transitioned.at(nextImageIdx))
+      //  {
+      //    // start recording out image layout change barrier on our setup command buffer:
+      //    self->mSetupCommandBuffer.begin(&beginInfo);
+      //
+      //    //std::array<vk::ImageMemoryBarrier, 2> layoutTransitionBarriers;
+      //    //layoutTransitionBarriers[0].setDstAccessMask(vk::AccessFlagBits::eMemoryRead);
+      //    //layoutTransitionBarriers[0].setOldLayout(vk::ImageLayout::eUndefined);
+      //    //layoutTransitionBarriers[0].setNewLayout(vk::ImageLayout::ePresentSrcKHR);
+      //    //layoutTransitionBarriers[0].setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    //layoutTransitionBarriers[0].setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    //layoutTransitionBarriers[0].setImage(self->mPresentImages[nextImageIdx]);
+      //
+      //    //layoutTransitionBarriers[1].setDstAccessMask(vk::AccessFlagBits::eMemoryRead);
+      //    //layoutTransitionBarriers[1].setOldLayout(vk::ImageLayout::eUndefined);
+      //    //layoutTransitionBarriers[1].setNewLayout(vk::ImageLayout::ePresentSrcKHR);
+      //    //layoutTransitionBarriers[1].setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    //layoutTransitionBarriers[1].setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    //layoutTransitionBarriers[1].setImage(self->mPresentImages[nextImageIdx]);
+      //
+      //    vk::ImageMemoryBarrier layoutTransitionBarrierWrite;
+      //    layoutTransitionBarrierWrite.setSrcAccessMask(vk::AccessFlagBits::eTransferWrite);
+      //    //layoutTransitionBarrierWrite.setDstAccessMask(vk::AccessFlagBits::eTransferWrite);
+      //    layoutTransitionBarrierWrite.setOldLayout(vk::ImageLayout::eUndefined);
+      //    layoutTransitionBarrierWrite.setNewLayout(vk::ImageLayout::eTransferDstOptimal);
+      //    layoutTransitionBarrierWrite.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    layoutTransitionBarrierWrite.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    layoutTransitionBarrierWrite.setImage(self->mPresentImages[nextImageIdx]);
+      //
+      //    vk::ImageMemoryBarrier layoutTransitionBarrierRead;
+      //    layoutTransitionBarrierRead.setDstAccessMask(vk::AccessFlagBits::eMemoryRead);
+      //    layoutTransitionBarrierRead.setOldLayout(vk::ImageLayout::eTransferDstOptimal);
+      //    layoutTransitionBarrierRead.setNewLayout(vk::ImageLayout::ePresentSrcKHR);
+      //    layoutTransitionBarrierRead.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    layoutTransitionBarrierRead.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+      //    layoutTransitionBarrierRead.setImage(self->mPresentImages[nextImageIdx]);
+      //
+      //    vk::ImageSubresourceRange resourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 };
+      //    layoutTransitionBarrierWrite.setSubresourceRange(resourceRange);
+      //    layoutTransitionBarrierRead.setSubresourceRange(resourceRange);
+      //
+      //    vk::ClearColorValue clear;
+      //    clear.setFloat32( { 0.0f, 0.0f, 0.0f, 1.0f });
+      //
+      //    self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
+      //                                              vk::PipelineStageFlagBits::eTopOfPipe, 
+      //                                              vk::DependencyFlags(),
+      //                                              nullptr, 
+      //                                              nullptr,
+      //                                              layoutTransitionBarrierWrite);
+      //
+      //    self->mSetupCommandBuffer.clearColorImage(self->mPresentImages[nextImageIdx],
+      //                                              vk::ImageLayout::eTransferDstOptimal,
+      //                                              clear,
+      //                                              resourceRange);
+      //
+      //    self->mSetupCommandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, 
+      //                                              vk::PipelineStageFlagBits::eTopOfPipe, 
+      //                                              vk::DependencyFlags(),
+      //                                              nullptr, 
+      //                                              nullptr,
+      //                                              layoutTransitionBarrierRead);
+      //
+      //    self->mSetupCommandBuffer.end();
+      //
+      //    vk::PipelineStageFlags waitStageMash[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+      //    vk::SubmitInfo submitInfo;
+      //    submitInfo.setWaitSemaphoreCount(1);
+      //    submitInfo.setPWaitSemaphores(&presentCompleteSemaphore);
+      //    submitInfo.setPWaitDstStageMask(waitStageMash);
+      //    submitInfo.setCommandBufferCount(1);
+      //    submitInfo.setPCommandBuffers(&self->mSetupCommandBuffer);
+      //
+      //    self->mQueue.submit(submitInfo, submitFence);
+      //    
+      //    self->mLogicalDevice.waitForFences(submitFence, true, UINT64_MAX);
+      //    self->mLogicalDevice.resetFences(submitFence);
+      //
+      //    self->mLogicalDevice.destroySemaphore(presentCompleteSemaphore);
+      //
+      //    // NOTE: Instead of eReleaseResources should it be 0?
+      //    self->mSetupCommandBuffer.reset(vk::CommandBufferResetFlagBits::eReleaseResources);
+      //
+      //    transitioned[nextImageIdx] = true;
+      //    ++doneCount;
+      //  }
+      //
+      //  // TODO: Fix the issue where we present without writing to the images.
+      //  auto presentInfo = vk::PresentInfoKHR()
+      //                          .setSwapchainCount(1)
+      //                          .setPSwapchains(&self->mSwapChain)
+      //                          .setPImageIndices(&nextImageIdx);
+      //  
+      //  self->mQueue.presentKHR(presentInfo);
+      //}
 
 
       self->mPresentImageViews = std::vector<vk::ImageView>(self->mPresentImages.size(), vk::ImageView());
@@ -675,10 +646,6 @@ namespace YTE
       vk::SubpassDependency subpassDependency;
       subpassDependency.setSrcStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
       subpassDependency.setDstStageMask(vk::PipelineStageFlagBits::eTopOfPipe);
-      //subpassDependency.setSrcAccessMask(vk::AccessFlagBits(0));
-      //subpassDependency.setDstAccessMask(vk::AccessFlagBits(0));
-      //subpassDependency.setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
-      //subpassDependency.setDstStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
       subpassDependency.setSrcSubpass(0);
       subpassDependency.setDstSubpass(0);
 
@@ -759,6 +726,10 @@ namespace YTE
       descriptions.AddAttribute<glm::vec3>(vk::Format::eR32G32B32A32Sfloat);
 
       mMaterials.emplace_back(self, descriptions, "./Shaders/vert.spv"s, "./Shaders/frag.spv"s);
+
+
+      self->SetupDescriptorPool();
+      self->SetupDescriptorSet();
       
       YTE::Vertex mVertex1;
 
@@ -881,11 +852,11 @@ namespace YTE
       prePresentBarrier.image = self->mPresentImages[i];
 
       commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands,
-        vk::PipelineStageFlagBits::eBottomOfPipe,
-        vk::DependencyFlags(),
-        nullptr,
-        nullptr,
-        prePresentBarrier);
+                                    vk::PipelineStageFlagBits::eBottomOfPipe,
+                                    vk::DependencyFlags(),
+                                    nullptr,
+                                    nullptr,
+                                    prePresentBarrier);
       commandBuffer.end();
 
       ++i;
