@@ -170,6 +170,7 @@
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp" />
     <ClCompile Include="YTE\Graphics\View.cpp" />
     <ClCompile Include="YTE\Graphics\VulkanContext.cpp" />
+    <ClCompile Include="YTE\Graphics\VulkanPrimitives.cpp" />
     <ClCompile Include="YTE\Platform\Keyboard.cpp" />
     <ClCompile Include="YTE\Platform\Window.cpp" />
     <ClCompile Include="YTE\Platform\Windows\Keyboard_Windows.cpp" />

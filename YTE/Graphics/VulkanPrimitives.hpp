@@ -166,72 +166,13 @@ class QueueFamilyIndices
 {
 public:
 
-  static QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice aDevice)
-  {
-    QueueFamilyIndices indices;
+  static QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice aDevice);
+  static void AddRequiredExtension(const char *aExtension);
+  static void ClearRequiredExtension();
 
-    auto queueFamilyProperties = aDevice.getQueueFamilyProperties();
-
-    int i = 0;
-    for (const auto& queueFamily : queueFamilyProperties) 
-    {
-      if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) 
-      {
-        indices.mGraphicsFamily = i;
-      }
-
-      if (indices.IsComplete()) 
-      {
-        break;
-      }
-
-      i++;
-    }
-    
-    return indices;
-  }
-
-  bool IsComplete()
-  {
-    return mGraphicsFamily >= 0;
-  }
-
+  bool IsComplete();
   bool IsDeviceSuitable(vk::PhysicalDevice aDevice, vk::SurfaceKHR aSurface);
-
-  bool CheckDeviceExtensionSupport(vk::PhysicalDevice aDevice)
-  {
-    auto availableExtensions = aDevice.enumerateDeviceExtensionProperties();
-    
-    std::set<std::string> requiredExtensions(sDeviceExtensions.begin(), 
-                                             sDeviceExtensions.end());
-
-    for (const auto& extension : availableExtensions)
-    {
-      requiredExtensions.erase(extension.extensionName);
-    }
-
-    return requiredExtensions.empty();
-  }
-
-  static void AddRequiredExtension(const char *aExtension)
-  {
-    for (auto extension : sDeviceExtensions)
-    {
-      // Already enabled this extension.
-      if (StringComparison::Equal == StringCompare(extension, aExtension))
-      {
-        return;
-      }
-    }
-
-    sDeviceExtensions.emplace_back(aExtension);
-  }
-
-
-  static void ClearRequiredExtension()
-  {
-    sDeviceExtensions.clear();
-  }
+  bool CheckDeviceExtensionSupport(vk::PhysicalDevice aDevice);
 
 private:
   static std::vector<const char*> sDeviceExtensions;

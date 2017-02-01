@@ -118,6 +118,7 @@
     <ClCompile Include="YTE\Graphics\View.cpp">
       <Filter>YTE\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="YTE\Graphics\VulkanPrimitives.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="YTE\Core\Engine.hpp">
