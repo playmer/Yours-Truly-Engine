@@ -168,7 +168,7 @@ public:
 
   static QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice aDevice);
   static void AddRequiredExtension(const char *aExtension);
-  static void ClearRequiredExtension();
+  static void ClearRequiredExtensions();
 
   bool IsComplete();
   bool IsDeviceSuitable(vk::PhysicalDevice aDevice, vk::SurfaceKHR aSurface);
@@ -228,6 +228,37 @@ class VulkanDeleter
   Delegate<void(*)(T*)> mDeleter;
   T mData;
 };
+
+
+inline void vulkan_assert(u64 aFlag, const char *aMessage = "")
+{
+  bool check = aFlag ? true : false;
+  runtime_assert(check, aMessage);
+}
+
+inline void vulkan_assert(void *aFlag, const char *aMessage = "")
+{
+  bool check = aFlag ? false : true;
+  runtime_assert(check, aMessage);
+}
+
+template<typename Type>
+inline void vulkan_assert(Type aFlag, const char *aMessage = "")
+{
+  bool check = static_cast<bool>(aFlag);
+  runtime_assert(check, aMessage);
+}
+
+inline void checkVulkanResult(vk::Result &aResult, const char *aMessage)
+{
+  vulkan_assert(aResult == vk::Result::eSuccess, aMessage);
+}
+
+
+inline void checkVulkanResult(VkResult &aResult, const char *aMessage)
+{
+  vulkan_assert(aResult == VK_SUCCESS, aMessage);
+}
 
 
 }

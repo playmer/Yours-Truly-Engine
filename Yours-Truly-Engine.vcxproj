@@ -358,6 +358,7 @@
     <ClInclude Include="YTE\Graphics\Mesh.hpp" />
     <ClInclude Include="YTE\Graphics\MeshLoader.hpp" />
     <ClInclude Include="YTE\Graphics\Model.hpp" />
+    <ClInclude Include="YTE\Graphics\Renderer.hpp" />
     <ClInclude Include="YTE\Graphics\Shader.hpp" />
     <ClInclude Include="YTE\Graphics\ShaderDescriptions.hpp" />
     <ClInclude Include="YTE\Graphics\Texture.hpp" />

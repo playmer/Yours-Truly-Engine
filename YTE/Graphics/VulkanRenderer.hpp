@@ -5,53 +5,36 @@
 
 #include "YTE/Graphics/Texture.hpp"
 #include "YTE/Graphics/Material.hpp"
+#include "YTE/Graphics/Renderer.hpp"
 #include "YTE/Graphics/View.hpp"
 #include "YTE/Graphics/VulkanPrimitives.hpp"
 
 namespace YTE
 {
-  inline void vulkan_assert(u64 aFlag, const char *aMessage = "")
-  {
-    bool check = aFlag ? true : false;
-    runtime_assert(check, aMessage);
-  }
 
-  inline void vulkan_assert(void *aFlag, const char *aMessage = "")
-  {
-    bool check = aFlag ? false : true;
-    runtime_assert(check, aMessage);
-  }
-
-  template<typename Type>
-  inline void vulkan_assert(Type aFlag, const char *aMessage = "")
-  {
-    bool check = static_cast<bool>(aFlag);
-    runtime_assert(check, aMessage);
-  }
-
-  inline void checkVulkanResult(vk::Result &aResult, const char *aMessage)
-  {
-    vulkan_assert(aResult == vk::Result::eSuccess, aMessage);
-  }
-
-
-  inline void checkVulkanResult(VkResult &aResult, const char *aMessage)
-  {
-    vulkan_assert(aResult == VK_SUCCESS, aMessage);
-  }
-
-  class VulkanContext
+  class VulkanRenderer : public Renderer
   {
   public:
-    VulkanContext()
+    VulkanRenderer()
       : mView(this)
     {
       QueueFamilyIndices::AddRequiredExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     }
 
-    ~VulkanContext()
+    ~VulkanRenderer()
     {
       QueueFamilyIndices::ClearRequiredExtensions();
+    }
+
+    static VKAPI_ATTR VkBool32 DebugCallback(VkDebugReportFlagsEXT flags,
+                                             VkDebugReportObjectTypeEXT objType,
+                                             uint64_t obj,
+                                             size_t location,
+                                             int32_t code,
+                                             const char* layerPrefix,
+                                             const char* msg,
+                                             void* userData)
+    {
     }
 
     template<typename FlagType>

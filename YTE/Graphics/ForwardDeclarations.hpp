@@ -19,6 +19,6 @@ namespace YTE
   struct Texture;
   struct Vertex;
 
-  class VulkanContext;
+  class VulkanRenderer;
 }
 #endif

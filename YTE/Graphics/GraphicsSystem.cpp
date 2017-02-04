@@ -18,7 +18,7 @@
 #include "YTE/Graphics/Shader.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
 #include "YTE/Graphics/ShaderDescriptions.hpp"
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 #include "YTE/Graphics/VulkanPrimitives.hpp"
 
 #include "YTE/Platform/Window.hpp"
@@ -42,7 +42,7 @@ namespace YTE
   GraphicsSystem::GraphicsSystem(Engine *aEngine) 
     : mEngine(aEngine), mVulkanSuccess(0)
   {
-    auto self = mPlatformSpecificData.ConstructAndGet<VulkanContext>();
+    auto self = mPlatformSpecificData.ConstructAndGet<VulkanRenderer>();
 
     #define YTERegisterEvent(EventType, ObjectInstance, MemberFunctionPtr) \
       RegisterEvent<decltype(MemberFunctionPtr), MemberFunctionPtr>(EventType, ObjectInstance)
@@ -91,7 +91,7 @@ namespace YTE
 
     if (mVulkanSuccess)
     {
-      auto self = mPlatformSpecificData.Get<VulkanContext>();
+      auto self = mPlatformSpecificData.Get<VulkanRenderer>();
 
       vk::ApplicationInfo appInfo;
       appInfo.setPApplicationName("YTE Engine");
@@ -764,7 +764,7 @@ namespace YTE
 
   void GraphicsSystem::SetupDrawing()
   {
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
+    auto self = mPlatformSpecificData.Get<VulkanRenderer>();
 
     i8 i = 0;
     for (auto &commandBuffer : self->mDrawCommandBuffers)
@@ -865,7 +865,7 @@ namespace YTE
 
   void GraphicsSystem::VulkanRender()
   {
-    auto self = mPlatformSpecificData.Get<VulkanContext>();
+    auto self = mPlatformSpecificData.Get<VulkanRenderer>();
 
     //if (mInstanceDataBufferSize < mInstances.size())
     //{
@@ -940,7 +940,7 @@ namespace YTE
 
   void GraphicsSystem::SetupInstanceDataBuffer()
   {
-    //auto self = mPlatformSpecificData.Get<VulkanContext>();
+    //auto self = mPlatformSpecificData.Get<VulkanRenderer>();
     //
     //// We need mInstances amount of InstanceDatas
     //auto bytesNeeded = static_cast<u32>(mInstances.size() * sizeof(InstanceData));

@@ -1,8 +1,6 @@
 #include "YTE/Graphics/TextureLoader.hpp"
 #include "stb/stb_image.h"
 
-// Create an image memory barrier for changing the layout of
-// an image and put it into an active command buffer
 
 namespace YTE
 {

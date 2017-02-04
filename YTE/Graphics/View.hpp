@@ -20,7 +20,7 @@ namespace YTE
   class View
   {
   public: 
-    View(VulkanContext *aContext);
+    View(VulkanRenderer *aContext);
     ~View();
 
     void Initialize();
@@ -31,7 +31,7 @@ namespace YTE
     BufferMemory mUniform;
     vk::DescriptorBufferInfo mUniformBufferInfo;
 
-    VulkanContext *mContext;
+    VulkanRenderer *mContext;
 
     u32 mWidth = 0;
     u32 mHeight = 0;

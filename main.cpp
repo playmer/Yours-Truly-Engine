@@ -15,7 +15,7 @@
 #include "YTE/Graphics/GraphicsSystem.hpp"
 #include "YTE/Graphics/Instance.hpp"
 #include "YTE/Graphics/TextureLoader.hpp"
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 
 #include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
@@ -28,7 +28,7 @@
 
 YTE::Instance MakeObject(YTE::GraphicsSystem *aGraphicsSystem, glm::vec3 aColor = glm::vec3(-1, -1, -1))
 {
-  auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanContext>();
+  auto context = aGraphicsSystem->mPlatformSpecificData.Get<YTE::VulkanRenderer>();
   YTE::Instance object(aGraphicsSystem);
   object.SetColor(aColor);
   return object;
@@ -93,7 +93,7 @@ int main(int aArgumentNumber, char **Arguments)
     //engine.mGraphicsSystem.mInstances[i].SetTextureId(1);
   }
 
-  auto context = engine.mGraphicsSystem.mPlatformSpecificData.Get<YTE::VulkanContext>();
+  auto context = engine.mGraphicsSystem.mPlatformSpecificData.Get<YTE::VulkanRenderer>();
 
 
   //auto panelMusicIGuessWeCanCallItThat = engine.mAudioSystem.PlayLoop("Panel", 1.0);

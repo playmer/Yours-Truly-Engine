@@ -1,11 +1,11 @@
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
 namespace YTE
 {
-  void VulkanContext::CopyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size)
+  void VulkanRenderer::CopyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size)
   {
     vk::CommandBufferAllocateInfo allocInfo = {};
     allocInfo.level = vk::CommandBufferLevel::ePrimary;
@@ -35,7 +35,7 @@ namespace YTE
     mLogicalDevice.freeCommandBuffers(mCommandPool, commandBuffer);
   }
 
-  BufferMemory VulkanContext::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties)
+  BufferMemory VulkanRenderer::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties)
   {
     BufferMemory toReturn(&mLogicalDevice);
 
@@ -59,7 +59,7 @@ namespace YTE
     return toReturn;
   }
   
-  void VulkanContext::SetupDescriptorPool()
+  void VulkanRenderer::SetupDescriptorPool()
   {
     // We need to tell the API the number of max. requested descriptors per type
     std::array<vk::DescriptorPoolSize, 2> typeCounts;
@@ -81,7 +81,7 @@ namespace YTE
     mDescriptorPool = mLogicalDevice.createDescriptorPool(descriptorPoolInfo);
   }
 
-  void VulkanContext::SetupDescriptorSet()
+  void VulkanRenderer::SetupDescriptorSet()
   {
     mWriteDescriptorSet.resize(2); // Need at least 1 for the uniform buffer.
 
@@ -134,7 +134,7 @@ namespace YTE
   }
 
 
-  void VulkanContext::UpdateDescriptorSet(Texture &aTexture)
+  void VulkanRenderer::UpdateDescriptorSet(Texture &aTexture)
   {
     //ImageDescriptor for the color map texture;
     vk::DescriptorImageInfo textureDescriptor;

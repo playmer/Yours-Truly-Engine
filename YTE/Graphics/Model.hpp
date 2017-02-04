@@ -6,7 +6,7 @@
 
 #include "YTE/Graphics/ForwardDeclarations.hpp"
 #include "YTE/Graphics/Instance.hpp"
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 
 namespace YTE
 {
@@ -14,7 +14,7 @@ namespace YTE
   class Mesh
   {
   public:
-    Mesh(std::initializer_list<Vertex> &aVertices, std::initializer_list<u32> &aIndicies, VulkanContext *aContext)
+    Mesh(std::initializer_list<Vertex> &aVertices, std::initializer_list<u32> &aIndicies, VulkanRenderer *aContext)
     {
       mVerticies = aContext->CreateFilledBuffer(aVertices.begin(), aVertices.size(), true);
       mIndicies  = aContext->CreateFilledBuffer(aIndicies.begin(), aIndicies.size(), true);

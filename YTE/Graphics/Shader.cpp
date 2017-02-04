@@ -1,11 +1,11 @@
 #include <iostream>
 
 #include "YTE/Graphics/Shader.hpp"
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 
 namespace YTE
 {
-  Shader::Shader(std::string &aFileName, ShaderType aType, VulkanContext *aContext)
+  Shader::Shader(std::string &aFileName, ShaderType aType, VulkanRenderer *aContext)
     : mType(aType)
   {
     std::FILE *fp = std::fopen(aFileName.c_str(), "rb");

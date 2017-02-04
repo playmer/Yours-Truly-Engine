@@ -1,9 +1,9 @@
 #include "YTE/Graphics/View.hpp"
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 
 namespace YTE
 {
-  View::View(VulkanContext * aContext)
+  View::View(VulkanRenderer * aContext)
     : mContext(aContext)
   {
 

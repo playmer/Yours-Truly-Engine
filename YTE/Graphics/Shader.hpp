@@ -28,7 +28,7 @@ namespace YTE
   class Shader
   {
   public:
-    Shader(std::string &aFileName, ShaderType aType, VulkanContext *aContext);
+    Shader(std::string &aFileName, ShaderType aType, VulkanRenderer *aContext);
 
     vk::PipelineShaderStageCreateInfo CreateShaderStage();
 

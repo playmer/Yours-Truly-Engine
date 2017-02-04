@@ -11,7 +11,7 @@ namespace YTE
   class Material
   {
   public:
-    Material(VulkanContext *aVulkanContext, 
+    Material(VulkanRenderer *aVulkanRenderer, 
              ShaderDescriptions aDescription, 
              std::string &aVertexShader, 
              std::string &aFragmentShader);
@@ -21,7 +21,7 @@ namespace YTE
 
     void BindPipeline(vk::CommandBuffer &aCommandBuffer);
 
-    VulkanContext *mVulkanContext;
+    VulkanRenderer *mVulkanRenderer;
     ShaderDescriptions mDescription;
     Shader mVertex;
     Shader mFragment;

@@ -19,7 +19,7 @@
 #include "YTE/Graphics/Material.hpp"
 #include "YTE/Graphics/Model.hpp"
 #include "YTE/Graphics/View.hpp"
-#include "YTE/Graphics/VulkanContext.hpp"
+#include "YTE/Graphics/VulkanRenderer.hpp"
 #include "YTE/Graphics/VulkanPrimitives.hpp"
 
 #include "YTE/Platform/ForwardDeclarations.hpp"
