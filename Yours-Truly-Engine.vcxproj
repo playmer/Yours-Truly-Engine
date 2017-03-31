@@ -70,13 +70,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.\;Dependencies\glbinding</IncludePath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\build\output\$(ProjectName)\$(Platform)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\build\intermediate\$(ProjectName)\$(Platform)$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.\;Dependencies\glbinding</IncludePath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\build\output\$(ProjectName)\$(Platform)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\build\intermediate\$(ProjectName)\$(Platform)$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\build\output\$(ProjectName)\$(Platform)$(Configuration)\</OutDir>
@@ -169,7 +169,7 @@
     <ClCompile Include="YTE\Graphics\Shader.cpp" />
     <ClCompile Include="YTE\Graphics\TextureLoader.cpp" />
     <ClCompile Include="YTE\Graphics\View.cpp" />
-    <ClCompile Include="YTE\Graphics\VulkanContext.cpp" />
+    <ClCompile Include="YTE\Graphics\VulkanRenderer.cpp" />
     <ClCompile Include="YTE\Graphics\VulkanPrimitives.cpp" />
     <ClCompile Include="YTE\Platform\Keyboard.cpp" />
     <ClCompile Include="YTE\Platform\Window.cpp" />
@@ -365,7 +365,7 @@
     <ClInclude Include="YTE\Graphics\TextureLoader.hpp" />
     <ClInclude Include="YTE\Graphics\Vertex.hpp" />
     <ClInclude Include="YTE\Graphics\View.hpp" />
-    <ClInclude Include="YTE\Graphics\VulkanContext.hpp" />
+    <ClInclude Include="YTE\Graphics\VulkanRenderer.hpp" />
     <ClInclude Include="YTE\Graphics\VulkanPrimitives.hpp" />
     <ClInclude Include="YTE\Platform\ForwardDeclarations.hpp" />
     <ClInclude Include="YTE\Platform\Gamepad.hpp" />

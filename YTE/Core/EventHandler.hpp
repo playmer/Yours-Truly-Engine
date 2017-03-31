@@ -66,10 +66,10 @@ namespace YTE
       static_assert(std::is_base_of<Event, EventType>::value, "EventType Must be derived from YTE::Event");
       static_assert(std::is_base_of<EventHandler, ObjectType>::value, "ObjectType Must be derived from YTE::EventHandler");
       auto delegate = aObject->template MakeEventDelegate<FunctionType,
-        aFunction,
-        typename StringType,
-        typename Binding<FunctionType>::ObjectType,
-        typename Binding<FunctionType>::EventType>(aName, aObject);
+                                                          aFunction,
+                                                          typename StringType,
+                                                          typename Binding<FunctionType>::ObjectType,
+                                                          typename Binding<FunctionType>::EventType>(aName, aObject);
 
       mEventLists[aName].InsertFront(delegate->mHook);
     }
