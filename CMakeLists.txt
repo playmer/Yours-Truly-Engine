@@ -27,3 +27,5 @@ Include_Directories(${Source_Root})
 Add_Subdirectory(YTE)
 
 Add_Subdirectory(ExampleProject)
+
+Set_Target_Properties(ExampleProject PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${Source_Root})
